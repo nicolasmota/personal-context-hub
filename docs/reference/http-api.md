@@ -9,7 +9,6 @@ The control plane is FastAPI on **loopback**, default `http://127.0.0.1:8765`.
 | Swagger UI | `GET /docs` |
 | Checked-in dump | [openapi.json](../openapi.json) (regenerate with `make openapi`) |
 | Product routes | `/v1/*` |
-| SPA | `/` |
 
 There is **no** `/v1/openapi.json`.
 

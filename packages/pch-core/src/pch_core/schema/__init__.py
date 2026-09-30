@@ -4,12 +4,6 @@ from pch_core.schema.artifact import Artifact, ArtifactKind
 from pch_core.schema.audit import AuditEvent, EventKind
 from pch_core.schema.conflict import Conflict, ConflictKind, ConflictStatus
 from pch_core.schema.connection import AgentConnection, ConnectionStatus
-from pch_core.schema.connector import (
-    ConnectorAccount,
-    ConnectorKind,
-    ConnectorProvider,
-    ConnectorStatus,
-)
 from pch_core.schema.contract import (
     ENVELOPE_SCHEMA_ID,
     Citation,
@@ -40,15 +34,6 @@ from pch_core.schema.metadata import (
     UniversalMetadata,
 )
 from pch_core.schema.person import Person
-from pch_core.schema.plugin import (
-    Isolation,
-    PluginInstallation,
-    PluginManifest,
-    PluginOrigin,
-    PluginPermissions,
-    PluginState,
-    ProducesPermission,
-)
 from pch_core.schema.portability import (
     ExportRecord,
     ImportStaging,
@@ -85,9 +70,7 @@ TYPE_MODELS = {
     EntityType.DECISION: Decision,
     EntityType.ARTIFACT: Artifact,
     EntityType.MEMORY: Memory,
-    EntityType.CONNECTOR_ACCOUNT: ConnectorAccount,
     EntityType.EVENT: CalendarEvent,
-    EntityType.PLUGIN: PluginInstallation,
     EntityType.RELATION: Relation,
     EntityType.EXPERIENCE: Experience,
     EntityType.EVIDENCE: Evidence,
@@ -112,10 +95,6 @@ __all__ = [
     "ConflictKind",
     "ConflictStatus",
     "ConnectionStatus",
-    "ConnectorAccount",
-    "ConnectorKind",
-    "ConnectorProvider",
-    "ConnectorStatus",
     "Citation",
     "ConflictPair",
     "ContextContract",
@@ -143,13 +122,6 @@ __all__ = [
     "Grant",
     "GrantStatus",
     "ImportStaging",
-    "Isolation",
-    "PluginInstallation",
-    "PluginManifest",
-    "PluginOrigin",
-    "PluginPermissions",
-    "PluginState",
-    "ProducesPermission",
     "IntentStatus",
     "ItemRef",
     "ManifestStatus",

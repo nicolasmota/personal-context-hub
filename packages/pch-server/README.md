@@ -1,6 +1,6 @@
 # pch-server
 
-Loopback HTTP control plane for Personal Context Hub: FastAPI, MCP tool dispatcher, connectors, plugin host, marketplace, and the built SPA.
+Loopback HTTP control plane for Personal Context Hub: FastAPI, pairing, and the MCP tool dispatcher.
 
 Binds `127.0.0.1` only. Interactive schema while running: `http://127.0.0.1:8765/docs`.
 

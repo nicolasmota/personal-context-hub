@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from pch_lab.sim import compile_persona, dump_ticks
 
-FORBIDDEN = frozenset(
-    {"propose_action", "apply_connector_items", "create_connector"}
-)
+FORBIDDEN = frozenset({"propose_action"})
 
 
 def test_no_outbound_actions() -> None:

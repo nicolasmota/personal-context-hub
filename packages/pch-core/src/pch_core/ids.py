@@ -23,7 +23,6 @@ PREFIXES = {
     "export": "exp",
     "import_staging": "imp",
     "vendor_import_batch": "vib",
-    "connector_account": "cxa",
     "event": "evt",
     "operational_proposal": "oprop",
     "relation": "rel",

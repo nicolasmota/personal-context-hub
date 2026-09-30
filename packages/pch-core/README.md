@@ -2,7 +2,7 @@
 
 Trust kernel for Personal Context Hub: schema, encrypted vault, policy, retrieval, audit.
 
-This package **must not** perform network I/O, host plugins, serve HTTP, or import `pch-server`, `pch-sdk`, or plugin code. Local encrypted vault persistence is core's job.
+This package must not perform network I/O, serve HTTP, or import `pch-server` or `pch-sdk`. Local encrypted vault persistence is core's job.
 
 Public façade: `from pch_core.service import Hub`.
 

@@ -9,7 +9,7 @@ Security fixes are accepted for:
 
 Older tags may not receive backports.
 
-Operator-facing security model (encryption, grants, plugins, loopback): [docs/security.md](docs/security.md).
+Operator-facing security model (encryption, grants, ingested material, loopback): [docs/security.md](docs/security.md).
 
 ## Reporting a vulnerability
 

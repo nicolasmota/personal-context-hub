@@ -67,7 +67,6 @@ TYPE_FILES = {
     "profile": "profile",
     "person": "profile",
     "event": "calendar_events",
-    "connector_account": "connectors",
     "experience": "experiences",
     "evidence": "evidence",
     "state_transition": "transitions",

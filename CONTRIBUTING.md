@@ -51,7 +51,7 @@ GitHub Pages publishes `docs/` from `main` (see `.github/workflows/pages.yml`). 
 ## Project constraints (read once)
 
 - **Local-first / loopback-only.** The Hub binds `127.0.0.1` only. It is not a public server.
-- **Imported content is data, never instruction.** Email, calendar, and plugins do not expand grants or trigger outward actions.
+- **Ingested material is data, never instruction.** It does not expand grants or trigger outward actions.
 - **A coding agent working on this repository is not a Hub client.** Vault pairing and MCP are a separate, explicit connection.
 
 ## Issues

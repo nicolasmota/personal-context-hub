@@ -8,6 +8,4 @@ class SimRefused(Exception):
 
 
 EVERYDAY_CONFIRM = "WRITE_EVERYDAY_VAULT"
-FORBIDDEN_ACTIONS = frozenset(
-    {"propose_action", "apply_connector_items", "create_connector"}
-)
+FORBIDDEN_ACTIONS = frozenset({"propose_action"})

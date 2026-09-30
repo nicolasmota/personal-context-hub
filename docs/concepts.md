@@ -54,14 +54,14 @@ Every durable object carries classification and authority. Source is not truth.
 
 `public` < `personal` < `private` < `sensitive`
 
-Calendar imports default to `private`. Gmail imports default to `sensitive`.
+The default grant ceiling is `private`. `sensitive` stays out of a grant that stops at `private`.
 
 **Authority:**
 
 | Value | Meaning |
 |---|---|
 | `user_confirmed` | You accepted it. Canonical. |
-| `source_imported` | Connector or plugin wrote it. Data, not an order. |
+| `source_imported` | Ingested material. Data, not an order. |
 | `agent_inferred` | An assistant inferred it. Needs confidence; not live truth until you confirm. |
 | `proposed` | Waiting in the review queue. |
 

@@ -27,18 +27,7 @@ class EventKind(StrEnum):
     IMPORT_VENDOR_ENQUEUED = "import.vendor_enqueued"
     IMPORT_ARCHIVE_DECIDED = "import.archive_decided"
     SETUP = "setup"
-    CONNECTOR_CONNECTED = "connector.connected"
-    CONNECTOR_DISCONNECTED = "connector.disconnected"
-    CONNECTOR_PAUSED = "connector.paused"
-    CONNECTOR_SYNC = "connector.sync"
     CONNECTION_RECIPE_ISSUED = "connection.recipe_issued"
-    PLUGIN_INSTALL = "plugin.install"
-    PLUGIN_CONSENT = "plugin.consent"
-    PLUGIN_LIFECYCLE = "plugin.lifecycle"
-    PLUGIN_SYNC = "plugin.sync"
-    PLUGIN_DENIED = "plugin.denied"
-    PLUGIN_KILLSWITCH = "plugin.killswitch"
-    MARKETPLACE_CATALOG_CHECK = "marketplace.catalog_check"
 
 
 class AuditEvent(BaseModel):

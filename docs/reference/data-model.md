@@ -83,8 +83,6 @@ Agents submit **RelationProposal**; you accept or reject.
 | `approval` | Your decision on an intent |
 | `audit_event` | Hash-chained ledger row |
 | `shared_state` | TTL handoff (`private_to_connection` \| `shared`) — not operational State |
-| `plugin` | Installation record |
-| `connector_account` | Google Calendar / Gmail account |
 | `export` / `import_staging` / `vendor_import_batch` | Portability |
 
 Grant capabilities:

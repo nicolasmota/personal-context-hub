@@ -8,14 +8,14 @@ The Hub is designed so a reachable non-loopback surface would already be a produ
 |---|---|
 | You control the machine that runs the Hub | The Hub is a public multi-tenant server |
 | Assistants are untrusted guests | Models will faithfully respect grants |
-| Plugins and imported mail are hostile input | Curation or “looks safe” is enforcement |
+| Ingested material is hostile input | Curation or “looks safe” is enforcement |
 | Vault files on disk may be copied | Plaintext SQLite is acceptable by default |
 
 Policy is evaluated in `pch-core`, outside any model’s reasoning.
 
 ## Loopback only
 
-`pch`, `pch-server`, and `hub-desktop` refuse a non-loopback `--host` (exit code 2). The message is: *The Hub is not a public server; it binds loopback only.*
+`pch-server` refuses a non-loopback `--host` (exit code 2). The message is: *The Hub is not a public server; it binds loopback only.*
 
 Do not put a reverse proxy in front of `:8765` that listens on a LAN or public interface. That would make the Hub a public server.
 
@@ -24,9 +24,7 @@ Do not put a reverse proxy in front of `:8765` that listens on a LAN or public i
 - Default vault: SQLCipher at `~/.pch/vault.db`
 - Key: OS keyring (`personal-context-hub` / `vault-key`), or `vault.key`, or `PCH_VAULT_KEY` (hex), or Argon2id from a passphrase + `vault.salt`
 - Blobs under `~/.pch/blobs/` use the same key
-- Packaged `pch` **refuses to start** if SQLCipher did not load, unless you set `PCH_PLAIN_SQLITE=1` and accept an unencrypted vault
-
-`pch doctor` reports whether encryption is on. From-source `pch-server` may open a plain database when the driver is missing and `plain=True` is used in tests — do not treat that as the product default.
+`pch-server` may open a plain database when the driver is missing and `plain=True` is used in tests. Do not treat that as the product default. Set `PCH_PLAIN_SQLITE=1` only when you accept an unencrypted vault.
 
 ## Tokens and pairing
 
@@ -41,7 +39,7 @@ Never commit `.cursor/mcp.json`, pairing token files, `google_oauth.json`, `.env
 
 ## Grants
 
-Grants are shown in plain language before confirm, are revocable, and apply to subsequent MCP and HTTP calls from that connection. Classification ceilings keep `sensitive` objects (for example Gmail artifacts) out of a `private` grant.
+Grants are shown in plain language before confirm, are revocable, and apply to subsequent MCP and HTTP calls from that connection. A classification ceiling keeps `sensitive` objects out of a `private` grant.
 
 The `forbidden_context` pytest marker is the automated isolation gate. New grant or assembly behavior must extend it.
 
@@ -51,7 +49,7 @@ This repository does not ship a plugin host, a provider connector, a desktop she
 
 ## Imported content is data
 
-Email, calendar, RSS, and PCA imports are a prompt-injection surface. The constitution rule is: they MUST NOT expand grants, alter policy, trigger actions, or be read as orders to the Hub or to an agent.
+A portable-state import is a prompt-injection surface. It must not expand grants, alter policy, trigger actions, or be read as orders to the Hub or to an agent.
 
 ## Audit
 
