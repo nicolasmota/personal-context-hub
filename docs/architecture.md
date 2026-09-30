@@ -26,4 +26,8 @@ Memory, context, and situation stay distinct. Memory is persisted information. T
 | `packages/pch-archive` | Portable personal state, format `0.2.0` |
 | `packages/pch-lab` | Synthetic scenarios and the four-approach benchmark. Not a product agent |
 
-The same contract is returned by `Hub.get_context_contract`, `POST /v1/mcp/tools/get_context_contract`, and the MCP tool `get_context_contract`.
+The same contract is returned by `Hub.get_context_contract`, `POST /v1/mcp/tools/get_context_contract`, the MCP tool `get_context_contract`, and the resource `pch://situation`.
+
+Relevance ranking is a `PurposeRetriever` on the hub. The default counts overlapping tokens. An embedding index or an external memory library can replace that object. Grants, omissions, authority, and the envelope stay in `pch-core`.
+
+The normative envelope is [the context contract spec](spec/context-contract.md).

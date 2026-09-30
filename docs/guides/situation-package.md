@@ -85,11 +85,8 @@ That portability is the point. Search hits alone are not enough.
 
 After the contract:
 
-- Durable facts the person just stated → `propose_memory` (not live until they accept)
-- Phase / current step / short intent → `propose_operational_state`
+- Durable facts the person just stated → `propose_memory` (not live until they accept, via `pch proposals`)
 - Typed links → `propose_relation`
-- Cross-agent scratch with TTL → `set_shared_state` / `get_shared_state` (this is **handoff**, not operational State)
-- External action → `propose_action` / `request_approval`, then the person decides in **Approvals**
 
 ## Temporal reads
 

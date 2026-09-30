@@ -128,6 +128,7 @@ class ContextMixin:
             is_owner=actor == OWNER,
             grants=grants,
             cap_for=self._cap_for,
+            retriever=getattr(self, "retriever", None),
         )
         item_refs = []
         for section in (

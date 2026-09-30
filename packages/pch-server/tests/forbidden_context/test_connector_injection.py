@@ -20,5 +20,4 @@ def test_connector_payloads_cannot_change_policy(client):
     kinds = {e.get("kind") for e in events}
     assert "grant.created" not in kinds or len(grants_after) == len(grants_before)
     actions = client.get("/v1/approvals?status=pending")
-    assert actions.status_code == 200
-    assert actions.json() == [] or actions.json() == []
+    assert actions.status_code == 404

@@ -30,7 +30,7 @@ Do not put a reverse proxy in front of `:8765` that listens on a LAN or public i
 
 | Token | Who has it | How you revoke it |
 |---|---|---|
-| Owner token | Local UI via `/v1/bootstrap` | Re-setup is not a daily operation; treat the machine as trusted |
+| Owner token | `owner.token` in the data directory (mode `0600`), or `pch token` | Re-setup is not a daily operation; treat the machine as trusted |
 | Connection token | One paired assistant | **Agents → revoke**, or revoke the grant |
 
 Send `Authorization: Bearer <token>` or `X-PCH-Token`. Missing or revoked tokens fail closed.
@@ -55,9 +55,11 @@ A portable-state import is a prompt-injection surface. It must not expand grants
 
 Consequential reads, writes, proposals, approvals, grant changes, and export/import are recorded in an append-only, hash-chained ledger. `GET /v1/events/verify` checks the chain.
 
-## CORS
+## Browser and DNS rebinding
 
-The FastAPI app allows all origins because it is loopback-only. That is not a reason to bind `0.0.0.0`.
+Loopback does not stop the browser on this machine. `GET /v1/bootstrap` and `POST /v1/setup` do not return the owner token. The credential is a mode `0600` file named `owner.token` in the data directory. The HTTP app sends no `Access-Control-Allow-Origin` header. A request whose `Host` is not `127.0.0.1`, `localhost`, or `::1` is rejected with status 421, which closes the DNS-rebinding path that would otherwise make a public name resolve to the loopback port.
+
+Earlier builds returned the owner token from `/v1/bootstrap` and allowed every origin. A page loaded in the same browser could read the token and then the vault. That response shape is gone.
 
 ## Reporting a vulnerability
 

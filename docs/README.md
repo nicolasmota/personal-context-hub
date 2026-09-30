@@ -13,6 +13,8 @@ This tree is the product documentation. When GitHub Pages is enabled it is serve
 | See how state, evolution, and the contract fit | [Architecture](architecture.md) |
 | Read what this repository refuses to be | [Non-goals](non-goals.md) |
 | See the hypotheses and the benchmark | [Research](research.md) |
+| Read the context contract spec | [Context contract](spec/context-contract.md) |
+| Import ChatGPT or Claude memories | [Import memories](guides/import-memories.md) |
 | Move portable personal state | [Export and import](guides/export-import.md) |
 | Run the evaluation harness | [Developing](develop.md) |
 | Pair an assistant over MCP | [Pair an agent](guides/pair-an-agent.md) |

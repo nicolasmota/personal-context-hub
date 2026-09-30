@@ -1,8 +1,8 @@
 # Research
 
-Experiments use synthetic data by default. The benchmark does not need a winning score. It records the comparison.
+Experiments use synthetic data by default. The scorer reads the rendered text. It does not treat the name `pch` as a success.
 
-`uv run pch-lab bench --out bench.json` runs seven scenario families against four baselines and writes one result row per pair.
+`uv run pch-lab bench --out bench.json` runs seven scenario families against four baselines and writes one result row per pair. `token_use` is `len(text) // 4`. `cost` stays 0 because this harness does not call a model. External memory libraries register a renderer on `pch_lab.baselines.runners.RENDERERS`; this repository does not ship their scores.
 
 ## Baselines
 
@@ -15,7 +15,7 @@ Experiments use synthetic data by default. The benchmark does not need a winning
 
 ## Result fields
 
-Each row records task success, context relevance, sufficiency, minimization, temporal accuracy, conflict handling, provenance accuracy, privacy leakage, token use, latency, and cost.
+Each row records task success, context relevance, sufficiency, minimization, temporal accuracy, conflict handling, provenance accuracy, privacy leakage, token use, latency, and cost. A required string that is missing, or a scenario secret that appears in the text, fails the row for every approach. Raw retrieval can therefore beat this hub on coverage and lose on leakage. That is the comparison.
 
 ## Hypotheses
 

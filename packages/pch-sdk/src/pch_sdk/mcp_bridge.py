@@ -4,28 +4,37 @@ import json
 import os
 import sys
 from typing import Any
+from urllib.parse import parse_qs, urlparse
 
 import httpx
 
 from pch_sdk.capture_guidance import (
+    MANIFEST_DESCRIPTION,
     MEMORY_PROPOSE_DESCRIPTION,
-    NON_CAPTURE_DESCRIPTION,
+    RELATION_DESCRIPTION,
+    RUNTIME_RULE,
+    SEARCH_DESCRIPTION,
     SITUATION_READ_DESCRIPTION,
 )
 
 TOOL_NAMES = [
-    "search_personal_context",
-    "get_context_manifest",
-    "propose_memory",
-    "set_shared_state",
-    "get_shared_state",
-    "request_approval",
-    "propose_action",
-    "check_action_status",
     "get_context_contract",
-    "propose_operational_state",
+    "search_personal_context",
+    "propose_memory",
     "propose_relation",
+    "get_context_manifest",
 ]
+
+REMOVED_TOOLS = frozenset(
+    {
+        "set_shared_state",
+        "get_shared_state",
+        "request_approval",
+        "propose_action",
+        "check_action_status",
+        "propose_operational_state",
+    }
+)
 
 TOOL_SCHEMAS: dict[str, dict[str, Any]] = {
     "search_personal_context": {
@@ -56,46 +65,6 @@ TOOL_SCHEMAS: dict[str, dict[str, Any]] = {
         },
         "required": ["memory", "evidence_refs"],
     },
-    "set_shared_state": {
-        "type": "object",
-        "properties": {
-            "key": {"type": "string"},
-            "value": {},
-            "ttl_seconds": {"type": "integer"},
-            "visibility": {"type": "string"},
-        },
-        "required": ["key", "value", "ttl_seconds", "visibility"],
-    },
-    "get_shared_state": {
-        "type": "object",
-        "properties": {"key": {"type": "string"}},
-        "required": ["key"],
-    },
-    "request_approval": {
-        "type": "object",
-        "properties": {
-            "intent_summary": {"type": "string"},
-            "rationale": {"type": "string"},
-            "impact": {"type": "string"},
-        },
-        "required": ["intent_summary", "rationale", "impact"],
-    },
-    "propose_action": {
-        "type": "object",
-        "properties": {
-            "kind": {"type": "string"},
-            "summary_human": {"type": "string"},
-            "payload": {"type": "object"},
-            "basis_refs": {"type": "array", "items": {"type": "string"}},
-            "idempotency_key": {"type": "string"},
-        },
-        "required": ["kind", "summary_human", "payload", "basis_refs", "idempotency_key"],
-    },
-    "check_action_status": {
-        "type": "object",
-        "properties": {"intent_id": {"type": "string"}},
-        "required": ["intent_id"],
-    },
     "get_context_contract": {
         "type": "object",
         "additionalProperties": False,
@@ -116,36 +85,10 @@ TOOL_SCHEMAS: dict[str, dict[str, Any]] = {
             },
             "as_of": {
                 "type": ["string", "null"],
-                "description": (
-                    "UTC instant for current vs historical. Null means now."
-                ),
+                "description": ("UTC instant for current vs historical. Null means now."),
             },
         },
         "required": ["purpose"],
-    },
-    "propose_operational_state": {
-        "type": "object",
-        "additionalProperties": False,
-        "required": ["target_id"],
-        "properties": {
-            "target_id": {
-                "type": "string",
-                "description": "Project or Goal id to patch on accept.",
-            },
-            "operational_phase": {
-                "type": ["string", "null"],
-                "enum": [
-                    "planning",
-                    "comparing_itineraries",
-                    "waiting_for_approval",
-                    "choosing_hotel",
-                    "other",
-                    None,
-                ],
-            },
-            "current_step": {"type": ["string", "null"], "maxLength": 200},
-            "situation_intent": {"type": ["string", "null"], "maxLength": 200},
-        },
     },
     "propose_relation": {
         "type": "object",
@@ -212,7 +155,13 @@ def _tool_description(name: str) -> str:
         return SITUATION_READ_DESCRIPTION
     if name == "propose_memory":
         return MEMORY_PROPOSE_DESCRIPTION
-    return f"{name.replace('_', ' ')}. {NON_CAPTURE_DESCRIPTION}"
+    if name == "search_personal_context":
+        return SEARCH_DESCRIPTION
+    if name == "get_context_manifest":
+        return MANIFEST_DESCRIPTION
+    if name == "propose_relation":
+        return RELATION_DESCRIPTION
+    raise KeyError(name)
 
 
 def _mcp_tools() -> list[dict[str, Any]]:
@@ -224,6 +173,65 @@ def _mcp_tools() -> list[dict[str, Any]]:
         }
         for name in TOOL_NAMES
     ]
+
+
+def _mcp_resources() -> list[dict[str, Any]]:
+    return [
+        {
+            "uri": "pch://situation",
+            "name": "situation",
+            "description": (
+                "The context contract for a purpose. Read pch://situation?purpose=<task>."
+            ),
+            "mimeType": "application/json",
+        }
+    ]
+
+
+def _mcp_prompts() -> list[dict[str, Any]]:
+    return [
+        {
+            "name": "runtime-rule",
+            "description": "Read a contract before answering, and propose durable facts instead of writing them.",
+        }
+    ]
+
+
+def _situation_purpose(uri: str) -> str | None:
+    parsed = urlparse(uri)
+    if parsed.scheme != "pch" or parsed.netloc != "situation":
+        return None
+    values = parse_qs(parsed.query).get("purpose") or []
+    purpose = values[0].strip() if values else ""
+    return purpose or None
+
+
+def _read_resource(uri: str, base: str, token: str) -> dict[str, Any]:
+    purpose = _situation_purpose(uri)
+    if purpose is None:
+        return {
+            "contents": [
+                {
+                    "uri": uri,
+                    "mimeType": "text/plain",
+                    "text": "Pass purpose: pch://situation?purpose=<what you are doing>",
+                }
+            ]
+        }
+    try:
+        status, body = call_hub(base, token, "get_context_contract", {"purpose": purpose})
+    except httpx.HTTPError as exc:
+        status, body = 0, {"detail": f"Hub unreachable at {base}: {exc}"}
+    mapped = map_tool_result(status, body, base=base)
+    return {
+        "contents": [
+            {
+                "uri": uri,
+                "mimeType": "application/json",
+                "text": mapped["content"][0]["text"],
+            }
+        ]
+    }
 
 
 def _jsonrpc_result(msg_id: Any, result: Any) -> dict[str, Any]:
@@ -239,8 +247,8 @@ def handle_message(msg: dict[str, Any], base: str, token: str) -> dict[str, Any]
             msg_id,
             {
                 "protocolVersion": params.get("protocolVersion") or "2024-11-05",
-                "capabilities": {"tools": {}},
-                "serverInfo": {"name": "personal-context-hub", "version": "0.1.0"},
+                "capabilities": {"tools": {}, "resources": {}, "prompts": {}},
+                "serverInfo": {"name": "personal-context-hub", "version": "0.2.0"},
             },
         )
     if method in ("notifications/initialized", "notifications/cancelled"):
@@ -249,6 +257,29 @@ def handle_message(msg: dict[str, Any], base: str, token: str) -> dict[str, Any]
         return _jsonrpc_result(msg_id, {})
     if method == "tools/list":
         return _jsonrpc_result(msg_id, {"tools": _mcp_tools()})
+    if method == "resources/list":
+        return _jsonrpc_result(msg_id, {"resources": _mcp_resources()})
+    if method == "resources/read":
+        return _jsonrpc_result(msg_id, _read_resource(params.get("uri") or "", base, token))
+    if method == "prompts/list":
+        return _jsonrpc_result(msg_id, {"prompts": _mcp_prompts()})
+    if method == "prompts/get":
+        name = params.get("name")
+        if name != "runtime-rule":
+            return {
+                "jsonrpc": "2.0",
+                "id": msg_id,
+                "error": {"code": -32602, "message": f"Unknown prompt {name}"},
+            }
+        return _jsonrpc_result(
+            msg_id,
+            {
+                "description": "How to use this vault.",
+                "messages": [
+                    {"role": "user", "content": {"type": "text", "text": RUNTIME_RULE}},
+                ],
+            },
+        )
     if method == "tools/call":
         name = params.get("name")
         arguments = params.get("arguments") or {}

@@ -15,7 +15,7 @@ def test_current_situation_anchors_live_trip(hub):
     hub.patch(
         seed["project"]["id"],
         {
-            "operational_phase": "comparing_itineraries",
+            "operational_phase": "deciding",
             "situation_intent": "choose the city",
         },
         None,
@@ -27,7 +27,7 @@ def test_current_situation_anchors_live_trip(hub):
     assert contract["purpose"] == HOME_PURPOSE
     assert contract["situation"]["project_id"] == seed["project"]["id"]
     assert contract["situation"]["title"] == "Europe Trip"
-    assert contract["situation"]["operational_phase"] == "comparing_itineraries"
+    assert contract["situation"]["operational_phase"] == "deciding"
     assert any("10-day" in g["body"].get("title", "") for g in contract["goals"])
 
 
@@ -38,7 +38,7 @@ def test_current_situation_prefers_operational_over_newer_idle(hub):
             "title": "Europe Trip",
             "charter": "ten days",
             "status": "active",
-            "operational_phase": "comparing_itineraries",
+            "operational_phase": "deciding",
         },
     )
     hub.create(
@@ -57,7 +57,7 @@ def test_current_situation_skips_archived(hub):
             "title": "Old trip",
             "charter": "done last year",
             "status": "active",
-            "operational_phase": "comparing_itineraries",
+            "operational_phase": "deciding",
         },
     )
     hub.patch(archived["id"], {"status": "archived"}, None)

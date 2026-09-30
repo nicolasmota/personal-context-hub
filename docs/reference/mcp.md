@@ -1,10 +1,10 @@
 # MCP tools
 
-The Hub exposes **eleven** tools over the stdio bridge (`pch-sdk mcp-bridge`) and over HTTP (`POST /v1/mcp/tools/{name}`).
+The Hub exposes **five** tools over the stdio bridge (`pch mcp-bridge`) and over HTTP (`POST /v1/mcp/tools/{name}`).
 
 Auth: connection token (`PCH_TOKEN`) or owner Bearer token. Policy is applied per actor. A revoked connection returns an error the bridge maps to *Connection revoked by the user in the Hub.*
 
-Stdio MCP **does not** list resources. HTTP resources: [below](#resources).
+Stdio also lists the `pch://situation` resource and the `runtime-rule` prompt. HTTP resources: [below](#resources).
 
 ## Catalog
 
@@ -12,15 +12,11 @@ Stdio MCP **does not** list resources. HTTP resources: [below](#resources).
 |---|---|---|
 | `get_context_contract` | `purpose` | Situation package — start here |
 | `search_personal_context` | `query`, `purpose` | Ranked hits inside the grant |
-| `get_context_manifest` | `purpose`, `requested_capabilities` | Short-lived capability receipt |
 | `propose_memory` | `memory`, `evidence_refs` | Queue a memory; not live until accept |
-| `propose_operational_state` | `target_id` | Queue phase / step / situation intent |
 | `propose_relation` | `from_id`, `to_id`, `relation_type` | Queue a typed edge |
-| `set_shared_state` | `key`, `value`, `ttl_seconds`, `visibility` | TTL handoff object |
-| `get_shared_state` | `key` | Read handoff |
-| `propose_action` | `kind`, `summary_human`, `payload`, `basis_refs`, `idempotency_key` | Queue an external action |
-| `request_approval` | `intent_summary`, `rationale`, `impact` | Convenience `kind=approval` |
-| `check_action_status` | `intent_id` | `{ status, decided_at }` |
+| `get_context_manifest` | `purpose`, `requested_capabilities` | Ask for a short-lived capability receipt |
+
+Shared-state handoff, outward actions, and operational-phase proposals are not tools.
 
 Guide: [Situation package](../guides/situation-package.md). Capture rules: [Pair an agent](../guides/pair-an-agent.md#runtime-rule-paste-into-personal-guidance).
 
@@ -99,23 +95,6 @@ Memory kinds: `semantic`, `episodic`, `procedural`, `summary`.
 
 ---
 
-### `propose_operational_state`
-
-```json
-{
-  "target_id": "<project-or-goal-id>",
-  "operational_phase": "comparing_itineraries",
-  "current_step": "shortlist flights",
-  "situation_intent": "choose next itinerary"
-}
-```
-
-`operational_phase` enum: `planning`, `comparing_itineraries`, `waiting_for_approval`, `choosing_hotel`, `other`, or null. `current_step` and `situation_intent` max length 200. Person accepts under `/v1/operational-proposals`.
-
-This is **not** `SharedState` and **not** `ActionIntent`.
-
----
-
 ### `propose_relation`
 
 ```json
@@ -130,29 +109,11 @@ This is **not** `SharedState` and **not** `ActionIntent`.
 
 ---
 
-### `set_shared_state` / `get_shared_state`
+## Resources (HTTP and stdio)
 
-Handoff with TTL. Visibility: `private_to_connection` | `shared`.
+Stdio: `resources/read` on `pch://situation?purpose=<task>` returns the same contract as `get_context_contract`.
 
-```json
-{ "key": "trip-draft", "value": { "city": "Amsterdam" }, "ttl_seconds": 900, "visibility": "shared" }
-```
-
-Do not use this as long-term memory. Durable facts go through `propose_memory`.
-
----
-
-### `propose_action` / `request_approval` / `check_action_status`
-
-External actions need a person in **Approvals**.
-
-`request_approval` is `propose_action` with `kind=approval` and payload `{ rationale, impact }`.
-
-`check_action_status` returns `{ "status": "…", "decided_at": "…" }`.
-
----
-
-## Resources (HTTP only)
+`GET /v1/mcp/resources?uri=`
 
 `GET /v1/mcp/resources?uri=`
 
@@ -174,4 +135,4 @@ Python: `Client.resource(uri)`.
 | `PCH_TOKEN` | Connection token (`--token` overrides) |
 | `PCH_BASE` | Hub base URL, default `http://127.0.0.1:8765` |
 
-The stdio serverInfo version string may still report `0.1.0`; the product packages are **0.2.0**. Prefer package version / `pch version`.
+The stdio `serverInfo.version` is `0.2.0`. `prompts/get` with `runtime-rule` returns the capture rule.

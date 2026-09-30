@@ -1,12 +1,7 @@
-def test_mcp_actions(client):
-    link = client.post("/v1/connections/links", json={"name": "a"}).json()
-    pair = client.post("/v1/connections/pair", json={"code": link["code"]}).json()
-    agent = {"Authorization": f"Bearer {pair['token']}"}
-    r = client.post(
-        "/v1/mcp/tools/propose_action",
-        headers=agent,
-        json={"kind": "send", "summary_human": "ping", "payload": {}, "basis_refs": [], "idempotency_key": "k"},
-    )
-    assert r.status_code == 200
-    st = client.post("/v1/mcp/tools/check_action_status", headers=agent, json={"intent_id": r.json()["id"]})
-    assert st.json()["status"] == "pending"
+from pch_sdk.mcp_bridge import REMOVED_TOOLS
+
+
+def test_removed_agent_tools_are_not_callable(client):
+    for name in sorted(REMOVED_TOOLS):
+        response = client.post(f"/v1/mcp/tools/{name}", json={})
+        assert response.status_code == 404, name

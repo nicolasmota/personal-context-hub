@@ -148,3 +148,42 @@ def test_agent_inference_evolve_is_refused(tmp_path: Path, capsys):
                 evidence["id"],
             ]
         )
+
+
+def test_consent_commands(tmp_path: Path, capsys):
+    data = str(tmp_path / "vault")
+    main(["vault-init", "--data-dir", data, "--name", "Synthetic"])
+    capsys.readouterr()
+    link = _run(["link", "--data-dir", data, "--name", "Cursor"], capsys)
+    listed = _run(["connections", "--data-dir", data], capsys)
+    assert listed["connections"][0]["id"] == link["connection_id"]
+    granted = _run(
+        [
+            "grant",
+            "--data-dir",
+            data,
+            "--connection",
+            link["connection_id"],
+            "--preset",
+            "read_active_projects",
+        ],
+        capsys,
+    )
+    assert granted["summary_human"]
+    revoked = _run(
+        ["revoke", "--data-dir", data, "--connection", link["connection_id"]],
+        capsys,
+    )
+    assert revoked["status"] == "revoked"
+    src = tmp_path / "memory.json"
+    src.write_text('[{"content": "Likes quiet mornings"}]', encoding="utf-8")
+    imported = _run(
+        ["import-memories", "--data-dir", data, "--src", str(src), "--provider", "chatgpt"],
+        capsys,
+    )
+    assert imported["imported"] == 1
+    pending = _run(["proposals", "--data-dir", data, "list"], capsys)
+    assert pending["proposals"] == []
+    token = _run(["token", "--data-dir", data], capsys)
+    assert token["owner_token"]
+    assert (tmp_path / "vault" / "owner.token").read_text(encoding="utf-8") == token["owner_token"]

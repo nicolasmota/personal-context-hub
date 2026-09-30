@@ -48,7 +48,7 @@ test-perf: ## Run search/scale performance tests (SC-009)
 test-all: test test-forbidden ## Default suite plus forbidden-context
 
 serve: ## Loopback API with auto-reload
-	$(UV) run pch-server --headless --reload --host $(HOST) --port $(PORT) --data-dir $(DATA_DIR)
+	$(UV) run pch-server --reload --host $(HOST) --port $(PORT) --data-dir $(DATA_DIR)
 
 openapi: ## Dump OpenAPI 3.1 JSON to docs/openapi.json
 	$(UV) run python -c "from pathlib import Path; from pch_core.service import Hub; from pch_server.rest.app import create_app; import json, tempfile; \

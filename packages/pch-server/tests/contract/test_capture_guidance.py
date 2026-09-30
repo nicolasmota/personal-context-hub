@@ -36,10 +36,7 @@ def test_three_turn_eval_proposes_not_canonical(client):
     purpose = {"purpose": "continue planning the trip"}
     first = client.post("/v1/mcp/tools/get_context_contract", headers=agent, json=purpose)
     assert first.status_code == 200
-    facts = [
-        "We are two travelers; Amsterdam is the live city; we dropped London.",
-        "Keep the trip budget-sensitive.",
-    ]
+    facts = THREE_TURN_LINES[1:]
     for statement in facts:
         proposed = client.post(
             "/v1/mcp/tools/propose_memory",

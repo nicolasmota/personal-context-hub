@@ -14,9 +14,8 @@ def test_existing_vault_reused_by_packaged_path(tmp_path: Path, monkeypatch):
     obj_id = created["id"]
     hub.close()
     app = create_app(Hub(source, plain=True))
-    with TestClient(app) as client:
-        boot = client.get("/v1/bootstrap").json()
-        client.headers["Authorization"] = f"Bearer {boot['owner_token']}"
+    with TestClient(app, base_url="http://127.0.0.1:8765") as client:
+        client.headers["Authorization"] = f"Bearer {app.state.hub.owner_token}"
         got = client.get(f"/v1/projects/{obj_id}")
         assert got.status_code == 200
         assert got.json()["id"] == obj_id

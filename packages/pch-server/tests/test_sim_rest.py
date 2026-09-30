@@ -12,9 +12,8 @@ def test_seq_increases_before_complete(tmp_path: Path) -> None:
     everyday = Hub(tmp_path / "everyday", plain=True)
     sim_hub = Hub(tmp_path / "sim", plain=True)
     app = create_app(everyday, sim_hub=sim_hub)
-    with TestClient(app) as client:
-        boot = client.get("/v1/bootstrap").json()
-        client.headers["Authorization"] = f"Bearer {boot['owner_token']}"
+    with TestClient(app, base_url="http://127.0.0.1:8765") as client:
+        client.headers["Authorization"] = f"Bearer {everyday.owner_token}"
         client.post("/v1/setup", json={"name": "Tester"})
         started = client.post(
             "/v1/sim/runs",

@@ -35,9 +35,8 @@ def test_three_callers_match(tmp_path: Path):
     )
     hub.create("goal", {"title": "plan dinner", "status": "open", "project_id": project["id"]})
     app = create_app(hub)
-    client = TestClient(app)
-    boot = client.get("/v1/bootstrap").json()
-    client.headers["Authorization"] = f"Bearer {boot['owner_token']}"
+    client = TestClient(app, base_url="http://127.0.0.1:8765")
+    client.headers["Authorization"] = f"Bearer {hub.owner_token}"
     payload = {"purpose": "plan dinner", "subject_ref": project["id"], "max_items": 4}
     direct = hub.get_context_contract(
         OWNER, payload["purpose"], payload["subject_ref"], payload["max_items"]

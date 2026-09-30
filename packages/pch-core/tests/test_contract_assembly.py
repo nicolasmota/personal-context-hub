@@ -185,7 +185,7 @@ def test_generic_purpose_uses_live_operational_project(hub):
     seed = seed_trip(hub)
     hub.patch(
         seed["project"]["id"],
-        {"operational_phase": "comparing_itineraries", "situation_intent": "choose the city"},
+        {"operational_phase": "deciding", "situation_intent": "choose the city"},
         None,
     )
     hub.create("project", {"title": "Idle notes", "charter": "someday", "status": "active"})

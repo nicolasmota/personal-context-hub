@@ -7,7 +7,7 @@ Entry points from the workspace packages. Python 3.12 or newer via uv.
 Local vault commands and the MCP bridge. From a checkout, after `make install`:
 
 ```bash
-uv run pch-sdk vault-init --data-dir /tmp/pch-demo --name Synthetic
+uv run pch vault-init --data-dir /tmp/pch-demo --name Synthetic
 uv run pch-sdk experience-add --data-dir /tmp/pch-demo --action "noted a change" --context dinner --outcome recorded --at 2026-09-29T12:00:00Z --provenance owner
 uv run pch-sdk evidence-add --data-dir /tmp/pch-demo --kind user_confirmed --source owner --authority "the person" --at 2026-09-29T12:00:00Z --statement "weekdays differ" --verification verified
 uv run pch-sdk evolve --data-dir /tmp/pch-demo --subject food.spicy --value mild --reason "conditional exception" --condition weekdays
@@ -18,7 +18,24 @@ uv run pch-sdk mcp-bridge --token "$PCH_TOKEN" --base "$PCH_BASE"
 uv run pch-sdk demo-agent --pair <code> --base http://127.0.0.1:8765 [--token]
 ```
 
-`pch-sdk` does not run loop, sim, or eval. Use `pch-lab` for those.
+`pch` is the same entry point as `pch-sdk`. It does not run loop, sim, or eval. Use `pch-lab` for those.
+
+Owner door, against a data directory (stop is not required; sqlite locks the short write):
+
+```bash
+uv run pch token --data-dir ~/.pch
+uv run pch link --data-dir ~/.pch --name Cursor
+uv run pch connections --data-dir ~/.pch
+uv run pch grant --data-dir ~/.pch --connection <id> --preset read_project --project <project-id>
+uv run pch revoke --data-dir ~/.pch --connection <id>
+uv run pch proposals --data-dir ~/.pch list
+uv run pch proposals --data-dir ~/.pch accept <proposal-id>
+uv run pch proposals --data-dir ~/.pch reject <proposal-id>
+uv run pch import-memories --data-dir ~/.pch --src ~/memory.json --provider chatgpt
+uv run pch contract --data-dir ~/.pch --purpose "plan dinner" --budget 8
+```
+
+`contract` is `compile`. `import-memories` is documented in [Import memories](../guides/import-memories.md).
 
 ---
 
@@ -27,12 +44,11 @@ uv run pch-sdk demo-agent --pair <code> --base http://127.0.0.1:8765 [--token]
 Headless API used by `make serve`:
 
 ```bash
-uv run pch-server --headless --reload --host 127.0.0.1 --port 8765 --data-dir ~/.pch
+uv run pch-server --reload --host 127.0.0.1 --port 8765 --data-dir ~/.pch
 ```
 
 | Flag | Default |
 |---|---|
-| `--headless` | off (flag exists for scripts; bind is always loopback) |
 | `--host` | `127.0.0.1` (non-loopback exits 2; `::1` coerced to `127.0.0.1`) |
 | `--port` | `8765` |
 | `--data-dir` | `~/.pch` |
@@ -96,7 +112,7 @@ Run `make help`.
 | Target | Meaning |
 |---|---|
 | `install` | `uv sync --all-packages` |
-| `serve` | `pch-server --headless --reload` |
+| `serve` | `pch-server --reload` |
 | `test` / `test-forbidden` / `test-perf` / `test-all` / `test-dist` | pytest (`test-dist` is packaged wheel install) |
 | `lint` / `format` | ruff |
 | `check-secrets` | tracked-path deny-list |

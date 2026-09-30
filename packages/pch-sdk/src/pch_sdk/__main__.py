@@ -10,9 +10,17 @@ from pch_sdk.local_cli import (
     archive_export,
     archive_import,
     compile_contract,
+    connection_revoke,
+    connections_list,
     evidence_add,
     evolve,
     experience_add,
+    grant_create,
+    import_memories,
+    link_mint,
+    proposals_decide,
+    proposals_list,
+    show_token,
     vault_init,
 )
 from pch_sdk.mcp_bridge import main as bridge_main
@@ -51,8 +59,15 @@ def main(argv: list[str] | None = None) -> None:
         "evidence-add",
         "evolve",
         "compile",
+        "contract",
         "archive-export",
         "archive-import",
+        "token",
+        "link",
+        "connections",
+        "grant",
+        "revoke",
+        "import-memories",
     ):
         command = sub.add_parser(name)
         command.add_argument("--data-dir", required=True)
@@ -82,17 +97,36 @@ def main(argv: list[str] | None = None) -> None:
             command.add_argument("--experience", default=None)
             command.add_argument("--evidence", default=None)
             command.add_argument("--condition", default=None)
-        if name == "compile":
+        if name in ("compile", "contract"):
             command.add_argument("--purpose", required=True)
             command.add_argument("--budget", type=int, default=None)
             command.add_argument("--as-of", dest="as_of", default=None)
             command.add_argument("--actor", default=None)
+        if name == "link":
+            command.add_argument("--name", required=True)
+        if name == "grant":
+            command.add_argument("--connection", required=True)
+            command.add_argument("--preset", required=True)
+            command.add_argument("--project", default=None)
+        if name == "revoke":
+            command.add_argument("--connection", required=True)
+        if name == "import-memories":
+            command.add_argument("--src", required=True)
+            command.add_argument("--provider", choices=("chatgpt", "claude"), default=None)
         if name == "archive-export":
             command.add_argument("--dest", required=True)
             command.add_argument("--passphrase", required=True)
         if name == "archive-import":
             command.add_argument("--src", required=True)
             command.add_argument("--passphrase", required=True)
+    proposals = sub.add_parser("proposals")
+    proposals.add_argument("--data-dir", required=True)
+    proposal_actions = proposals.add_subparsers(dest="proposal_action", required=True)
+    proposal_actions.add_parser("list")
+    accept = proposal_actions.add_parser("accept")
+    accept.add_argument("proposal_id")
+    reject = proposal_actions.add_parser("reject")
+    reject.add_argument("proposal_id")
     args = parser.parse_args(seq)
     if args.cmd == "demo-agent":
         demo(args.base, args.code, args.token or None)
@@ -112,8 +146,36 @@ def main(argv: list[str] | None = None) -> None:
     if args.cmd == "evolve":
         evolve(args.data_dir, args)
         return
-    if args.cmd == "compile":
+    if args.cmd in ("compile", "contract"):
         compile_contract(args.data_dir, args)
+        return
+    if args.cmd == "token":
+        show_token(args.data_dir)
+        return
+    if args.cmd == "link":
+        link_mint(args.data_dir, args.name)
+        return
+    if args.cmd == "connections":
+        connections_list(args.data_dir)
+        return
+    if args.cmd == "grant":
+        grant_create(args.data_dir, args)
+        return
+    if args.cmd == "revoke":
+        connection_revoke(args.data_dir, args.connection)
+        return
+    if args.cmd == "import-memories":
+        import_memories(args.data_dir, args)
+        return
+    if args.cmd == "proposals":
+        if args.proposal_action == "list":
+            proposals_list(args.data_dir)
+            return
+        proposals_decide(
+            args.data_dir,
+            args.proposal_id,
+            accept=args.proposal_action == "accept",
+        )
         return
     if args.cmd == "archive-export":
         archive_export(args.data_dir, args)

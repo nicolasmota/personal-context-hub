@@ -23,7 +23,7 @@ X-PCH-Token: <token>
 
 | Actor | Token source | Can |
 |---|---|---|
-| Owner | `POST /v1/setup` or `GET /v1/bootstrap` | Full vault, pairing, and export |
+| Owner | `owner.token` in the data directory, or `pch token` | Full vault, pairing, and export |
 | Connection | `POST /v1/connections/pair` | MCP tools and connection-scoped routes under its grants |
 
 Missing or revoked → error (`Revoked`). Owner-only routes use `require_owner`.
@@ -38,9 +38,9 @@ Idempotency middleware is enabled on REST. Repeat a mutating request with the sa
 
 | Method | Path | Auth | Notes |
 |---|---|---|---|
-| `POST` | `/v1/setup` | special | Body `{ "name"?: string, "restart"?: bool }` → `{ owner_token, … }` |
+| `POST` | `/v1/setup` | special | Body `{ "name"?: string, "restart"?: bool }`. The body does not include the owner token |
 | `GET` | `/v1/setup` | none | `{ initialized, encrypted, key_storage }` |
-| `GET` | `/v1/bootstrap` | none | Local UI: `{ owner_token, setup }` |
+| `GET` | `/v1/bootstrap` | none | `{ setup, sim_enabled, owner_credential }`. `owner_credential` is the filename `owner.token`, not the secret |
 | `GET` | `/v1/spaces` | owner | `[{ "id": "personal", "kind": "personal" }]` |
 
 ---
@@ -119,7 +119,7 @@ Assistant ids: `cursor`, `claude-code`, `claude-desktop`, `chatgpt`, `hermes`, `
 
 ---
 
-## Proposals, conflicts, relations, operational
+## Proposals, conflicts, relations
 
 | Method | Path |
 |---|---|
@@ -127,8 +127,6 @@ Assistant ids: `cursor`, `claude-code`, `claude-desktop`, `chatgpt`, `hermes`, `
 | `POST` | `/v1/memories/proposals/{id}/accept` `reject` |
 | `GET` | `/v1/conflicts` |
 | `POST` | `/v1/conflicts/{id}/resolve` |
-| `GET` | `/v1/operational-proposals` |
-| `POST` | `/v1/operational-proposals/{id}/accept` `reject` |
 | `POST` `GET` | `/v1/relations` |
 | `PATCH` `DELETE` | `/v1/relations/{id}` |
 | `GET` | `/v1/relation-proposals` |
@@ -136,15 +134,7 @@ Assistant ids: `cursor`, `claude-code`, `claude-desktop`, `chatgpt`, `hermes`, `
 
 ---
 
-## Actions and shared state
-
-| Method | Path |
-|---|---|
-| `POST` | `/v1/actions/intents` |
-| `GET` | `/v1/approvals` |
-| `POST` | `/v1/approvals/{intent_id}/decide` |
-| `POST` | `/v1/actions/intents/{intent_id}/result` |
-| `PUT` `GET` | `/v1/state/{key}` |
+Outward actions, shared-state handoff, and operational-proposal routes are not part of this server.
 
 ---
 

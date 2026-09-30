@@ -12,7 +12,7 @@ Install the core, create a vault, and compile a context contract. The checkout d
 ```bash
 make install
 uv run pch-sdk vault-init --data-dir /tmp/pch-demo --name Synthetic
-uv run pch-server --headless --host 127.0.0.1 --port 8765 --data-dir /tmp/pch-demo
+uv run pch-server --host 127.0.0.1 --port 8765 --data-dir /tmp/pch-demo
 ```
 
 Python 3.12 or newer is pulled in by uv. The Hub listens on `http://127.0.0.1:8765`. Full flags: [CLI](reference/cli.md).
@@ -30,7 +30,7 @@ The vault file is `~/.pch/vault.db`, encrypted with SQLCipher. The key lives in 
 The Hub does not scrape your chats. An assistant sees only what a **grant** allows. Cursor and Hermes are validated MCP runtimes; other runtimes ship a recipe.
 
 1. Start the loopback server (`make serve` or the `pch-server` command above).
-2. Read the owner token from `GET /v1/bootstrap` on that same machine. It stays on loopback.
+2. Read the owner token from `owner.token` in the data directory, or `uv run pch token --data-dir` that directory. The HTTP API does not return it.
 3. `POST /v1/connections/links` with that token to mint a pairing link.
 4. `POST /v1/connections/{id}/recipe` with `"assistant": "cursor"` or `"hermes"` and paste the snippet into that runtime’s user or machine MCP settings.
 5. `POST /v1/grants` for that connection.

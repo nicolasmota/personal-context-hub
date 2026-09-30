@@ -1,6 +1,6 @@
 # Personal Context Hub
 
-The hub maintains persistent personal state, evolves it from experience and evidence, and compiles the minimum sufficient context for the current situation. It is a local, user-owned context runtime for persistent agents. It is not a memory database.
+Personal Context Hub is a local consent vault for personal context. One encrypted record stays on this device. Each paired agent receives only the slice you granted, compiled into one [context contract](docs/spec/context-contract.md). It is not a memory database and not an agent framework.
 
 Your data lives on this device (default `~/.pch`), encrypted. The Hub binds **loopback only** (`127.0.0.1`) and is not a public server. Assistants connect over **MCP** and receive one context contract: the smallest sufficient slice for the task. Cursor and Hermes are validated MCP runtimes.
 
@@ -21,9 +21,12 @@ Python 3.12 or newer and [uv](https://docs.astral.sh/uv/). No Node toolchain, no
 
 ```bash
 make install
-uv run pch-sdk vault-init --data-dir /tmp/pch-demo --name Synthetic
-uv run pch-sdk compile --data-dir /tmp/pch-demo --purpose "what is in play" --budget 8
+uv run pch vault-init --data-dir /tmp/pch-demo --name Synthetic
+uv run pch import-memories --data-dir /tmp/pch-demo --src ./memory.json --provider chatgpt
+uv run pch compile --data-dir /tmp/pch-demo --purpose "what is in play" --budget 8
 ```
+
+`uv run pch-sdk` and `uv run pch` are the same command. From a checkout, that command is the owner door: proposals, grants, revoke, and import. The loopback API never returns the owner token; it is written to `owner.token` in the data directory, mode `0600`.
 
 `make serve` starts the loopback API on `127.0.0.1:8765`. Pair an assistant with the MCP bridge: [Pair an agent](docs/guides/pair-an-agent.md).
 

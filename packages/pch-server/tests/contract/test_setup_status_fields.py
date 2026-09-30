@@ -14,7 +14,7 @@ def test_create_app_without_hub_does_not_force_plaintext(tmp_path, monkeypatch):
     app = create_app(data_dir=tmp_path / "vault")
     try:
         assert app.state.hub.engine.encrypted is True
-        client = TestClient(app)
+        client = TestClient(app, base_url="http://127.0.0.1:8765")
         assert client.get("/v1/bootstrap").json()["sim_enabled"] is False
     finally:
         app.state.hub.close()

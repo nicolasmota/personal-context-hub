@@ -23,7 +23,8 @@ def setup(
         actor, is_owner = hub.actor_from_token(authorization.split(" ", 1)[-1])
         if not is_owner:
             raise Revoked()
-    return hub.setup(payload.get("name", "Me"), restart=bool(payload.get("restart")))
+    result = hub.setup(payload.get("name", "Me"), restart=bool(payload.get("restart")))
+    return {key: value for key, value in result.items() if key != "owner_token"}
 
 
 @router.get("/setup")
@@ -38,9 +39,9 @@ def spaces(_owner: str = Depends(require_owner)) -> list[dict]:
 
 @router.get("/bootstrap")
 def bootstrap(request: Request, hub: Hub = Depends(get_hub)) -> dict:
-    """Loopback bootstrap: owner token lives in the local process only."""
+    """Loopback status only. The owner credential is a mode-0600 file, not this body."""
     return {
-        "owner_token": hub.owner_token,
         "setup": hub.setup_status(),
         "sim_enabled": bool(getattr(request.app.state, "sim_enabled", False)),
+        "owner_credential": "owner.token",
     }

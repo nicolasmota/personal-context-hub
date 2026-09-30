@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 from pch_archive.export import export_archive
 from pch_archive.import_ import IntegrityError, UnsupportedArchive, import_archive
 from pch_core.errors import ValidationFailed
+from pch_core.ingest.vendor_memory import import_vendor_file
 from pch_core.service import OWNER, Hub
 
 
@@ -16,7 +18,7 @@ def _print(payload: dict) -> None:
 def _hub(data_dir: str) -> Hub:
     path = Path(data_dir)
     path.mkdir(parents=True, exist_ok=True)
-    return Hub(path, plain=True)
+    return Hub(path, plain=os.environ.get("PCH_PLAIN_SQLITE") == "1")
 
 
 def vault_init(data_dir: str, name: str) -> None:
@@ -115,6 +117,100 @@ def archive_import(data_dir: str, args) -> None:
         try:
             result = import_archive(hub, Path(args.src), args.passphrase)
         except (UnsupportedArchive, IntegrityError) as exc:
+            raise SystemExit(str(exc)) from exc
+        _print(result)
+    finally:
+        hub.close()
+
+
+def show_token(data_dir: str) -> None:
+    hub = _hub(data_dir)
+    try:
+        _print({"owner_credential": "owner.token", "owner_token": hub.owner_token})
+    finally:
+        hub.close()
+
+
+def proposals_list(data_dir: str) -> None:
+    hub = _hub(data_dir)
+    try:
+        rows = hub.list("proposal")
+        _print(
+            {
+                "proposals": [
+                    {
+                        "id": row["id"],
+                        "status": row.get("status"),
+                        "statement": row.get("statement"),
+                    }
+                    for row in rows
+                ]
+            }
+        )
+    finally:
+        hub.close()
+
+
+def proposals_decide(data_dir: str, proposal_id: str, *, accept: bool) -> None:
+    hub = _hub(data_dir)
+    try:
+        _print(hub.decide_proposal(proposal_id, accept))
+    finally:
+        hub.close()
+
+
+def link_mint(data_dir: str, name: str) -> None:
+    hub = _hub(data_dir)
+    try:
+        _print(hub.mint_link(name))
+    finally:
+        hub.close()
+
+
+def connections_list(data_dir: str) -> None:
+    hub = _hub(data_dir)
+    try:
+        _print(
+            {
+                "connections": [
+                    {
+                        "id": row["id"],
+                        "name": row.get("name"),
+                        "status": row.get("status"),
+                    }
+                    for row in hub.connections()
+                ]
+            }
+        )
+    finally:
+        hub.close()
+
+
+def grant_create(data_dir: str, args) -> None:
+    hub = _hub(data_dir)
+    try:
+        selectors = {"project": args.project} if args.project else None
+        stored = hub.create_grant(args.connection, args.preset, None, selectors)
+        _print({"id": stored["id"], "summary_human": stored.get("summary_human")})
+    finally:
+        hub.close()
+
+
+def connection_revoke(data_dir: str, connection_id: str) -> None:
+    hub = _hub(data_dir)
+    try:
+        stored = hub.revoke_connection(connection_id)
+        _print({"id": stored["id"], "status": stored.get("status")})
+    finally:
+        hub.close()
+
+
+def import_memories(data_dir: str, args) -> None:
+    hub = _hub(data_dir)
+    try:
+        try:
+            result = import_vendor_file(hub, Path(args.src), provider=args.provider)
+        except ValueError as exc:
             raise SystemExit(str(exc)) from exc
         _print(result)
     finally:

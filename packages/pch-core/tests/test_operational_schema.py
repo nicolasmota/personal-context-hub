@@ -47,9 +47,9 @@ def test_operational_fields_default_null():
 
 
 def test_status_independent_of_phase():
-    project = _project(status=ProjectStatus.ACTIVE, operational_phase=OperationalPhase.COMPARING_ITINERARIES)
+    project = _project(status=ProjectStatus.ACTIVE, operational_phase=OperationalPhase.DECIDING)
     assert project.status == ProjectStatus.ACTIVE
-    assert project.operational_phase == OperationalPhase.COMPARING_ITINERARIES
+    assert project.operational_phase == OperationalPhase.DECIDING
 
 
 def test_unknown_phase_rejected():
@@ -77,9 +77,9 @@ def test_situation_ref_optional_fields():
         project_id="prj_1",
         title="Europe Trip",
         status="active",
-        operational_phase="comparing_itineraries",
+        operational_phase="deciding",
         current_step="rank two remaining itineraries",
         situation_intent="choose next itinerary",
     )
-    assert filled.operational_phase == "comparing_itineraries"
+    assert filled.operational_phase == "deciding"
     assert filled.status == "active"

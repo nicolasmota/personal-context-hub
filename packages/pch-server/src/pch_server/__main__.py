@@ -55,7 +55,6 @@ def run_server(host: str, port: int, *, reload: bool) -> None:
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="pch-server")
-    parser.add_argument("--headless", action="store_true")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=int(os.environ.get("PCH_PORT", "8765")))
     parser.add_argument(

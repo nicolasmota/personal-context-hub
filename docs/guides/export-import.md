@@ -11,7 +11,7 @@ uv run pch-sdk archive-import --data-dir "$PCH_NEXT" --src "$PCH_DATA/state.pch"
 
 ## Owner HTTP
 
-The same archive is available on loopback. `GET /v1/bootstrap` returns the owner token.
+The same archive is available on loopback. Authenticate with the owner token from `owner.token` in the data directory.
 
 ```http
 POST /v1/export

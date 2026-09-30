@@ -14,7 +14,7 @@ def test_owner_situation_anchors_seeded_trip(client):
             "title": "Europe Trip",
             "charter": "Plan a 10-day travel trip for two.",
             "status": "active",
-            "operational_phase": "comparing_itineraries",
+            "operational_phase": "deciding",
             "situation_intent": "choose the city",
         },
     )
@@ -29,7 +29,7 @@ def test_owner_situation_anchors_seeded_trip(client):
     body = res.json()
     assert body["project"]["id"] == pid
     assert body["contract"]["situation"]["title"] == "Europe Trip"
-    assert body["contract"]["situation"]["operational_phase"] == "comparing_itineraries"
+    assert body["contract"]["situation"]["operational_phase"] == "deciding"
     assert body["contract"]["purpose"] == "what matters now"
 
 

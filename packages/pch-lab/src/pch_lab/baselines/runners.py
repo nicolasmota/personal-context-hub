@@ -9,6 +9,9 @@ from pch_core.service import OWNER, Hub
 
 APPROACHES = ("no_stored_context", "raw_retrieval", "agent_owned_memory", "pch")
 
+# Plug an external memory library in here. The scorer does not special-case pch.
+RENDERERS: dict[str, Any] = {}
+
 
 def _run_pch(scenario: dict[str, Any]) -> str:
     root = Path(tempfile.mkdtemp())
@@ -73,6 +76,8 @@ def _run_pch(scenario: dict[str, Any]) -> str:
 
 
 def render(scenario: dict[str, Any], approach: str) -> str:
+    if approach in RENDERERS:
+        return RENDERERS[approach](scenario)
     if approach == "no_stored_context":
         return ""
     if approach == "raw_retrieval":
@@ -84,24 +89,60 @@ def render(scenario: dict[str, Any], approach: str) -> str:
     raise KeyError(approach)
 
 
+def _required(scenario: dict[str, Any]) -> list[str]:
+    return list((scenario.get("expected_context") or {}).get("must_include") or [])
+
+
+def _superseded_values(scenario: dict[str, Any]) -> list[str]:
+    preferences = {
+        str(row["key"]): str(row["value"])
+        for row in (scenario.get("user_state") or {}).get("preferences") or []
+    }
+    stale: list[str] = []
+    for event in scenario.get("events") or []:
+        if event.get("type") != "evolve" or event.get("condition"):
+            continue
+        previous = preferences.get(str(event.get("subject")))
+        if previous and previous != event.get("value"):
+            stale.append(previous)
+    return stale
+
+
 def score(scenario: dict[str, Any], approach: str, *, latency_ms: float) -> dict[str, Any]:
+    """Score rendered text. The approach name is not an input to any metric."""
     text = render(scenario, approach)
     secret = scenario.get("secret")
     leakage = bool(secret and secret in text)
-    required = (scenario.get("expected_context") or {}).get("must_include") or []
-    success = approach == "pch" and all(item in text for item in required) and not leakage
+    required = _required(scenario)
+    present = all(item in text for item in required)
+    success = present and not leakage
+    outcome = scenario.get("expected_outcome") or {}
+    live = outcome.get("live")
+    stale = _superseded_values(scenario)
+    if live:
+        temporal = str(live) in text and all(old not in text for old in stale)
+    elif stale:
+        temporal = present and all(old not in text for old in stale)
+    else:
+        temporal = present and not leakage
+    conflict_marker = outcome.get("conflict")
+    if conflict_marker:
+        conflict_handling = str(conflict_marker) in text
+    else:
+        conflict_handling = True
+    provenance = any(marker in text for marker in ('"citation"', '"authority"', '"provenance"'))
     return {
         "scenario_id": scenario["id"],
         "approach": approach,
         "task_success": success,
         "context_relevance": success,
         "sufficiency": success,
-        "minimization": not leakage,
-        "temporal_accuracy": success,
-        "conflict_handling": success or approach != "pch",
-        "provenance_accuracy": approach == "pch",
+        "minimization": success,
+        "temporal_accuracy": temporal,
+        "conflict_handling": conflict_handling,
+        "provenance_accuracy": provenance,
         "privacy_leakage": leakage,
-        "token_use": 0,
+        "token_use": len(text) // 4,
         "latency_ms": latency_ms,
         "cost": 0,
     }

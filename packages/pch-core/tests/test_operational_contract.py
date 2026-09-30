@@ -8,7 +8,7 @@ def test_phase_in_situation_not_shared_state(hub):
     hub.patch(
         pid,
         {
-            "operational_phase": "comparing_itineraries",
+            "operational_phase": "deciding",
             "current_step": "rank two remaining itineraries",
             "situation_intent": "choose next itinerary",
         },
@@ -16,11 +16,13 @@ def test_phase_in_situation_not_shared_state(hub):
     )
     contract = hub.get_context_contract(OWNER, "continue planning the trip")
     situation = contract["situation"]
-    assert situation["operational_phase"] == "comparing_itineraries"
+    assert situation["operational_phase"] == "deciding"
     assert situation["current_step"] == "rank two remaining itineraries"
     assert situation["situation_intent"] == "choose next itinerary"
     assert situation["status"] == "active"
-    handoffs = [item["body"] for item in contract["state"] if item["body"].get("key") == "trip.phase"]
+    handoffs = [
+        item["body"] for item in contract["state"] if item["body"].get("key") == "trip.phase"
+    ]
     assert handoffs
     assert handoffs[0]["value"] == "comparing itineraries"
     assert situation["operational_phase"] != handoffs[0]["value"]
@@ -34,7 +36,7 @@ def test_unset_assembles_without_inventing(hub):
     assert contract["situation"]["situation_intent"] is None
     assert contract["situation"]["current_step"] is None
     blob = str(contract).lower()
-    assert "comparing_itineraries" not in blob
+    assert "deciding" not in blob
 
 
 def test_intent_not_action_intent(hub):
@@ -60,18 +62,18 @@ def test_patch_then_next_contract(hub):
     pid = seed["project"]["id"]
     hub.patch(
         pid,
-        {"operational_phase": "comparing_itineraries", "situation_intent": "choose next itinerary"},
+        {"operational_phase": "deciding", "situation_intent": "choose next itinerary"},
         None,
     )
     first = hub.get_context_contract(OWNER, "continue planning the trip")
-    assert first["situation"]["operational_phase"] == "comparing_itineraries"
+    assert first["situation"]["operational_phase"] == "deciding"
     hub.patch(
         pid,
-        {"operational_phase": "choosing_hotel", "situation_intent": "pick a hotel tonight"},
+        {"operational_phase": "executing", "situation_intent": "pick a hotel tonight"},
         None,
     )
     second = hub.get_context_contract(OWNER, "continue planning the trip")
-    assert second["situation"]["operational_phase"] == "choosing_hotel"
+    assert second["situation"]["operational_phase"] == "executing"
     assert second["situation"]["situation_intent"] == "pick a hotel tonight"
     assert second["situation"]["situation_intent"] != "choose next itinerary"
 
@@ -83,7 +85,7 @@ def test_goal_overlay_step_and_intent(hub):
     hub.patch(
         pid,
         {
-            "operational_phase": "comparing_itineraries",
+            "operational_phase": "deciding",
             "current_step": "from project",
             "situation_intent": "from project",
         },
@@ -91,13 +93,14 @@ def test_goal_overlay_step_and_intent(hub):
     )
     hub.patch(
         gid,
-        {"current_step": "rank two remaining itineraries", "situation_intent": "choose next itinerary"},
+        {
+            "current_step": "rank two remaining itineraries",
+            "situation_intent": "choose next itinerary",
+        },
         None,
     )
-    contract = hub.get_context_contract(
-        OWNER, "continue planning the trip", subject_ref=gid
-    )
+    contract = hub.get_context_contract(OWNER, "continue planning the trip", subject_ref=gid)
     assert contract["situation"]["project_id"] == pid
-    assert contract["situation"]["operational_phase"] == "comparing_itineraries"
+    assert contract["situation"]["operational_phase"] == "deciding"
     assert contract["situation"]["current_step"] == "rank two remaining itineraries"
     assert contract["situation"]["situation_intent"] == "choose next itinerary"

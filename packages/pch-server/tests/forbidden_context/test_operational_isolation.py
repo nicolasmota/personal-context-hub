@@ -9,7 +9,7 @@ def _seed_world(client):
             "charter": "Plan a 10-day travel trip for two",
             "status": "active",
             "classification": "personal",
-            "operational_phase": "comparing_itineraries",
+            "operational_phase": "deciding",
             "current_step": "rank two remaining itineraries",
             "situation_intent": "choose next itinerary",
         },
@@ -62,12 +62,12 @@ def test_work_scope_omits_personal_phase(client):
     ).json()
     situation = body.get("situation")
     if situation:
-        assert situation.get("operational_phase") != "comparing_itineraries"
+        assert situation.get("operational_phase") != "deciding"
         assert situation.get("situation_intent") != "choose next itinerary"
         assert situation.get("project_id") != trip["id"]
         assert "Europe" not in (situation.get("title") or "")
     for candidate in body.get("candidates") or []:
-        assert candidate.get("operational_phase") != "comparing_itineraries"
+        assert candidate.get("operational_phase") != "deciding"
         assert "Europe" not in (candidate.get("title") or "")
         assert candidate.get("project_id") != trip["id"]
     dumped = str(body)

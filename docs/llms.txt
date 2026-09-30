@@ -20,6 +20,8 @@ Docs: https://nicolasmota.github.io/personal-context-hub/
 - [Non-goals](https://nicolasmota.github.io/personal-context-hub/non-goals.html): what this repository refuses to be
 - [Research](https://nicolasmota.github.io/personal-context-hub/research.html): hypotheses, baselines, synthetic benchmark
 - [Export and import](https://nicolasmota.github.io/personal-context-hub/guides/export-import.html): portable personal state `0.2.0`
+- [Import memories](https://nicolasmota.github.io/personal-context-hub/guides/import-memories.html): ChatGPT `memory.json` and Claude `memories.json`, untrusted
+- [Context contract](https://nicolasmota.github.io/personal-context-hub/spec/context-contract.html): normative envelope
 
 ## Reference
 

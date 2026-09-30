@@ -20,10 +20,13 @@ def _seed_trip(client):
             "title": "Europe Trip",
             "charter": "Plan a 10-day travel trip for two. Candidates: Amsterdam and London.",
             "status": "active",
-            "operational_phase": "comparing_itineraries",
+            "operational_phase": "deciding",
         },
     ).json()
-    client.post("/v1/goals", json={"title": "Plan 10-day trip for two", "status": "open", "project_id": prj["id"]})
+    client.post(
+        "/v1/goals",
+        json={"title": "Plan 10-day trip for two", "status": "open", "project_id": prj["id"]},
+    )
     return prj
 
 
@@ -75,7 +78,7 @@ def test_revoke_does_not_delete_hub_objects(client):
     assert any(row["id"] == trip["id"] for row in listed)
     live = client.get(f"/v1/projects/{trip['id']}").json()
     assert live["title"] == "Europe Trip"
-    assert live.get("operational_phase") == "comparing_itineraries"
+    assert live.get("operational_phase") == "deciding"
     denied = client.post(
         "/v1/mcp/tools/get_context_contract",
         headers={"Authorization": f"Bearer {agent['token']}"},

@@ -14,9 +14,9 @@ class ProjectStatus(StrEnum):
 
 class OperationalPhase(StrEnum):
     PLANNING = "planning"
-    COMPARING_ITINERARIES = "comparing_itineraries"
-    WAITING_FOR_APPROVAL = "waiting_for_approval"
-    CHOOSING_HOTEL = "choosing_hotel"
+    DECIDING = "deciding"
+    WAITING = "waiting"
+    EXECUTING = "executing"
     OTHER = "other"
 
 

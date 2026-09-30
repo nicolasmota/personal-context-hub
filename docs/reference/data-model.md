@@ -38,7 +38,7 @@ Changing a preference **supersedes** rather than silently overwriting. Use `as_o
 
 **Project** — `title`, `status` (`active` \| `paused` \| `done` \| `archived`), `charter`, `stakeholders[]`, plus operational fields:
 
-- `operational_phase`: `planning` \| `comparing_itineraries` \| `waiting_for_approval` \| `choosing_hotel` \| `other`
+- `operational_phase`: `planning` \| `deciding` \| `waiting` \| `executing` \| `other`
 - `current_step` (≤ 200)
 - `situation_intent` (≤ 200)
 

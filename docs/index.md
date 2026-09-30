@@ -14,6 +14,8 @@ This site is the product documentation. Source: [github.com/nicolasmota/personal
 | Read what this repository refuses to be | [Non-goals](non-goals.md) |
 | See the hypotheses and the benchmark | [Research](research.md) |
 | Move portable personal state | [Export and import](guides/export-import.md) |
+| Import ChatGPT or Claude memories | [Import memories](guides/import-memories.md) |
+| Read the contract spec | [Context contract](spec/context-contract.md) |
 | Run the evaluation harness | [Developing](develop.md) |
 | Pair an assistant over MCP | [Pair an agent](guides/pair-an-agent.md) |
 
@@ -22,6 +24,8 @@ This site is the product documentation. Source: [github.com/nicolasmota/personal
 - [Pair an agent](guides/pair-an-agent.md) — pairing link, grant, MCP recipe
 - [Situation package](guides/situation-package.md) — `get_context_contract`
 - [Export and import](guides/export-import.md) — portable personal state
+- [Import memories](guides/import-memories.md) — ChatGPT and Claude, untrusted
+- [Context contract](spec/context-contract.md) — normative envelope
 
 ## Reference
 

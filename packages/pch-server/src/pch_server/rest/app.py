@@ -4,22 +4,20 @@ import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import Depends, FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Depends, FastAPI, HTTPException
 from pch_core.errors import PclError
 from pch_core.service import Hub
 
 from pch_server.mcp.server import ToolHub
 from pch_server.rest.auth import current_actor, get_hub
 from pch_server.rest.errors import pcl_error_handler
+from pch_server.rest.hostguard import reject_non_loopback_host
 from pch_server.rest.idempotency import IdempotencyMiddleware
 from pch_server.rest.routers import (
-    actions,
     briefs,
     connections,
     events,
     memories,
-    operational,
     portability,
     projects,
     proposals,
@@ -28,7 +26,6 @@ from pch_server.rest.routers import (
     setup,
     sim,
     situation,
-    state,
     versions,
 )
 
@@ -83,27 +80,19 @@ def create_app(
     app.state.mcp = ToolHub(hub)
     app.add_exception_handler(PclError, pcl_error_handler)
     app.add_middleware(IdempotencyMiddleware)
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+    app.middleware("http")(reject_non_loopback_host)
     for router in (
         setup.router,
         search.router,
         briefs.router,
         connections.router,
         proposals.router,
-        state.router,
-        actions.router,
         events.router,
         portability.router,
         versions.router,
         memories.router,
         projects.router,
         situation.router,
-        operational.router,
         relations.router,
         sim.router,
     ):
@@ -117,7 +106,10 @@ def create_app(
         actor: tuple[str, bool] = Depends(current_actor),
     ) -> dict:
         ident, is_owner = actor
-        return app.state.mcp.call(name, "owner" if is_owner else ident, **(body or {}))
+        try:
+            return app.state.mcp.call(name, "owner" if is_owner else ident, **(body or {}))
+        except KeyError as exc:
+            raise HTTPException(status_code=404, detail=f"unknown tool {name}") from exc
 
     @app.get("/v1/mcp/resources")
     def mcp_resource(

@@ -61,10 +61,6 @@ def _seed_trip(client):
             "project_id": pid,
         },
     )
-    client.put(
-        "/v1/state/trip.phase",
-        json={"value": "comparing itineraries", "ttl_seconds": 86400, "visibility": "shared"},
-    )
     return prj
 
 
@@ -159,11 +155,11 @@ def test_as_of_before_supersede(client):
     assert "like" not in spicy
 
 
-def test_shared_state_not_renamed(client):
+def test_contract_keeps_a_state_list(client):
     _seed_trip(client)
     body = client.post(
         "/v1/mcp/tools/get_context_contract", json={"purpose": "continue planning the trip"}
     ).json()
-    assert any(s["body"].get("key") == "trip.phase" for s in body["state"])
+    assert isinstance(body["state"], list)
     assert "shared_state" not in body
     assert "ActionIntent" not in str(body)

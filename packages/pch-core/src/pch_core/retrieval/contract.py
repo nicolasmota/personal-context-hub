@@ -13,6 +13,7 @@ from pch_core.ids import new_id
 from pch_core.policy.evaluator import Decision, PolicyInput, PolicyResult, evaluate
 from pch_core.retrieval.ask import significant_tokens
 from pch_core.retrieval.home import pick_home_project
+from pch_core.retrieval.retriever import PurposeRetriever, TokenOverlapRetriever
 from pch_core.retrieval.search import DefaultRanker, citations_for
 from pch_core.schema.contract import (
     Citation,
@@ -96,9 +97,8 @@ def _blob(obj: dict[str, Any]) -> str:
     ).lower()
 
 
-def _score(obj: dict[str, Any], tokens: list[str]) -> int:
-    blob = _blob(obj)
-    return sum(1 for tok in tokens if tok in blob)
+def _relevance(retriever: PurposeRetriever, obj: dict[str, Any], purpose: str) -> float:
+    return retriever.relevance(_blob(obj), purpose)
 
 
 def _summary(obj: dict[str, Any]) -> str:
@@ -211,8 +211,10 @@ def assemble_contract(
     is_owner: bool,
     grants: list[Grant],
     cap_for: Callable[[str], str] | None = None,
+    retriever: PurposeRetriever | None = None,
 ) -> ContextContract:
     cap_for = cap_for or _cap_default
+    retriever = retriever or TokenOverlapRetriever()
     tokens = significant_tokens(query.purpose)
     eval_at = parse_instant(query.as_of) if query.as_of else datetime.now(UTC)
     omission_counts: dict[OmissionCategory, int] = defaultdict(int)
@@ -261,21 +263,21 @@ def assemble_contract(
                 hinted = None
                 goal_overlay = None
 
-    scores: dict[str, int] = {}
+    scores: dict[str, float] = {}
     for project in projects:
-        scores[project["id"]] = _score(project, tokens)
+        scores[project["id"]] = _relevance(retriever, project, query.purpose)
     for goal in goals:
         pid = goal.get("project_id")
         if pid:
-            scores[pid] = scores.get(pid, 0) + _score(goal, tokens)
+            scores[pid] = scores.get(pid, 0) + _relevance(retriever, goal, query.purpose)
     for memory in store.list("memory"):
         pid = memory.get("project_id")
         if pid and not memory.get("tombstone") and row_is_current(memory, eval_at):
-            scores[pid] = scores.get(pid, 0) + _score(memory, tokens)
+            scores[pid] = scores.get(pid, 0) + _relevance(retriever, memory, query.purpose)
     for decision in store.list("decision"):
         pid = decision.get("project_id")
         if pid:
-            scores[pid] = scores.get(pid, 0) + _score(decision, tokens)
+            scores[pid] = scores.get(pid, 0) + _relevance(retriever, decision, query.purpose)
 
     selected: dict[str, Any] | None = None
     candidates: list[SituationRef] = []
