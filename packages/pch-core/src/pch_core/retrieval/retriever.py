@@ -1,8 +1,14 @@
 from __future__ import annotations
 
-from typing import Protocol
+from typing import Any, Protocol
 
 from pch_core.retrieval.ask import significant_tokens
+from pch_core.retrieval.candidate import (
+    RetrievalCandidate,
+    candidate_from_row,
+    dedupe_candidates,
+    score_text,
+)
 
 
 class PurposeRetriever(Protocol):
@@ -23,3 +29,22 @@ class TokenOverlapRetriever:
         blob = text.lower()
         hits = sum(1 for token in tokens if token in blob)
         return hits / len(tokens)
+
+    def find_candidates(
+        self,
+        rows: list[dict[str, Any]],
+        purpose: str,
+        *,
+        limit: int | None = None,
+    ) -> list[RetrievalCandidate]:
+        found: list[RetrievalCandidate] = []
+        for row in rows:
+            relevance = self.relevance(score_text(row), purpose)
+            if relevance <= 0:
+                continue
+            found.append(candidate_from_row(row, purpose, relevance))
+        found.sort(key=lambda item: (-item.relevance, item.item_id))
+        deduped = dedupe_candidates(found)
+        if limit is None:
+            return deduped
+        return deduped[:limit]

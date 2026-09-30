@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import time
 from collections import defaultdict
 from collections.abc import Callable
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
 
@@ -12,6 +14,12 @@ from pch_core.errors import NotFound
 from pch_core.ids import new_id
 from pch_core.policy.evaluator import Decision, PolicyInput, PolicyResult, evaluate
 from pch_core.retrieval.ask import significant_tokens
+from pch_core.retrieval.candidate import (
+    RetrievalCandidate,
+    candidate_from_row,
+    dedupe_candidates,
+    score_text,
+)
 from pch_core.retrieval.home import pick_home_project
 from pch_core.retrieval.retriever import PurposeRetriever, TokenOverlapRetriever
 from pch_core.retrieval.search import DefaultRanker, citations_for
@@ -40,6 +48,18 @@ CAPTURE_HINTS = [
     "If they stated a durable preference, decision, goal, or life fact, call propose_memory; it is not canonical until they accept.",
     "If this package is empty or lists omissions, say so. Do not invent personal facts.",
 ]
+
+_CANDIDATE_TYPES = (
+    "project",
+    "goal",
+    "memory",
+    "decision",
+    "preference",
+    "commitment",
+    "shared_state",
+)
+_CANONICAL_TYPES = frozenset({"memory", "preference"})
+_NON_CANONICAL_AUTHORITY = frozenset({"proposed", "agent_inferred"})
 
 _GENERIC_PURPOSE_TOKENS = frozenset(
     {
@@ -91,10 +111,37 @@ def _overlaps_purpose(obj: dict[str, Any], tokens: list[str]) -> bool:
 
 
 def _blob(obj: dict[str, Any]) -> str:
-    return " ".join(
-        str(obj.get(k) or "")
-        for k in ("title", "charter", "statement", "outcome", "rationale", "key", "name")
-    ).lower()
+    return score_text(obj)
+
+
+@dataclass
+class CompilationTrace:
+    candidates: list[RetrievalCandidate]
+    contract: ContextContract
+    find_ms: float
+
+
+def _emit_candidates(
+    retriever: PurposeRetriever, rows: list[dict[str, Any]], purpose: str
+) -> list[RetrievalCandidate]:
+    method = getattr(retriever, "find_candidates", None)
+    if callable(method):
+        found = list(method(rows, purpose))
+    else:
+        found = []
+        for row in rows:
+            relevance = float(retriever.relevance(score_text(row), purpose))
+            if relevance <= 0:
+                continue
+            found.append(candidate_from_row(row, purpose, relevance))
+        found.sort(key=lambda item: (-item.relevance, item.item_id))
+    normalized: list[RetrievalCandidate] = []
+    for item in found:
+        if isinstance(item, RetrievalCandidate):
+            normalized.append(item)
+            continue
+        normalized.append(RetrievalCandidate.model_validate(item))
+    return dedupe_candidates(normalized)
 
 
 def _relevance(retriever: PurposeRetriever, obj: dict[str, Any], purpose: str) -> float:
@@ -213,8 +260,35 @@ def assemble_contract(
     cap_for: Callable[[str], str] | None = None,
     retriever: PurposeRetriever | None = None,
 ) -> ContextContract:
+    return assemble_traced(
+        store,
+        query,
+        actor=actor,
+        is_owner=is_owner,
+        grants=grants,
+        cap_for=cap_for,
+        retriever=retriever,
+    ).contract
+
+
+def assemble_traced(
+    store: ObjectStore,
+    query: ContextQuery,
+    *,
+    actor: str,
+    is_owner: bool,
+    grants: list[Grant],
+    cap_for: Callable[[str], str] | None = None,
+    retriever: PurposeRetriever | None = None,
+) -> CompilationTrace:
     cap_for = cap_for or _cap_default
     retriever = retriever or TokenOverlapRetriever()
+    rows: list[dict[str, Any]] = []
+    for type_ in _CANDIDATE_TYPES:
+        rows.extend(store.list(type_))
+    started = time.perf_counter()
+    found = _emit_candidates(retriever, rows, query.purpose)
+    find_ms = (time.perf_counter() - started) * 1000
     tokens = significant_tokens(query.purpose)
     eval_at = parse_instant(query.as_of) if query.as_of else datetime.now(UTC)
     omission_counts: dict[OmissionCategory, int] = defaultdict(int)
@@ -237,6 +311,12 @@ def assemble_contract(
         )
 
     def allowed(obj: dict[str, Any], resource_project: str | None) -> bool:
+        if (
+            str(obj.get("type") or "") in _CANONICAL_TYPES
+            and str(obj.get("authority") or "") in _NON_CANONICAL_AUTHORITY
+        ):
+            omission_counts[OmissionCategory.POLICY_EXCLUSION] += 1
+            return False
         result = decide(obj, resource_project)
         if result.decision == Decision.ALLOW:
             return True
@@ -280,7 +360,7 @@ def assemble_contract(
             scores[pid] = scores.get(pid, 0) + _relevance(retriever, decision, query.purpose)
 
     selected: dict[str, Any] | None = None
-    candidates: list[SituationRef] = []
+    situation_ties: list[SituationRef] = []
     if hinted:
         selected = hinted
     elif tokens:
@@ -290,9 +370,9 @@ def assemble_contract(
         if len(in_scope) == 1:
             selected = in_scope[0]
         elif len(in_scope) > 1:
-            candidates = [_situation_ref(p) for p in sorted(in_scope, key=lambda row: row["id"])]
+            situation_ties = [_situation_ref(p) for p in sorted(in_scope, key=lambda row: row["id"])]
 
-    if selected is None and not candidates and _purpose_is_generic(tokens):
+    if selected is None and not situation_ties and _purpose_is_generic(tokens):
         live = pick_home_project(projects)
         if live and allowed(live, live["id"]):
             selected = live
@@ -436,6 +516,49 @@ def assemble_contract(
                 )
             )
 
+    present_ids = {
+        item.ref.id
+        for item in (
+            *goals_out,
+            *prefs_out,
+            *mems_out,
+            *decs_out,
+            *constraints_out,
+            *state_out,
+        )
+    }
+    resolved_buckets: dict[str, tuple[list[ContractItem], int]] = {
+        "goal": (goals_out, cat_cap),
+        "preference": (prefs_out, cat_cap),
+        "memory": (mems_out, cap),
+        "decision": (decs_out, cat_cap),
+        "commitment": (constraints_out, cat_cap),
+        "shared_state": (state_out, cat_cap),
+    }
+    for conflict in store.list("state_conflict"):
+        if conflict.get("status") != "closed" or conflict.get("resolution") == "unresolved":
+            continue
+        for claim_id in conflict.get("claim_ids") or []:
+            if claim_id in present_ids:
+                continue
+            try:
+                claim = store.get(claim_id)
+            except NotFound:
+                continue
+            if not row_is_current(claim, eval_at):
+                continue
+            if not allowed(claim, _resource_project(claim)):
+                continue
+            bucket = resolved_buckets.get(str(claim.get("type") or ""))
+            if bucket is None:
+                continue
+            items, limit = bucket
+            if len(items) >= limit:
+                omission_counts[OmissionCategory.OVER_CAP] += 1
+                continue
+            items.append(to_item(claim))
+            present_ids.add(claim["id"])
+
     conflicts: list[ConflictPair] = []
     by_key: dict[str, list[str]] = defaultdict(list)
     for item in prefs_out:
@@ -489,12 +612,12 @@ def assemble_contract(
     presented = {item.ref.id for item in (*goals_out, *decs_out, *constraints_out)}
     sufficient = situation is not None and required_ids <= presented
 
-    return finalize_contract(
+    contract = finalize_contract(
         ContextContract(
             contract_id=new_id("contract"),
             purpose=query.purpose,
             situation=situation,
-            candidates=candidates,
+            candidates=situation_ties,
             goals=goals_out,
             preferences=prefs_out,
             memories=mems_out,
@@ -514,3 +637,4 @@ def assemble_contract(
         store,
         query,
     )
+    return CompilationTrace(candidates=found, contract=contract, find_ms=find_ms)

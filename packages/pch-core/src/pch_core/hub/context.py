@@ -8,7 +8,7 @@ from pch_core.policy.evaluator import PolicyInput, evaluate
 from pch_core.retrieval.ask import compose as compose_ask
 from pch_core.retrieval.ask import retrieve as retrieve_ask
 from pch_core.retrieval.briefs import project_brief
-from pch_core.retrieval.contract import assemble_contract
+from pch_core.retrieval.contract import assemble_traced
 from pch_core.retrieval.home import HOME_PURPOSE, pick_home_project
 from pch_core.schema.audit import EventKind
 from pch_core.schema.contract import ContextQuery
@@ -121,7 +121,7 @@ class ContextMixin:
                 raise PolicyDenied("no active grants")
         else:
             grants = []
-        contract = assemble_contract(
+        traced = assemble_traced(
             self.store,
             query,
             actor=actor,
@@ -130,6 +130,11 @@ class ContextMixin:
             cap_for=self._cap_for,
             retriever=getattr(self, "retriever", None),
         )
+        self.last_compilation_trace = {
+            "candidates": [item.model_dump(mode="json") for item in traced.candidates],
+            "find_ms": traced.find_ms,
+        }
+        contract = traced.contract
         item_refs = []
         for section in (
             contract.goals,

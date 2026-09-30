@@ -7,13 +7,15 @@ from typing import Any
 
 from pch_core.service import OWNER, Hub
 
+from pch_lab.baselines.judgments import compilation_judgment, retrieval_judgment, superseded_values
+
 APPROACHES = ("no_stored_context", "raw_retrieval", "agent_owned_memory", "pch")
 
 # Plug an external memory library in here. The scorer does not special-case pch.
 RENDERERS: dict[str, Any] = {}
 
 
-def _run_pch(scenario: dict[str, Any]) -> str:
+def _compile_pch(scenario: dict[str, Any]) -> tuple[str, dict[str, Any], dict[str, Any]]:
     root = Path(tempfile.mkdtemp())
     hub = Hub(root, plain=True)
     try:
@@ -70,9 +72,15 @@ def _run_pch(scenario: dict[str, Any]) -> str:
             subject_ref=anchor,
             max_items=task.get("budget"),
         )
-        return json.dumps(contract)
+        trace = dict(hub.last_compilation_trace or {})
+        return json.dumps(contract), contract, trace
     finally:
         hub.close()
+
+
+def _run_pch(scenario: dict[str, Any]) -> str:
+    text, _contract, _trace = _compile_pch(scenario)
+    return text
 
 
 def render(scenario: dict[str, Any], approach: str) -> str:
@@ -94,23 +102,17 @@ def _required(scenario: dict[str, Any]) -> list[str]:
 
 
 def _superseded_values(scenario: dict[str, Any]) -> list[str]:
-    preferences = {
-        str(row["key"]): str(row["value"])
-        for row in (scenario.get("user_state") or {}).get("preferences") or []
-    }
-    stale: list[str] = []
-    for event in scenario.get("events") or []:
-        if event.get("type") != "evolve" or event.get("condition"):
-            continue
-        previous = preferences.get(str(event.get("subject")))
-        if previous and previous != event.get("value"):
-            stale.append(previous)
-    return stale
+    return superseded_values(scenario)
 
 
 def score(scenario: dict[str, Any], approach: str, *, latency_ms: float) -> dict[str, Any]:
     """Score rendered text. The approach name is not an input to any metric."""
-    text = render(scenario, approach)
+    contract: dict[str, Any] | None = None
+    trace: dict[str, Any] | None = None
+    if approach == "pch" and approach not in RENDERERS:
+        text, contract, trace = _compile_pch(scenario)
+    else:
+        text = render(scenario, approach)
     secret = scenario.get("secret")
     leakage = bool(secret and secret in text)
     required = _required(scenario)
@@ -131,7 +133,7 @@ def score(scenario: dict[str, Any], approach: str, *, latency_ms: float) -> dict
     else:
         conflict_handling = True
     provenance = any(marker in text for marker in ('"citation"', '"authority"', '"provenance"'))
-    return {
+    row = {
         "scenario_id": scenario["id"],
         "approach": approach,
         "task_success": success,
@@ -146,3 +148,11 @@ def score(scenario: dict[str, Any], approach: str, *, latency_ms: float) -> dict
         "latency_ms": latency_ms,
         "cost": 0,
     }
+    if contract is not None and trace is not None:
+        row["retrieval_judgment"] = retrieval_judgment(
+            list(trace.get("candidates") or []),
+            scenario,
+            float(trace.get("find_ms") or 0),
+        )
+        row["compilation_judgment"] = compilation_judgment(contract, scenario)
+    return row

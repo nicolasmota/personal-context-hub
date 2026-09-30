@@ -50,6 +50,7 @@ class Hub(
         self.owner_token = self._kv_get("owner_token") or secrets.token_urlsafe(32)
         self._kv_set("owner_token", self.owner_token)
         self.retriever = TokenOverlapRetriever()
+        self.last_compilation_trace = None
         write_owner_token(self.data_dir, self.owner_token)
 
     def close(self) -> None:
