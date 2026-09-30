@@ -1,0 +1,13 @@
+{
+  "id": "conflicting_memories",
+  "secret": null,
+  "user_state": {"projects": [{"title": "Home", "status": "active"}]},
+  "experiences": [],
+  "events": [
+    {"type": "memory", "statement": "lives in Lisbon", "subject_ref": "home.city"},
+    {"type": "memory", "statement": "lives in Porto", "subject_ref": "home.city"}
+  ],
+  "agent_task": {"purpose": "continue Home", "budget": 8},
+  "expected_context": {"must_include": ["unresolved"]},
+  "expected_outcome": {"conflict": "unresolved"}
+}

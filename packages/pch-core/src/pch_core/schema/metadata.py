@@ -35,6 +35,10 @@ class EntityType(StrEnum):
     OPERATIONAL_PROPOSAL = "operational_proposal"
     RELATION = "relation"
     RELATION_PROPOSAL = "relation_proposal"
+    EXPERIENCE = "experience"
+    EVIDENCE = "evidence"
+    STATE_TRANSITION = "state_transition"
+    STATE_CONFLICT = "state_conflict"
 
 
 class Classification(StrEnum):

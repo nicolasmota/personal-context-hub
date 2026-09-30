@@ -1,0 +1,10 @@
+{
+  "id": "experience_reuse",
+  "secret": null,
+  "user_state": {"projects": [{"title": "Practice", "status": "active"}]},
+  "experiences": [{"action": "asked before writing", "operating_context": "practice", "outcome": "revised behavior", "occurred_at": "2026-09-01T00:00:00Z", "provenance": "owner"}],
+  "events": [],
+  "agent_task": {"purpose": "continue Practice", "budget": 8},
+  "expected_context": {"must_include": ["Practice"]},
+  "expected_outcome": {"experience_kept": true}
+}

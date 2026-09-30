@@ -12,6 +12,7 @@ class Preference(UniversalMetadata):
     key: str
     value: Any = None
     rationale: str | None = None
+    condition: str | None = None
     valid_from: str | None = None
     valid_until: str | None = None
     never_true: bool = False

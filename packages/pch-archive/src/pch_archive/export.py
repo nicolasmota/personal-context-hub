@@ -13,7 +13,7 @@ from pch_core.timeutil import now_iso
 from pch_archive.vendor.pam_project import pam_memory_store
 from pch_archive.vendor.ump_project import ump_records
 
-PCA_VERSION = "0.1.0"
+PCA_VERSION = "0.2.0"
 
 
 def _canonical(obj: dict) -> str:
@@ -68,16 +68,26 @@ TYPE_FILES = {
     "person": "profile",
     "event": "calendar_events",
     "connector_account": "connectors",
+    "experience": "experiences",
+    "evidence": "evidence",
+    "state_transition": "transitions",
+    "state_conflict": "state_conflicts",
+    "relation": "relations",
+    "grant": "grants",
 }
 
 
-def export_archive(hub: Hub, dest: Path, passphrase: str, filters: dict[str, Any] | None = None) -> dict:
+def export_archive(
+    hub: Hub, dest: Path, passphrase: str, filters: dict[str, Any] | None = None
+) -> dict:
     filters = filters or {}
+    if any(filters.get(key) for key in ("projects", "project", "types", "ids")):
+        raise ValueError("selective export is not available")
     buf = io.BytesIO()
     files: dict[str, str] = {}
     grouped: dict[str, list[dict]] = {v: [] for v in set(TYPE_FILES.values())}
     grouped["versions"] = []
-    skip_types = {"shared_state", "connection", "grant", "manifest", "action_intent", "approval"}
+    skip_types = {"shared_state", "connection", "manifest", "action_intent", "approval"}
     project_filter = filters.get("projects") or filters.get("project")
     _class_max = filters.get("classification_max")  # reserved for export filter
     for row in hub.store.list():
@@ -87,7 +97,11 @@ def export_archive(hub: Hub, dest: Path, passphrase: str, filters: dict[str, Any
             pids = project_filter if isinstance(project_filter, list) else [project_filter]
             if row.get("type") == "project" and row["id"] not in pids:
                 continue
-            if row.get("type") != "project" and row.get("project_id") not in pids and row.get("id") not in pids:
+            if (
+                row.get("type") != "project"
+                and row.get("project_id") not in pids
+                and row.get("id") not in pids
+            ):
                 continue
         fname = TYPE_FILES.get(row.get("type", ""), None)
         if not fname:
@@ -108,13 +122,24 @@ def export_archive(hub: Hub, dest: Path, passphrase: str, filters: dict[str, Any
         versions_text = "\n".join(_canonical(i) for i in grouped["versions"])
         zf.writestr("objects/versions.jsonl", versions_text)
         files["objects/versions.jsonl"] = hashlib.sha256(versions_text.encode()).hexdigest()
+        root_members = {
+            "experiences.json": grouped.get("experiences", []),
+            "evidence.json": grouped.get("evidence", []),
+            "transitions.json": grouped.get("transitions", []),
+            "state_conflicts.json": grouped.get("state_conflicts", []),
+            "relations.json": grouped.get("relations", []),
+            "grants.json": grouped.get("grants", []),
+            "versions.json": grouped["versions"],
+        }
+        for member, items in root_members.items():
+            text = json.dumps(items, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+            zf.writestr(member, text)
+            files[member] = hashlib.sha256(text.encode()).hexdigest()
         ev_text = "\n".join(_canonical(e) for e in events)
         zf.writestr("events.jsonl", ev_text)
         files["events.jsonl"] = hashlib.sha256(ev_text.encode()).hexdigest()
         projectable = [
-            row
-            for name in ("memories", "preferences", "profile")
-            for row in grouped.get(name, [])
+            row for name in ("memories", "preferences", "profile") for row in grouped.get(name, [])
         ]
         pam_doc = pam_memory_store(
             projectable,
@@ -135,9 +160,10 @@ def export_archive(hub: Hub, dest: Path, passphrase: str, filters: dict[str, Any
             json.dumps({"title": "memory", "type": "object"}),
         )
         manifest = {
+            "format": PCA_VERSION,
             "pca_version": PCA_VERSION,
             "created_at": now_iso(),
-            "generator": {"name": "personal-context-hub", "version": "0.1.0"},
+            "generator": {"name": "personal-context-hub", "version": PCA_VERSION},
             "space": {"id": "personal", "kind": "personal"},
             "filters": filters,
             "counts": counts,
@@ -148,4 +174,9 @@ def export_archive(hub: Hub, dest: Path, passphrase: str, filters: dict[str, Any
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_bytes(_encrypt(buf.getvalue(), passphrase))
     digest = hashlib.sha256(dest.read_bytes()).hexdigest()
-    return {"path": str(dest), "manifest_hash": digest, "filters": filters, "pca_version": PCA_VERSION}
+    return {
+        "path": str(dest),
+        "manifest_hash": digest,
+        "filters": filters,
+        "pca_version": PCA_VERSION,
+    }

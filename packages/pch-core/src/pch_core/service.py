@@ -5,9 +5,11 @@ from pathlib import Path
 
 from pch_core.audit.ledger import Ledger
 from pch_core.hub.actions import ActionsMixin
+from pch_core.hub.capture import CaptureMixin
 from pch_core.hub.connectors import ConnectorsMixin
 from pch_core.hub.const import OWNER
 from pch_core.hub.context import ContextMixin
+from pch_core.hub.evolution import EvolutionMixin
 from pch_core.hub.objects import ObjectsMixin
 from pch_core.hub.pairing import PairingMixin
 from pch_core.hub.plugins import PluginsMixin
@@ -34,6 +36,8 @@ class Hub(
     ActionsMixin,
     ConnectorsMixin,
     PluginsMixin,
+    CaptureMixin,
+    EvolutionMixin,
 ):
     def __init__(self, data_dir: Path, passphrase: str | None = None, *, plain: bool | None = None) -> None:
         self.data_dir = data_dir

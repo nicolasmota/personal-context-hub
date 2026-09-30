@@ -1,0 +1,10 @@
+{
+  "id": "changing_preferences",
+  "secret": null,
+  "user_state": {"preferences": [{"key": "food.spicy", "value": "hot"}]},
+  "experiences": [{"action": "weekday meals are milder", "operating_context": "dinner", "outcome": "exception", "occurred_at": "2026-09-29T12:00:00Z", "provenance": "owner"}],
+  "events": [{"type": "evolve", "subject": "food.spicy", "value": "mild", "condition": "weekdays", "reason": "weekday exception"}],
+  "agent_task": {"purpose": "plan dinner this week", "budget": 8},
+  "expected_context": {"must_include": ["mild", "weekdays"]},
+  "expected_outcome": {"live_condition": "weekdays"}
+}

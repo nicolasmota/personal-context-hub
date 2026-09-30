@@ -10,7 +10,8 @@ def test_roundtrip(hub, tmp_path: Path):
     export_archive(hub, dest, "pw", {})
     opened = open_archive(dest, "pw")
     assert opened["records"]
-    assert opened["manifest"]["pca_version"] == "0.1.0"
+    assert opened["manifest"]["pca_version"] == "0.2.0"
+    assert opened["manifest"]["format"] == "0.2.0"
 
 
 def test_tamper_detected(hub, tmp_path: Path):

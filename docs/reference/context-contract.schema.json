@@ -293,6 +293,58 @@
       ],
       "title": "SituationRef",
       "type": "object"
+    },
+    "StateConflictNote": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "subject": {
+          "title": "Subject",
+          "type": "string"
+        },
+        "claim_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Claim Ids",
+          "type": "array"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "resolution": {
+          "title": "Resolution",
+          "type": "string"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string"
+        },
+        "detail": {
+          "default": "",
+          "title": "Detail",
+          "type": "string"
+        },
+        "temporal_scope": {
+          "additionalProperties": true,
+          "title": "Temporal Scope",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "subject",
+        "resolution",
+        "status"
+      ],
+      "title": "StateConflictNote",
+      "type": "object"
     }
   },
   "properties": {
@@ -384,6 +436,13 @@
       "title": "Conflicts",
       "type": "array"
     },
+    "state_conflicts": {
+      "items": {
+        "$ref": "#/$defs/StateConflictNote"
+      },
+      "title": "State Conflicts",
+      "type": "array"
+    },
     "granted_scope": {
       "$ref": "#/$defs/ScopeSummary"
     },
@@ -410,6 +469,18 @@
       "default": false,
       "title": "Sufficient",
       "type": "boolean"
+    },
+    "budget": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Budget"
     }
   },
   "required": [

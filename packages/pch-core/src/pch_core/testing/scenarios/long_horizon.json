@@ -1,0 +1,10 @@
+{
+  "id": "long_horizon",
+  "secret": null,
+  "user_state": {"projects": [{"title": "Atlas", "status": "active", "charter": "multi-year plan"}]},
+  "experiences": [{"action": "kept the atlas goal", "operating_context": "atlas", "outcome": "still open", "occurred_at": "2026-01-01T00:00:00Z", "provenance": "owner"}],
+  "events": [{"type": "goal", "title": "finish atlas"}],
+  "agent_task": {"purpose": "continue Atlas", "budget": 8},
+  "expected_context": {"must_include": ["Atlas"]},
+  "expected_outcome": {"goal": "finish atlas"}
+}

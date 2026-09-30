@@ -1,0 +1,10 @@
+{
+  "id": "cross_agent",
+  "secret": null,
+  "user_state": {"projects": [{"title": "Handoff", "status": "active", "charter": "shared situation"}]},
+  "experiences": [],
+  "events": [],
+  "agent_task": {"purpose": "continue Handoff", "budget": 8},
+  "expected_context": {"must_include": ["Handoff"]},
+  "expected_outcome": {"history_kept": true}
+}

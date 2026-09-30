@@ -1,0 +1,10 @@
+{
+  "id": "stale_context",
+  "secret": null,
+  "user_state": {"preferences": [{"key": "city", "value": "Lisbon"}]},
+  "experiences": [],
+  "events": [{"type": "evolve", "subject": "city", "value": "Porto", "reason": "moved"}],
+  "agent_task": {"purpose": "where do I live", "budget": 8},
+  "expected_context": {"must_include": ["Porto"]},
+  "expected_outcome": {"live": "Porto"}
+}

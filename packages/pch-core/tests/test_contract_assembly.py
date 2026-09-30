@@ -92,8 +92,12 @@ def test_conflicts_listed_not_resolved(hub):
         for p in contract["preferences"]
         if p["body"].get("key") == "flights.red_eye"
     ]
-    assert "avoid" in values
-    assert "ok-if-cheaper" in values
+    assert values == []
+    notes = [note for note in contract["state_conflicts"] if note["subject"] == "flights.red_eye"]
+    assert notes
+    assert notes[0]["resolution"] == "unresolved"
+    assert notes[0]["status"] == "open"
+    assert len(notes[0]["claim_ids"]) >= 2
 
 
 def test_correction_uses_live_versions_only(hub):

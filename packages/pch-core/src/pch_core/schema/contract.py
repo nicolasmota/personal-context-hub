@@ -110,6 +110,17 @@ class RelationRef(BaseModel):
     model_config = {"populate_by_name": True, "serialize_by_alias": True}
 
 
+class StateConflictNote(BaseModel):
+    id: str
+    subject: str
+    claim_ids: list[str] = Field(default_factory=list)
+    evidence_ids: list[str] = Field(default_factory=list)
+    resolution: str
+    status: str
+    detail: str = ""
+    temporal_scope: dict[str, Any] = Field(default_factory=dict)
+
+
 class ContextContract(BaseModel):
     contract_id: str
     purpose: str
@@ -124,11 +135,13 @@ class ContextContract(BaseModel):
     relations: list[RelationRef] = Field(default_factory=list)
     references: list[ItemRef] = Field(default_factory=list)
     conflicts: list[ConflictPair] = Field(default_factory=list)
+    state_conflicts: list[StateConflictNote] = Field(default_factory=list)
     granted_scope: ScopeSummary
     omissions: list[OmissionNote] = Field(default_factory=list)
     capture_hints: list[str] = Field(default_factory=list)
     assembled_at: datetime
     sufficient: bool = False
+    budget: int | None = None
 
 
 ENVELOPE_SCHEMA_ID = (

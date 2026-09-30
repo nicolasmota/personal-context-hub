@@ -5,6 +5,9 @@ from collections.abc import Callable
 from datetime import UTC, datetime
 from typing import Any
 
+from pch_core.context.budget import apply_budget
+from pch_core.context.compiler import finalize_contract
+from pch_core.context.selection import rank_established_first, select_for_purpose
 from pch_core.errors import NotFound
 from pch_core.ids import new_id
 from pch_core.policy.evaluator import Decision, PolicyInput, PolicyResult, evaluate
@@ -110,7 +113,14 @@ def _body(obj: dict[str, Any]) -> dict[str, Any]:
         keys = ("title", "outcome", "status", "horizon")
         return {k: obj.get(k) for k in keys if obj.get(k) is not None}
     if kind == "preference":
-        return {k: obj.get(k) for k in ("key", "value", "rationale", "valid_from", "valid_until")}
+        body = {
+            k: obj.get(k)
+            for k in ("key", "value", "rationale", "condition")
+            if obj.get(k) is not None
+        }
+        body["valid_from"] = obj.get("valid_from")
+        body["valid_until"] = obj.get("valid_until")
+        return body
     if kind == "memory":
         return {k: obj.get(k) for k in ("statement", "kind", "valid_from", "valid_until")}
     if kind == "decision":
@@ -305,23 +315,11 @@ def assemble_contract(
         established_first: bool = False,
     ) -> list[ContractItem]:
         if established_first:
-            ranked = sorted(
-                rows,
-                key=lambda row: (
-                    0 if row.get("authority") == "user_confirmed" else 1,
-                    row.get("created_at") or "",
-                    row["id"],
-                ),
-            )
+            ranked = rank_established_first(rows)
         else:
             ranked = DefaultRanker().rank(rows, query.purpose)
-        inline: list[ContractItem] = []
-        overflow = 0
-        for row in ranked:
-            if len(inline) < cap:
-                inline.append(to_item(row))
-            else:
-                overflow += 1
+        chosen, overflow = apply_budget(ranked, cap)
+        inline = [to_item(row) for row in chosen]
         if overflow:
             omission_counts[OmissionCategory.OVER_CAP] += overflow
         return inline
@@ -362,13 +360,9 @@ def assemble_contract(
             for m in store.list("memory", project_id=anchor_id)
             if not m.get("tombstone") and row_is_current(m, eval_at) and allowed(m, eval_project)
         ]
-        if meaningful:
-            mem_rows = [m for m in mem_legal if _overlaps_purpose(m, meaningful)]
-            off_task = len(mem_legal) - len(mem_rows)
-            if off_task:
-                omission_counts[OmissionCategory.NOT_RELEVANT] += off_task
-        else:
-            mem_rows = mem_legal
+        mem_rows, off_task = select_for_purpose(mem_legal, meaningful, _overlaps_purpose)
+        if off_task:
+            omission_counts[OmissionCategory.NOT_RELEVANT] += off_task
         dec_rows = [
             d
             for d in store.list("decision", project_id=anchor_id)
@@ -443,6 +437,8 @@ def assemble_contract(
     conflicts: list[ConflictPair] = []
     by_key: dict[str, list[str]] = defaultdict(list)
     for item in prefs_out:
+        if item.body.get("condition"):
+            continue
         key = str(item.body.get("key") or "")
         if key:
             by_key[key].append(item.ref.id)
@@ -491,23 +487,28 @@ def assemble_contract(
     presented = {item.ref.id for item in (*goals_out, *decs_out, *constraints_out)}
     sufficient = situation is not None and required_ids <= presented
 
-    return ContextContract(
-        contract_id=new_id("contract"),
-        purpose=query.purpose,
-        situation=situation,
-        candidates=candidates,
-        goals=goals_out,
-        preferences=prefs_out,
-        memories=mems_out,
-        decisions=decs_out,
-        constraints=constraints_out,
-        state=state_out,
-        relations=relation_refs,
-        references=references,
-        conflicts=conflicts,
-        granted_scope=scope,
-        omissions=omissions,
-        capture_hints=list(CAPTURE_HINTS),
-        assembled_at=datetime.now(UTC),
-        sufficient=sufficient,
+    return finalize_contract(
+        ContextContract(
+            contract_id=new_id("contract"),
+            purpose=query.purpose,
+            situation=situation,
+            candidates=candidates,
+            goals=goals_out,
+            preferences=prefs_out,
+            memories=mems_out,
+            decisions=decs_out,
+            constraints=constraints_out,
+            state=state_out,
+            relations=relation_refs,
+            references=references,
+            conflicts=conflicts,
+            granted_scope=scope,
+            omissions=omissions,
+            capture_hints=list(CAPTURE_HINTS),
+            assembled_at=datetime.now(UTC),
+            sufficient=sufficient,
+            budget=query.max_items,
+        ),
+        store,
+        query,
     )

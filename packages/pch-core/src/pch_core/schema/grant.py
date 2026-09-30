@@ -36,7 +36,11 @@ class Grant(BaseModel):
 
 PRESETS: dict[str, dict] = {
     "read_active_projects": {
-        "capabilities": [Capability.PROJECT_READ, Capability.COMMITMENT_READ, Capability.MEMORY_RETRIEVE],
+        "capabilities": [
+            Capability.PROJECT_READ,
+            Capability.COMMITMENT_READ,
+            Capability.MEMORY_RETRIEVE,
+        ],
         "summary_human": "Can read my active projects",
     },
     "always_ask_before_sending": {
@@ -44,7 +48,11 @@ PRESETS: dict[str, dict] = {
         "summary_human": "Always ask before sending anything",
     },
     "read_project": {
-        "capabilities": [Capability.PROJECT_READ, Capability.COMMITMENT_READ, Capability.MEMORY_RETRIEVE],
+        "capabilities": [
+            Capability.PROJECT_READ,
+            Capability.COMMITMENT_READ,
+            Capability.MEMORY_RETRIEVE,
+        ],
         "summary_human": "Can read a specific project",
     },
 }

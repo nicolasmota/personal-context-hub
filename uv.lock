@@ -1309,6 +1309,7 @@ source = { editable = "packages/pch-sdk" }
 dependencies = [
     { name = "httpx" },
     { name = "mcp" },
+    { name = "pch-archive" },
     { name = "pch-core" },
     { name = "pydantic" },
 ]
@@ -1317,6 +1318,7 @@ dependencies = [
 requires-dist = [
     { name = "httpx", specifier = ">=0.28" },
     { name = "mcp", specifier = ">=1.9" },
+    { name = "pch-archive", editable = "packages/pch-archive" },
     { name = "pch-core", editable = "packages/pch-core" },
     { name = "pydantic", specifier = ">=2.10" },
 ]

@@ -69,6 +69,20 @@ class ObjectsMixin:
             if len(text) > 200:
                 raise ValidationFailed(f"{key} exceeds 200 characters")
 
+    def _assert_preference_slot(self, payload: dict[str, Any]) -> None:
+        new_condition = str(payload.get("condition") or "").strip() or None
+        at = datetime.now(UTC)
+        for row in self.store.list("preference"):
+            if row.get("key") != payload.get("key"):
+                continue
+            if not row_is_current(row, at):
+                continue
+            row_condition = str(row.get("condition") or "").strip() or None
+            if row_condition == new_condition:
+                raise ValidationFailed(
+                    "a current preference with this key and condition already exists; supersede it"
+                )
+
     def _current_preference_for_key(self, key: str, *, exclude_id: str | None = None) -> dict | None:
         at = datetime.now(UTC)
         for row in self.store.list("preference"):
@@ -86,14 +100,12 @@ class ObjectsMixin:
                 self._assert_interval(payload)
             if type_ in ("project", "goal"):
                 self._assert_operational(payload)
-            if type_ == "preference" and self._current_preference_for_key(
-                payload.get("key") or ""
-            ):
-                raise ValidationFailed(
-                    "a current preference with this key already exists; supersede it"
-                )
+            if type_ == "preference":
+                self._assert_preference_slot(payload)
             stored = self.store.put(payload, new=True)
             self.ledger.append(EventKind.OBJECT_WRITE, actor, f"Created {type_}", [stored["id"]])
+            if type_ in ("memory", "preference"):
+                self.sync_state_conflicts()
             return stored
 
     def get(self, obj_id: str, include_deleted: bool = False) -> dict:
@@ -120,7 +132,16 @@ class ObjectsMixin:
             self.ledger.append(EventKind.OBJECT_WRITE, actor, f"Updated {current['type']}", [obj_id])
             return stored
 
-    def supersede(self, obj_id: str, body: dict[str, Any], actor: str = OWNER) -> dict:
+    def supersede(
+        self,
+        obj_id: str,
+        body: dict[str, Any],
+        actor: str = OWNER,
+        *,
+        experience_ids: list[str] | None = None,
+        evidence_ids: list[str] | None = None,
+        reason: str | None = None,
+    ) -> dict:
         with self.engine.tx():
             current = self.store.get(obj_id)
             if current.get("type") not in ("preference", "memory"):
@@ -148,6 +169,24 @@ class ObjectsMixin:
             else:
                 extra["authority"] = extra.get("authority", "user_confirmed")
             successor = self.create(current["type"], extra, actor=actor)
+            if current["type"] == "preference":
+                previous_value = current.get("value")
+                new_value = successor.get("value")
+            else:
+                previous_value = current.get("statement")
+                new_value = successor.get("statement")
+            transition = self._write_transition(
+                subject_id=successor["id"],
+                subject_type=current["type"],
+                kind="supersession",
+                previous_value=previous_value,
+                new_value=new_value,
+                reason=reason or str(body.get("rationale") or "superseded"),
+                experience_ids=list(experience_ids or []),
+                evidence_ids=list(evidence_ids or []),
+                actor=actor,
+                valid_from=successor.get("valid_from"),
+            )
             self.ledger.append(
                 EventKind.OBJECT_WRITE,
                 actor,
@@ -155,7 +194,7 @@ class ObjectsMixin:
                 [pred_stored["id"], successor["id"]],
                 extra={"supersedes": pred_stored["id"], "successor": successor["id"]},
             )
-            return {"predecessor": pred_stored, "successor": successor}
+            return {"predecessor": pred_stored, "successor": successor, "transition": transition}
 
     def retract_never_true(self, obj_id: str, actor: str = OWNER) -> dict:
         with self.engine.tx():

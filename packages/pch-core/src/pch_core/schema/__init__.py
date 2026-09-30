@@ -26,6 +26,8 @@ from pch_core.schema.contract import (
     envelope_json_schema,
 )
 from pch_core.schema.event import CalendarEvent, CalendarEventStatus
+from pch_core.schema.evidence import Evidence, EvidenceKind, VerificationStatus
+from pch_core.schema.experience import Experience
 from pch_core.schema.grant import PRESETS, Capability, Grant, GrantStatus
 from pch_core.schema.manifest import ContextManifest, DisclosedRef, ManifestStatus
 from pch_core.schema.memory import Memory, MemoryKind, SensitivityFlag
@@ -69,6 +71,8 @@ from pch_core.schema.proposal import MemoryProposal, OperationalProposal, Propos
 from pch_core.schema.relation import Relation, RelationProposal, RelationType
 from pch_core.schema.space import ContextSpace
 from pch_core.schema.state import SharedState, StateVisibility
+from pch_core.schema.state_conflict import ConflictResolution, StateConflict, StateConflictStatus
+from pch_core.schema.transition import StateTransition, TransitionKind
 
 TYPE_MODELS = {
     EntityType.PERSON: Person,
@@ -85,6 +89,10 @@ TYPE_MODELS = {
     EntityType.EVENT: CalendarEvent,
     EntityType.PLUGIN: PluginInstallation,
     EntityType.RELATION: Relation,
+    EntityType.EXPERIENCE: Experience,
+    EntityType.EVIDENCE: Evidence,
+    EntityType.STATE_TRANSITION: StateTransition,
+    EntityType.STATE_CONFLICT: StateConflict,
 }
 
 __all__ = [
@@ -118,7 +126,16 @@ __all__ = [
     "Decision",
     "DecisionKind",
     "DisclosedRef",
+    "ConflictResolution",
     "EntityType",
+    "Evidence",
+    "EvidenceKind",
+    "Experience",
+    "StateConflict",
+    "StateConflictStatus",
+    "StateTransition",
+    "TransitionKind",
+    "VerificationStatus",
     "ENVELOPE_SCHEMA_ID",
     "EventKind",
     "ExportRecord",

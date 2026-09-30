@@ -13,6 +13,8 @@ class RelationType(StrEnum):
     DEPENDS_ON = "depends_on"
     BLOCKED_BY = "blocked_by"
     RELATED_TO = "related_to"
+    SUPPORTED_BY = "supported_by"
+    DERIVED_FROM = "derived_from"
 
 
 class RelationLinkStatus(StrEnum):

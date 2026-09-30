@@ -183,7 +183,7 @@ def call_hub(base: str, token: str, name: str, arguments: dict[str, Any]) -> tup
     return r.status_code, body
 
 
-def map_tool_result(status: int, body: Any) -> dict[str, Any]:
+def map_tool_result(status: int, body: Any, *, base: str | None = None) -> dict[str, Any]:
     if status == 401:
         return {
             "isError": True,
@@ -194,7 +194,15 @@ def map_tool_result(status: int, body: Any) -> dict[str, Any]:
         if isinstance(text, list):
             text = json.dumps(text)
         if status == 0 or "Connection" in str(text) or "unreachable" in str(text).lower():
-            text = f"Hub unreachable at configured PCH_BASE. {text}"
+            payload = {
+                "code": "hub_unreachable",
+                "base": (base or "http://127.0.0.1:8765").rstrip("/"),
+                "message": "Hub unreachable at configured PCH_BASE.",
+            }
+            return {
+                "isError": True,
+                "content": [{"type": "text", "text": json.dumps(payload)}],
+            }
         return {"isError": True, "content": [{"type": "text", "text": str(text)}]}
     return {"isError": False, "content": [{"type": "text", "text": json.dumps(body)}]}
 
@@ -254,7 +262,7 @@ def handle_message(msg: dict[str, Any], base: str, token: str) -> dict[str, Any]
             status, body = call_hub(base, token, name, arguments)
         except httpx.HTTPError as exc:
             status, body = 0, {"detail": f"Hub unreachable at {base}: {exc}"}
-        mapped = map_tool_result(status, body)
+        mapped = map_tool_result(status, body, base=base)
         return _jsonrpc_result(msg_id, mapped)
     if msg_id is None:
         return None
@@ -273,7 +281,6 @@ def run_stdio(token: str, base: str) -> None:
         healthcheck(base)
     except Exception as exc:
         sys.stderr.write(f"Hub health check failed at {base}: {exc}\n")
-        raise SystemExit(1) from exc
     stdin = sys.stdin
     for line in stdin:
         line = line.strip()

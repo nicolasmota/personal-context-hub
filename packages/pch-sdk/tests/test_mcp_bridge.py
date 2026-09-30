@@ -1,7 +1,10 @@
+import io
 import json
 
+import httpx
+import pytest
 from pch_sdk.capture_guidance import DURABLE_TRIGGERS, TASK_START_TRIGGERS
-from pch_sdk.mcp_bridge import TOOL_NAMES, handle_message, map_tool_result
+from pch_sdk.mcp_bridge import TOOL_NAMES, handle_message, map_tool_result, run_stdio
 
 
 def test_tools_list_parity():
@@ -57,3 +60,65 @@ def test_situation_and_propose_descriptions_include_when_to_use():
     assert any(token in prop for token in DURABLE_TRIGGERS)
     assert "invent" in sit
     assert "proposal" in prop or "propose" in prop
+
+
+def test_run_stdio_empty_token_exits(monkeypatch):
+    err = io.StringIO()
+    monkeypatch.setattr("pch_sdk.mcp_bridge.sys.stderr", err)
+    with pytest.raises(SystemExit) as ei:
+        run_stdio("", "http://127.0.0.1:8765")
+    assert ei.value.code == 1
+    assert "PCH_TOKEN" in err.getvalue()
+
+
+def test_run_stdio_hub_down_lists_tools(monkeypatch):
+    def fail_health(_base: str) -> None:
+        raise httpx.ConnectError("down")
+
+    monkeypatch.setattr("pch_sdk.mcp_bridge.healthcheck", fail_health)
+    monkeypatch.setattr(
+        "pch_sdk.mcp_bridge.sys.stdin",
+        io.StringIO('{"jsonrpc":"2.0","id":1,"method":"tools/list"}\n'),
+    )
+    out = io.StringIO()
+    monkeypatch.setattr("pch_sdk.mcp_bridge.sys.stdout", out)
+    err = io.StringIO()
+    monkeypatch.setattr("pch_sdk.mcp_bridge.sys.stderr", err)
+    run_stdio("tok", "http://127.0.0.1:8765")
+    reply = json.loads(out.getvalue().splitlines()[0])
+    names = [t["name"] for t in reply["result"]["tools"]]
+    assert names == TOOL_NAMES
+
+
+def test_tool_call_hub_down_is_unreachable_json(monkeypatch):
+    def boom(_base: str, _token: str, _name: str, _arguments: dict) -> tuple[int, dict]:
+        raise httpx.ConnectError("down")
+
+    monkeypatch.setattr("pch_sdk.mcp_bridge.call_hub", boom)
+    reply = handle_message(
+        {
+            "jsonrpc": "2.0",
+            "id": 3,
+            "method": "tools/call",
+            "params": {
+                "name": "get_context_contract",
+                "arguments": {"purpose": "continue planning the trip"},
+            },
+        },
+        "http://127.0.0.1:8765",
+        "tok",
+    )
+    result = reply["result"]
+    assert result["isError"] is True
+    payload = json.loads(result["content"][0]["text"])
+    assert payload["code"] == "hub_unreachable"
+    assert payload["base"] == "http://127.0.0.1:8765"
+    assert "Hub unreachable" in payload["message"]
+
+
+def test_unreachable_mapping_is_json_code():
+    down = map_tool_result(0, {"detail": "Connection refused"})
+    payload = json.loads(down["content"][0]["text"])
+    assert down["isError"] is True
+    assert payload["code"] == "hub_unreachable"
+    assert "Hub unreachable" in payload["message"]

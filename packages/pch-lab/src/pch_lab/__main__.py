@@ -13,6 +13,10 @@ def main(argv: list[str] | None = None) -> None:
         parser = build_parser()
         args = parser.parse_args(seq)
         raise SystemExit(dispatch_loop(args))
+    if seq[:1] == ["bench"]:
+        from pch_lab.benchmarks.cli import main as bench_main
+
+        raise SystemExit(bench_main(seq[1:]))
     if seq[:1] == ["sim"]:
         from pch_lab.sim.cli import dispatch_sim
 
