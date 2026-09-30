@@ -1,14 +1,17 @@
 # Export and import
 
-Portable Context Archive (PCA) is how you take a vault with you. Export writes an encrypted file under `~/.pch/exports/`. Import stages first, then applies with your resolutions. Imported objects are marked **untrusted**.
+Portable personal state is an encrypted archive of the person's vault: state, memories, evidence, transitions, conflicts, relations, and grants. The writer emits format `0.2.0`. Import accepts `0.2.0` as-is and migrates `0.1.0`. Any other version writes nothing.
 
-Connections, grants, manifests, action intents, approvals, and shared state are **skipped** on export. Pair agents again on the destination machine.
+Connection tokens and shared-state handoff rows stay out. A subset filter is refused.
 
-## Export from the UI
+```bash
+uv run pch-sdk archive-export --data-dir "$PCH_DATA" --dest "$PCH_DATA/state.pch" --passphrase test
+uv run pch-sdk archive-import --data-dir "$PCH_NEXT" --src "$PCH_DATA/state.pch" --passphrase test
+```
 
-**Export** (`/export`) → choose a passphrase → download/save `space-*.pca`.
+## Owner HTTP
 
-Owner HTTP:
+The same archive is available on loopback. `GET /v1/bootstrap` returns the owner token.
 
 ```http
 POST /v1/export
@@ -17,7 +20,7 @@ POST /v1/export
 
 `filters` is optional. The file is encrypted with [age](https://age-encryption.org/) when `pyrage` works; otherwise a `PCH1` + Fernet fallback (PBKDF2 480_000 iterations).
 
-Inner zip layout (PCA generator version `0.1.0`):
+Inner zip layout (PCA generator version `0.2.0`):
 
 ```text
 manifest.json                  # counts + sha256 integrity
@@ -29,9 +32,7 @@ interoperability/ump/memories.ump.json
 schemas/memory.schema.json
 ```
 
-## Import from the UI
-
-**Import** (`/import`) → stage the `.pca` file → review → apply.
+## Import over HTTP
 
 ```http
 POST /v1/import/stage
@@ -55,7 +56,7 @@ Treat vendor batches as untrusted until you archive/admit them. Do not paste oth
 
 ## Round-trip check (developers)
 
-There is no export CLI. The `pch-archive` tool compares two Hub data directories:
+The `pch-archive` tool compares two Hub data directories:
 
 ```bash
 uv run pch-archive verify-roundtrip /path/to/src-hub /path/to/dst-hub

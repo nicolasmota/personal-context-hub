@@ -14,8 +14,6 @@ dependencies = [
     "mcp>=1.9",
     "python-multipart>=0.0.18",
     "httpx>=0.28",
-    "google-auth>=2.36",
-    "google-auth-oauthlib>=1.2",
 ]
 
 [project.scripts]
@@ -30,7 +28,6 @@ ignore-vcs = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/pch_server"]
-artifacts = ["src/pch_server/static/**"]
 
 [tool.uv.sources]
 pch-core = { workspace = true }

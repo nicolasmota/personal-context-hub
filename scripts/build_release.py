@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the five publishable wheels (not pch-lab)."""
+"""Build the publishable wheels (not pch-lab)."""
 
 from __future__ import annotations
 
@@ -12,7 +12,6 @@ PUBLISH_PACKAGES = (
     "pch-archive",
     "pch-sdk",
     "pch-server",
-    "personal-context-hub",
 )
 
 

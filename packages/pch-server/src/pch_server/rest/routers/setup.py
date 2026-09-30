@@ -38,7 +38,7 @@ def spaces(_owner: str = Depends(require_owner)) -> list[dict]:
 
 @router.get("/bootstrap")
 def bootstrap(request: Request, hub: Hub = Depends(get_hub)) -> dict:
-    """Loopback UI bootstrap: owner token lives in the local process only."""
+    """Loopback bootstrap: owner token lives in the local process only."""
     return {
         "owner_token": hub.owner_token,
         "setup": hub.setup_status(),

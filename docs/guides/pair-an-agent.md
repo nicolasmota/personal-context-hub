@@ -17,15 +17,15 @@ The Hub generates a recipe per assistant. The situation package is the same; onl
 
 Pasting into a single project’s `.cursor/mcp.json` works but is optional. Prefer user/machine settings so every window can reach the Hub. **Do not commit** that file — it contains a live token.
 
-## In the Hub
+## On the loopback API
 
-1. Start the Hub (`pch` or `make serve`).
-2. Open **Agents** (`/connections`).
-3. Create a pairing link. Name it after the runtime (“Cursor”).
+1. Start the Hub (`make serve`).
+2. `GET /v1/bootstrap` on `127.0.0.1` returns the owner token. It is not a remote credential.
+3. `POST /v1/connections/links` with `Authorization: Bearer <owner token>` and a name such as `Cursor`.
 4. Either:
    - Pair from the runtime with the one-time code, or
-   - Generate a **recipe** for that assistant and copy the JSON/YAML snippet.
-5. On **Agents**, attach a grant:
+   - `POST /v1/connections/{id}/recipe` with `{"assistant":"cursor"}` or `{"assistant":"hermes"}` and copy the snippet.
+5. `POST /v1/grants` for that connection:
    - `read_project` + the project you care about, or
    - `read_active_projects` for a broader read, and/or
    - `always_ask_before_sending` if the agent might propose outward actions.
@@ -73,8 +73,8 @@ The situation package also returns `capture_hints` with the same idea, so captur
 
 ## Cursor, specifically
 
-1. `make serve` or `pch`
-2. Agents → pairing link → **Cursor** → copy JSON
+1. `make serve`
+2. Mint a link, then request the **Cursor** recipe and copy the JSON
 3. Cursor Settings → MCP → add the server (user / this machine)
 4. Reload MCP servers
 5. Grant a preset
@@ -84,8 +84,8 @@ Verify the tools appear: `search_personal_context`, `get_context_contract`, `pro
 
 ## Hermes, specifically
 
-1. `make serve` or `pch`
-2. Agents → pairing link → **Hermes** → copy YAML
+1. `make serve`
+2. Mint a link, then request the **Hermes** recipe and copy the YAML
 3. Add it under `mcp_servers` in `~/.hermes/config.yaml`
 4. `/reload-mcp` in the Hermes session
 5. Grant a preset

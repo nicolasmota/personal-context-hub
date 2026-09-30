@@ -1,6 +1,6 @@
+import pytest
 from pch_core.errors import ValidationFailed
 from pch_core.service import OWNER
-import pytest
 
 
 def _cause(hub):

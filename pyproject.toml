@@ -10,7 +10,6 @@ dependencies = [
     "pch-archive",
     "pch-sdk",
     "pch-lab",
-    "personal-context-hub",
 ]
 
 [project.optional-dependencies]
@@ -34,7 +33,6 @@ members = [
     "packages/pch-archive",
     "packages/pch-sdk",
     "packages/pch-lab",
-    "apps/hub-desktop",
 ]
 
 [tool.uv.sources]
@@ -43,7 +41,6 @@ pch-server = { workspace = true }
 pch-archive = { workspace = true }
 pch-sdk = { workspace = true }
 pch-lab = { workspace = true }
-personal-context-hub = { workspace = true }
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -53,14 +50,10 @@ pythonpath = [
     "packages/pch-archive/src",
     "packages/pch-sdk/src",
     "packages/pch-lab/src",
-    "apps/hub-desktop/src",
 ]
 markers = [
     "forbidden_context: seeded policy isolation tests (SC-003)",
     "perf: scale/performance checks (SC-009)",
-    "e2e: Playwright UI journeys",
-    "connectors: Google Calendar/Gmail connector tests (mocked transports)",
-    "plugins: plugin host, kit, and marketplace tests",
     "release: packaged wheel install (slow; needs network)",
 ]
 testpaths = [
@@ -69,13 +62,12 @@ testpaths = [
     "packages/pch-archive/tests",
     "packages/pch-sdk/tests",
     "packages/pch-lab/tests",
-    "apps/hub-desktop/tests",
 ]
 
 [tool.mypy]
 python_version = "3.12"
 strict = true
-packages = ["pch_core", "pch_server", "pch_archive", "pch_sdk", "pch_lab", "hub_desktop"]
+packages = ["pch_core", "pch_server", "pch_archive", "pch_sdk", "pch_lab"]
 
 [dependency-groups]
 dev = [

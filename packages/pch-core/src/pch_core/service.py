@@ -6,13 +6,11 @@ from pathlib import Path
 from pch_core.audit.ledger import Ledger
 from pch_core.hub.actions import ActionsMixin
 from pch_core.hub.capture import CaptureMixin
-from pch_core.hub.connectors import ConnectorsMixin
 from pch_core.hub.const import OWNER
 from pch_core.hub.context import ContextMixin
 from pch_core.hub.evolution import EvolutionMixin
 from pch_core.hub.objects import ObjectsMixin
 from pch_core.hub.pairing import PairingMixin
-from pch_core.hub.plugins import PluginsMixin
 from pch_core.hub.proposals import ProposalsMixin
 from pch_core.hub.relations import RelationsMixin
 from pch_core.hub.setup import SetupMixin
@@ -34,8 +32,6 @@ class Hub(
     ProposalsMixin,
     RelationsMixin,
     ActionsMixin,
-    ConnectorsMixin,
-    PluginsMixin,
     CaptureMixin,
     EvolutionMixin,
 ):

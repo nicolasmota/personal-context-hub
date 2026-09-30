@@ -16,7 +16,6 @@ PYPROJECTS = [
     ROOT / "packages" / "pch-sdk" / "pyproject.toml",
     ROOT / "packages" / "pch-archive" / "pyproject.toml",
     ROOT / "packages" / "pch-lab" / "pyproject.toml",
-    ROOT / "apps" / "hub-desktop" / "pyproject.toml",
 ]
 
 DOCS = [
@@ -77,4 +76,4 @@ def test_constitution_runtime_is_3_12_or_newer() -> None:
     text = CONSTITUTION.read_text(encoding="utf-8")
     assert "Python 3.12 or newer via `uv` is the runtime" in text
     assert "Python 3.14 via `uv` is the runtime" not in text
-    assert "**Version**: 1.3.1" in text
+    assert "**Version**: 2.0.0" in text

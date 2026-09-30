@@ -16,7 +16,6 @@ from pch_sdk.local_cli import (
     vault_init,
 )
 from pch_sdk.mcp_bridge import main as bridge_main
-from pch_sdk.plugin_kit import main as plugin_kit_main
 
 
 def demo(base: str, code: str | None, token: str | None) -> None:
@@ -46,8 +45,6 @@ def main(argv: list[str] | None = None) -> None:
     bridge_p = sub.add_parser("mcp-bridge")
     bridge_p.add_argument("--token", default=os.environ.get("PCH_TOKEN", ""))
     bridge_p.add_argument("--base", default=os.environ.get("PCH_BASE", "http://127.0.0.1:8765"))
-    plugin_p = sub.add_parser("plugin")
-    plugin_p.add_argument("plugin_args", nargs=argparse.REMAINDER)
     for name in (
         "vault-init",
         "experience-add",
@@ -102,9 +99,6 @@ def main(argv: list[str] | None = None) -> None:
         return
     if args.cmd == "mcp-bridge":
         bridge_main(args.token or None, args.base)
-        return
-    if args.cmd == "plugin":
-        plugin_kit_main(args.plugin_args)
         return
     if args.cmd == "vault-init":
         vault_init(args.data_dir, args.name)

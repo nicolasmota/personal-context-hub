@@ -75,7 +75,7 @@ There is no separate `Provenance` entity. Provenance is carried by `source_refs`
 
 Agents **propose** durable memories, relations, operational state, and external actions. They do not write them as canonical. You accept or reject in **Review**, **Approvals**, and related queues.
 
-Imported email, calendar, and plugin output **must not** expand grants, alter policy, or trigger outward action. In v1, plugins are import-only.
+Ingested material **must not** expand grants, alter policy, or trigger outward action.
 
 ## Vocabulary collisions
 

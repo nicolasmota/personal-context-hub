@@ -14,7 +14,7 @@ make lint
 make check-secrets
 ```
 
-Python 3.12 or newer via uv. Node.js 22+ for the UI build only. Package map and data flow: [Architecture](architecture.md).
+Python 3.12 or newer via uv. Package map and data flow: [Architecture](architecture.md).
 
 ## Product rules
 
@@ -43,10 +43,6 @@ CLI: [pch-lab loop](reference/cli.md#development-loop). Do not commit unless the
 | `make test` | Default pytest suite |
 | `pytest -m forbidden_context` | Grant isolation (SC-003) |
 | `pytest -m perf` | Search/scale (SC-009) |
-| `pytest -m e2e` | Playwright UI journeys |
-| `pytest -m connectors` | Google Calendar/Gmail (mocked transports) |
-| `pytest -m plugins` | Plugin host, kit, marketplace |
-| `pch smoke` | Packaged health, SPA, setup, search, pair, grant, manifest |
 
 New grant or assembly behavior must extend `forbidden_context` coverage. Tests for a success criterion must fail before the code that is supposed to satisfy it.
 

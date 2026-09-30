@@ -1,98 +1,48 @@
 # Personal Context Hub
 
-Local-first **personal context** for any agent. Assistants connect over **MCP**; the context stays yours.
+The hub maintains persistent personal state, evolves it from experience and evidence, and compiles the minimum sufficient context for the current situation. It is a local, user-owned context runtime for persistent agents. It is not a memory database.
 
-Your data lives on this device (default `~/.pch`), encrypted. The Hub binds **loopback only** (`127.0.0.1`) and is not a public server.
+Your data lives on this device (default `~/.pch`), encrypted. The Hub binds **loopback only** (`127.0.0.1`) and is not a public server. Assistants connect over **MCP** and receive one context contract: the smallest sufficient slice for the task. Cursor and Hermes are validated MCP runtimes.
+
+Plugins, provider connectors, the desktop shell, and the web interface are not part of this repository.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-c9a227?style=flat-square)](LICENSE)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-1a1916?style=flat-square)](docs/getting-started.md)
 
-The Hub keeps an encrypted vault of what is true about you and what is in play right now. You pair assistants over MCP and grant each one a slice of that vault. When an agent asks for context, the Hub returns a **situation package** — the smallest sufficient set of facts, goals, and constraints for the task — not the whole vault and not a chat transcript. Change your mind in the Hub; every authorized agent sees the live state on the next request.
+**Documentation:** [Architecture](docs/architecture.md) · [Non-goals](docs/non-goals.md) · [Research](docs/research.md) · [Portable personal state](docs/guides/export-import.md) · [Evaluation harness](docs/develop.md) · [docs/](docs/README.md) · [llms.txt](docs/llms.txt) · **License:** [MIT](LICENSE)
 
-Not a chatbot. Not a model. Not a vector database.
-
-**Documentation:** [docs/](docs/README.md) · [Docs site](https://nicolasmota.github.io/personal-context-hub/) · [llms.txt](docs/llms.txt) · **License:** [MIT](LICENSE)
-
-[Getting started](docs/getting-started.md) · [Concepts](docs/concepts.md) · [Pair an agent](docs/guides/pair-an-agent.md) · [MCP reference](docs/reference/mcp.md) · [HTTP API](docs/reference/http-api.md) · [Security](docs/security.md)
+[Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ---
 
 ## Install
 
-```bash
-uvx personal-context-hub
-# or: uv tool install personal-context-hub && pch
-```
-
-Requires [uv](https://docs.astral.sh/uv/) and Python 3.12+. No account, no API key, nothing leaves your device. The Hub binds loopback only.
-
-The public index is filled by tagging `v*` (existing release workflow). Until that tag exists, install the same wheels from a checkout:
-
-```bash
-make dist
-uv tool install --find-links dist personal-context-hub
-pch
-```
-
-After install, `pch` launches, `pch doctor` is the health check, `pch serve` is the browser, and `pch uninstall` keeps `~/.pch` unless you pass `--purge-data`. Simulator routes stay off unless `PCH_SIM_ENABLED=1`.
-
-### From source (contributors)
+Python 3.12 or newer and [uv](https://docs.astral.sh/uv/). No Node toolchain, no external account, nothing leaves your device.
 
 ```bash
 make install
-make desktop          # or: make serve
+uv run pch-sdk vault-init --data-dir /tmp/pch-demo --name Synthetic
+uv run pch-sdk compile --data-dir /tmp/pch-demo --purpose "what is in play" --budget 8
 ```
 
-Requires Node.js 22+ for the UI build. After that, `uv run pch` launches from the checkout.
-
-## Connect an assistant
-
-1. Open **Agents** in the Hub and create a pairing link.
-2. Pick **Cursor** or **Hermes** (both validated) or another runtime’s **recipe** and copy the snippet.
-3. Grant a preset — for example **Can read a specific project**.
-4. Ask the assistant something that depends on who you are. It should call `get_context_contract` before guessing.
-
-Step-by-step: [Pair an agent](docs/guides/pair-an-agent.md). What the agent receives: [Situation package](docs/guides/situation-package.md).
-
-## Import Calendar or Gmail
-
-Google requires **your** OAuth client. The Hub never ships a shared client ID.
-
-See [Google connectors](docs/guides/google-connectors.md). Calendar events import as `private`. Gmail imports only the labels, senders, or dates you select, as `sensitive` artifacts. Imported mail and calendar are **data, never instructions**.
-
-## From source
-
-Full guide: [CONTRIBUTING.md](CONTRIBUTING.md).
-
-```bash
-make install          # uv sync + frontend build
-make desktop          # or: make serve
-make test             # pytest
-make lint             # ruff + eslint
-make help             # all targets
-```
-
-Requires Python 3.12+, [uv](https://docs.astral.sh/uv/), and Node.js 22+ (UI build). `uv run pch` launches from the checkout.
-
-While running: interactive API docs at `http://127.0.0.1:8765/docs`, schema at `http://127.0.0.1:8765/openapi.json`.
+`make serve` starts the loopback API on `127.0.0.1:8765`. Pair an assistant with the MCP bridge: [Pair an agent](docs/guides/pair-an-agent.md).
 
 ## Repository
 
 | Path | Role |
 |---|---|
-| `packages/pch-core` | Vault, schema, policy, retrieval (no network) |
-| `packages/pch-server` | Loopback HTTP, plugin host, connectors, MCP |
-| `packages/pch-sdk` | CLI, MCP stdio bridge, plugin kit |
-| `packages/pch-lab` | Speckit loop, simulation, eval (contributor tooling) |
-| `packages/pch-archive` | Portable Context Archive export/import |
-| `apps/hub-desktop` | `pch` / pywebview shell |
-| `frontend/` | React 19 UI, built into `pch-server` static |
-| `plugins/` | Bundled import plugins (Calendar, Gmail, example RSS) |
+| `packages/pch-core` | Personal state, experience, evidence, evolution, context compilation. No network I/O |
+| `packages/pch-server` | Loopback HTTP and pairing |
+| `packages/pch-sdk` | Command line and MCP stdio bridge |
+| `packages/pch-lab` | Evaluation harness and Speckit loop (contributor tooling) |
+| `packages/pch-archive` | Portable personal state export/import |
 
-Architecture: [docs/architecture.md](docs/architecture.md).
+## From source
 
-## Community
+```bash
+make install
+make test
+make lint
+```
 
-- [Contributing](CONTRIBUTING.md)
-- [Security policy](SECURITY.md)
-- [Code of Conduct](CODE_OF_CONDUCT.md)
+Full guide: [CONTRIBUTING.md](CONTRIBUTING.md).

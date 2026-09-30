@@ -12,7 +12,6 @@ EXPECTED = [
     "pch_archive",
     "pch_sdk",
     "pch_server",
-    "personal_context_hub",
 ]
 
 
@@ -49,25 +48,10 @@ def check(dist: Path) -> list[str]:
     version = next(iter(versions))
     by_name = {_dist_name(w): w for w in wheels}
 
-    server = by_name["pch_server"]
-    with zipfile.ZipFile(server) as zf:
-        nameset = set(zf.namelist())
-        if "pch_server/static/index.html" not in nameset:
-            errors.append("pch_server wheel missing pch_server/static/index.html")
-        if not any(
-            n.startswith("pch_server/static/assets/") and n.endswith(".js") for n in nameset
-        ):
-            errors.append("pch_server wheel missing pch_server/static/assets/*.js")
-
-    entry = _read(by_name["personal_context_hub"], "entry_points.txt") or ""
-    if "personal-context-hub" not in entry or "pch" not in entry:
-        errors.append("personal_context_hub missing console scripts personal-context-hub and pch")
-
     siblings = {
         "pch_archive": ["pch-core"],
-        "pch_sdk": ["pch-core"],
+        "pch_sdk": ["pch-core", "pch-archive"],
         "pch_server": ["pch-core", "pch-archive", "pch-sdk"],
-        "personal_context_hub": ["pch-server"],
     }
     for dist_name, required in siblings.items():
         meta = _read(by_name[dist_name], "METADATA") or ""

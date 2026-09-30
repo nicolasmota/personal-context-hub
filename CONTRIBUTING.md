@@ -6,16 +6,14 @@ Thanks for helping with Personal Context Hub. This guide is for **from-source** 
 
 - Python 3.12 or newer
 - [uv](https://docs.astral.sh/uv/)
-- Node.js 22+ (UI build only; not required at runtime)
 
 ## Setup
 
 ```bash
-make install          # uv sync + frontend build
-make serve            # API with auto-reload (Python + UI watch)
-make desktop          # Hub with auto-reload (Python + UI watch)
+make install          # uv sync
+make serve            # loopback API with auto-reload
 make test             # pytest
-make lint             # ruff + eslint
+make lint             # ruff
 make check-secrets    # fail if tracked paths match the secrets deny-list
 make help             # all targets
 ```

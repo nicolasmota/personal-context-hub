@@ -21,7 +21,9 @@ def test_sdk_help_is_user_surface() -> None:
     assert result.returncode == 0, result.stderr
     out = result.stdout.lower()
     assert "mcp-bridge" in out
-    assert "plugin" in out
+    assert "plugin" not in out
+    assert "vault-init" in out
+    assert "compile" in out
     assert "demo-agent" in out
     assert "eval" not in out
     assert "loop" not in out
@@ -66,7 +68,7 @@ def test_docs_and_constitution_name_lab() -> None:
     if CONSTITUTION.is_file():
         constitution = CONSTITUTION.read_text(encoding="utf-8")
         assert "`packages/pch-lab`" in constitution
-        assert "**Version**: 1.3.1" in constitution
+        assert "**Version**: 2.0.0" in constitution
         sdk_bullet = [line for line in constitution.splitlines() if "`packages/pch-sdk`" in line]
         assert sdk_bullet
         assert "evaluation harness" not in " ".join(sdk_bullet).lower()

@@ -1,7 +1,7 @@
 [project]
 name = "pch-archive"
 version = "0.2.0"
-description = "Portable Context Archive v0 export/import"
+description = "Portable personal state export/import"
 requires-python = ">=3.12"
 license = "MIT"
 dependencies = [

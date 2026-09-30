@@ -16,7 +16,6 @@ HUB_PACKAGES = [
     (ROOT / "packages" / "pch-sdk" / "pyproject.toml", "pch-sdk"),
     (ROOT / "packages" / "pch-lab" / "pyproject.toml", "pch-lab"),
     (ROOT / "packages" / "pch-archive" / "pyproject.toml", "pch-archive"),
-    (ROOT / "apps" / "hub-desktop" / "pyproject.toml", "personal-context-hub"),
 ]
 
 FORBIDDEN_NAMES = frozenset({"pcl-core", "pcl-server", "pcl-sdk", "pcl-pca"})
@@ -66,7 +65,6 @@ def test_hub_family_project_names() -> None:
 
 def test_old_project_names_absent() -> None:
     leftovers = list((ROOT / "packages").glob("*/pyproject.toml"))
-    leftovers += [ROOT / "apps" / "hub-desktop" / "pyproject.toml"]
     for path in leftovers:
         if not path.is_file():
             continue
@@ -82,9 +80,6 @@ def test_live_import_dirs() -> None:
 
 
 def test_console_scripts() -> None:
-    desktop = _scripts(ROOT / "apps" / "hub-desktop" / "pyproject.toml")
-    assert "pch" in desktop
-    assert "personal-context-hub" in desktop
     sdk = _scripts(ROOT / "packages" / "pch-sdk" / "pyproject.toml")
     lab = _scripts(ROOT / "packages" / "pch-lab" / "pyproject.toml")
     server = _scripts(ROOT / "packages" / "pch-server" / "pyproject.toml")

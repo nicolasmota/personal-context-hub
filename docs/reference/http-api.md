@@ -24,7 +24,7 @@ X-PCH-Token: <token>
 
 | Actor | Token source | Can |
 |---|---|---|
-| Owner | `POST /v1/setup` or `GET /v1/bootstrap` | Full vault + pairing + plugins + export |
+| Owner | `POST /v1/setup` or `GET /v1/bootstrap` | Full vault, pairing, and export |
 | Connection | `POST /v1/connections/pair` | MCP tools and connection-scoped routes under its grants |
 
 Missing or revoked → error (`Revoked`). Owner-only routes use `require_owner`.
@@ -155,31 +155,6 @@ Assistant ids: `cursor`, `claude-code`, `claude-desktop`, `chatgpt`, `hermes`, `
 |---|---|
 | `GET` | `/v1/events` |
 | `GET` | `/v1/events/verify` |
-
----
-
-## Plugins and marketplace
-
-Prefix `/v1/plugins`: list/create, consent, enable, pause, disable, sync, delete, runs, get, update check/apply.
-
-Prefix `/v1/marketplace`: `GET /catalog`, `POST /refresh`, `POST /install`, plugin update under `/plugins/{installation_id}/update`.
-
-See [Plugins](../guides/plugins.md).
-
----
-
-## Connectors
-
-| Method | Path |
-|---|---|
-| `GET` | `/v1/connectors/oauth/callback` |
-| `GET` | `/v1/connectors/oauth/status` |
-| `PUT` | `/v1/connectors/oauth/credentials` |
-| `POST` `GET` | `/v1/connectors` |
-| `GET` `PATCH` `DELETE` | `/v1/connectors/{id}` (`DELETE ?purge=`) |
-| `POST` | `/v1/connectors/{id}/sync` `pause` `resume` |
-
-See [Google connectors](../guides/google-connectors.md).
 
 ---
 

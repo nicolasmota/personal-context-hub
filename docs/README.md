@@ -10,20 +10,18 @@ This tree is the product documentation. When GitHub Pages is enabled it is serve
 
 | I want to… | Go to |
 |---|---|
-| Install and open the Hub in a few minutes | [Getting started](getting-started.md) |
-| Understand memory vs context vs situation | [Concepts](concepts.md) |
-| Pair Cursor, Hermes, OpenClaw, or Claude | [Pair an agent](guides/pair-an-agent.md) |
-| Ask an agent for the situation package | [Situation package](guides/situation-package.md) |
-| Import Calendar or Gmail | [Google connectors](guides/google-connectors.md) |
+| See how state, evolution, and the contract fit | [Architecture](architecture.md) |
+| Read what this repository refuses to be | [Non-goals](non-goals.md) |
+| See the hypotheses and the benchmark | [Research](research.md) |
+| Move portable personal state | [Export and import](guides/export-import.md) |
+| Run the evaluation harness | [Developing](develop.md) |
+| Pair an assistant over MCP | [Pair an agent](guides/pair-an-agent.md) |
 
 ## Guides
 
 - [Pair an agent](guides/pair-an-agent.md) — pairing link, grant, MCP recipe
 - [Situation package](guides/situation-package.md) — `get_context_contract`
-- [Google connectors](guides/google-connectors.md) — OAuth client, Calendar, Gmail
-- [Plugins](guides/plugins.md) — bundled importers, marketplace, authoring
-- [Export and import](guides/export-import.md) — Portable Context Archive
-- [The Hub UI](guides/the-hub-ui.md) — Home, Agents, Review; Advanced for the rest
+- [Export and import](guides/export-import.md) — portable personal state
 
 ## Reference
 
@@ -40,7 +38,7 @@ This tree is the product documentation. When GitHub Pages is enabled it is serve
 
 - [Architecture](architecture.md) — packages, data flow, trust kernel
 - [Developing](develop.md) — from-source loop, tests, Speckit
-- [Security](security.md) — encryption, grants, plugins, reporting
+- [Security](security.md) — encryption, grants, ingested material, reporting
 - [Contributing](../CONTRIBUTING.md) — setup, PR expectations, secrets
 
 ## What this is not

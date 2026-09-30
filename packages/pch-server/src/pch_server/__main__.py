@@ -31,8 +31,6 @@ def _reload_dirs() -> list[str]:
                 parent / "packages" / "pch-server" / "src",
                 parent / "packages" / "pch-sdk" / "src",
                 parent / "packages" / "pch-archive" / "src",
-                parent / "apps" / "hub-desktop" / "src",
-                parent / "plugins",
             ]
             return [str(path) for path in dirs if path.is_dir()]
     return []

@@ -13,14 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
-      - name: Build UI
-        working-directory: frontend
-        run: npm ci && npm run build
       - uses: astral-sh/setup-uv@v4
       - name: Build wheels
         run: uv run python scripts/build_release.py
@@ -50,40 +42,10 @@ jobs:
         run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
       - name: Install from dist
         shell: bash
-        run: uv tool install --find-links dist "personal-context-hub==${{ steps.ver.outputs.version }}"
-      - name: Doctor
+        run: uv tool install --find-links dist "pch-server==${{ steps.ver.outputs.version }}"
+      - name: Server help
         shell: bash
-        run: |
-          pch doctor --json | tee doctor.json
-          python - <<'PY'
-          import json
-          report = json.load(open("doctor.json"))
-          assert report["encrypted"] is True
-          assert report["ui_bundled"] is True
-          print("native_window", report.get("native_window"))
-          PY
-      - name: Offline smoke
-        shell: bash
-        run: |
-          UV_OFFLINE=1 pch smoke --data-dir "${RUNNER_TEMP}/pch-smoke"
-      - name: Uninstall keeps data
-        shell: bash
-        run: |
-          data="${RUNNER_TEMP}/pch-keep"
-          mkdir -p "$data"
-          echo stay > "$data/marker"
-          pch uninstall --yes --data-dir "$data" || true
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            python - <<'PY'
-          import shutil, time, os
-          deadline = time.time() + 30
-          while time.time() < deadline:
-              if shutil.which("pch") is None:
-                  break
-              time.sleep(1)
-          PY
-          fi
-          test -e "$data/marker"
+        run: pch-server --help
 
   publish:
     needs: matrix

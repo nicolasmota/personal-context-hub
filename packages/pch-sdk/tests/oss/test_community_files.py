@@ -14,7 +14,6 @@ PYPROJECTS = [
     ROOT / "packages" / "pch-sdk" / "pyproject.toml",
     ROOT / "packages" / "pch-lab" / "pyproject.toml",
     ROOT / "packages" / "pch-archive" / "pyproject.toml",
-    ROOT / "apps" / "hub-desktop" / "pyproject.toml",
 ]
 
 
@@ -72,16 +71,13 @@ def test_discoverability_files_exist() -> None:
 def test_checkout_launch_docs_match_venv() -> None:
     gs = (ROOT / "docs" / "getting-started.md").read_text(encoding="utf-8")
     assert "you can type `pch`" not in gs
-    assert "uv run pch" in gs
-    desktop = (ROOT / "apps" / "hub-desktop" / "README.md").read_text(encoding="utf-8")
-    assert "uv run pch" in desktop
-    assert "uvx personal-context-hub" in desktop
+    assert "uv run pch-sdk" in gs
     cli = (ROOT / "docs" / "reference" / "cli.md").read_text(encoding="utf-8")
     assert "Simulator + catalog refresh" not in cli
     assert "dev_app() enables simulator" not in cli
     assert "uv tool upgrade personal-context-hub" not in cli
     assert "pin the uv tool" not in cli.lower()
-    assert "uvx personal-context-hub" in cli
+    assert "uv run pch-sdk" in cli
 
 
 def test_readme_front_door() -> None:
@@ -90,7 +86,7 @@ def test_readme_front_door() -> None:
     assert "local" in lower and ("~/.pch" in text or "your device" in lower)
     assert "mcp" in lower
     assert "make install" in text
-    assert "uvx personal-context-hub" in text
+    assert "uv run pch-sdk" in text
     assert "MIT" in text or "LICENSE" in text
     assert "CONTRIBUTING" in text
     assert "SECURITY" in text

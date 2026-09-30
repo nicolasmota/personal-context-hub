@@ -1,8 +1,8 @@
 from pathlib import Path
 
 from fastapi.testclient import TestClient
-from hub_desktop.cli import packaged_app
 from pch_core.service import Hub
+from pch_server.rest.app import create_app
 
 
 def test_existing_vault_reused_by_packaged_path(tmp_path: Path, monkeypatch):
@@ -13,7 +13,7 @@ def test_existing_vault_reused_by_packaged_path(tmp_path: Path, monkeypatch):
     created = hub.create("project", {"title": "Atlas", "charter": "keep", "status": "active"})
     obj_id = created["id"]
     hub.close()
-    app = packaged_app(source)
+    app = create_app(Hub(source, plain=True))
     with TestClient(app) as client:
         boot = client.get("/v1/bootstrap").json()
         client.headers["Authorization"] = f"Bearer {boot['owner_token']}"

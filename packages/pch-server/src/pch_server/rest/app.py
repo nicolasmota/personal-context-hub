@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 import os
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -11,7 +10,6 @@ from pch_core.errors import PclError
 from pch_core.service import Hub
 
 from pch_server.mcp.server import ToolHub
-from pch_server.plugins.migrate import migrate_connectors
 from pch_server.rest.auth import current_actor, get_hub
 from pch_server.rest.errors import pcl_error_handler
 from pch_server.rest.idempotency import IdempotencyMiddleware
@@ -19,12 +17,9 @@ from pch_server.rest.routers import (
     actions,
     briefs,
     connections,
-    connectors,
     events,
-    marketplace,
     memories,
     operational,
-    plugins,
     portability,
     projects,
     proposals,
@@ -36,27 +31,16 @@ from pch_server.rest.routers import (
     state,
     versions,
 )
-from pch_server.rest.spa import SpaStaticFiles
-from pch_server.sync.scheduler import scheduler_loop
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    stop = asyncio.Event()
-    refresh = bool(getattr(app.state, "catalog_refresh", True))
-    task = asyncio.create_task(scheduler_loop(app.state.hub, stop, catalog_refresh=refresh))
     try:
         yield
     finally:
         session = getattr(app.state, "sim_session", None)
         if session is not None:
             session.stop()
-        stop.set()
-        task.cancel()
-        try:
-            await task
-        except asyncio.CancelledError:
-            pass
 
 
 def create_app(
@@ -89,10 +73,6 @@ def create_app(
                 os.environ.get("PCH_SIM_DIR") or (hub.data_dir / "_sim")
             )
             resolved_sim_hub = None
-    try:
-        migrate_connectors(hub)
-    except Exception:
-        pass
     app = FastAPI(title="Personal Context Hub", version="0.2.0", lifespan=lifespan)
     app.state.hub = hub
     app.state.sim_enabled = bool(sim_enabled)
@@ -114,9 +94,6 @@ def create_app(
         search.router,
         briefs.router,
         connections.router,
-        connectors.router,
-        plugins.router,
-        marketplace.router,
         proposals.router,
         state.router,
         actions.router,
@@ -155,9 +132,6 @@ def create_app(
     def health() -> dict:
         return {"ok": True}
 
-    static = Path(__file__).parent.parent / "static"
-    if static.exists():
-        app.mount("/", SpaStaticFiles(directory=str(static), html=True), name="ui")
     return app
 
 

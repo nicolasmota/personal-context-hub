@@ -45,13 +45,9 @@ Grants are shown in plain language before confirm, are revocable, and apply to s
 
 The `forbidden_context` pytest marker is the automated isolation gate. New grant or assembly behavior must extend it.
 
-## Plugins
+## Ingested material
 
-Plugins run as child processes. They talk to the Hub over stdio JSON-RPC and never receive the vault key. `hub.http.fetch` is mediated against **declared hostnames** only. Undeclared access is denied by the host, not by marketplace review.
-
-v1 plugins are **import-only**: they may upsert artifacts/events through kernel capabilities; they must not send mail, create external calendar events, export the vault, or extend the Hub UI.
-
-Treat plugin output as untrusted data (`authority=source_imported`). It must not expand grants or be interpreted as instructions.
+This repository does not ship a plugin host, a provider connector, a desktop shell, or a web interface. Any ingested artifact is untrusted data: it must not expand grants, change policy, or act outward.
 
 ## Imported content is data
 
@@ -59,11 +55,11 @@ Email, calendar, RSS, and PCA imports are a prompt-injection surface. The consti
 
 ## Audit
 
-Consequential reads, writes, proposals, approvals, grant changes, and export/import are recorded in an append-only, hash-chained ledger. `GET /v1/events/verify` checks the chain. The UI **Audit** page is the human view.
+Consequential reads, writes, proposals, approvals, grant changes, and export/import are recorded in an append-only, hash-chained ledger. `GET /v1/events/verify` checks the chain.
 
-## CORS and local UI
+## CORS
 
-The FastAPI app allows all origins because it is loopback-only. That is convenient for the SPA; it is not a reason to bind `0.0.0.0`.
+The FastAPI app allows all origins because it is loopback-only. That is not a reason to bind `0.0.0.0`.
 
 ## Reporting a vulnerability
 

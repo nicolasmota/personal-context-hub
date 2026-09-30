@@ -12,9 +12,7 @@ Default: `~/.pch` (`$HOME/.pch`). Override with `--data-dir` or `PCH_DATA_DIR`.
 | `vault.key` | File fallback when the OS keyring is unused |
 | `vault.salt` | Argon2id salt when unlocking with a passphrase |
 | `blobs/` | Encrypted blob store |
-| `google_oauth.json` | Google Desktop OAuth client (mode `0600`) |
-| `exports/*.pca` | PCA exports |
-| `plugins/` | Installed plugin trees when used |
+| `exports/*.pca` | Portable personal state exports |
 | `_sim/` | Simulator vault when nested under the data dir |
 
 Keyring (when available): service `personal-context-hub`, account `vault-key`.
@@ -32,43 +30,19 @@ Related but separate:
 |---|---|---|
 | Host | `127.0.0.1` | Loopback only; `localhost` accepted; `::1` coerced to `127.0.0.1` |
 | Port | `8765` | `PCH_PORT` / `--port` |
-| OAuth redirect | `http://127.0.0.1:8765/v1/connectors/oauth/callback` | `PCH_OAUTH_REDIRECT` |
 
 ## Environment
 
 | Variable | Used by | Meaning |
 |---|---|---|
-| `PCH_DATA_DIR` | server, pch, desktop | Vault directory |
-| `PCH_PORT` | same | Listen port |
+| `PCH_DATA_DIR` | server | Vault directory |
+| `PCH_PORT` | server | Listen port |
 | `PCH_PLAIN_SQLITE` | vault open | `1` = allow unencrypted SQLite |
 | `PCH_VAULT_KEY` | vault open | Hex key override |
 | `PCH_TOKEN` | mcp-bridge | Connection token |
 | `PCH_BASE` | mcp-bridge, demo-agent | Hub base URL |
 | `PCH_SIM_ENABLED` | server | `1` = simulator routes |
 | `PCH_SIM_DIR` | server | Simulator data dir |
-| `PCH_CATALOG_URL` | marketplace | Signed catalog location |
-| `PCH_CATALOG_PUBKEY` | marketplace | Catalog signature key |
-| `PCH_CATALOG_REFRESH` | server | `1` = refresh catalog on a timer |
-| `PCH_PLUGINS_DIR` | plugin host | Extra plugin search path |
-| `PCH_OAUTH_REDIRECT` | Google OAuth | Redirect URI |
-| `GOOGLE_OAUTH_CLIENT_ID` | connectors | Alternative to `google_oauth.json` |
-| `GOOGLE_OAUTH_CLIENT_SECRET` | connectors | Alternative to `google_oauth.json` |
-| `PCH_PLUGIN_SRC` / `PCH_PLUGIN_ENTRY` | plugin child | Set by the host; not for humans |
-
-## google_oauth.json
-
-```json
-{
-  "client_id": "xxxxx.apps.googleusercontent.com",
-  "client_secret": "xxxxx"
-}
-```
-
-See [Google connectors](../guides/google-connectors.md).
-
-## Frontend / Node
-
-Node.js 22+ is **build-time** for the UI. Runtime is Python. `make frontend` runs `npm ci` and `npm run build` into `pch-server` static assets (gitignored). `make serve` / `make desktop` run `npm run build:watch` alongside the API.
 
 ## Secrets deny-list (git)
 

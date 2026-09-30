@@ -9,17 +9,17 @@ Docs: https://nicolasmota.github.io/personal-context-hub/
 
 ## Start
 
-- [Getting started](https://nicolasmota.github.io/personal-context-hub/getting-started.html): `uvx personal-context-hub` (or `make install` from a checkout), launch, first-run vault
+- [Getting started](https://nicolasmota.github.io/personal-context-hub/getting-started.html): `make install`, then `uv run pch-sdk vault-init` and `uv run pch-sdk compile`
 - [Concepts](https://nicolasmota.github.io/personal-context-hub/concepts.html): memory vs context vs situation; grants; classification
 - [Pair an agent](https://nicolasmota.github.io/personal-context-hub/guides/pair-an-agent.html): pairing link, grant presets, Cursor and Hermes recipes
 - [Situation package](https://nicolasmota.github.io/personal-context-hub/guides/situation-package.html): `get_context_contract` and what comes back
 
 ## Product guides
 
-- [Google connectors](https://nicolasmota.github.io/personal-context-hub/guides/google-connectors.html): your OAuth client; Calendar `private`; Gmail `sensitive`
-- [Plugins](https://nicolasmota.github.io/personal-context-hub/guides/plugins.html): import-only plugins, marketplace, authoring
-- [Export and import](https://nicolasmota.github.io/personal-context-hub/guides/export-import.html): Portable Context Archive
-- [The Hub UI](https://nicolasmota.github.io/personal-context-hub/guides/the-hub-ui.html): Home, Agents, Review; Advanced for the rest
+- [Architecture](https://nicolasmota.github.io/personal-context-hub/architecture.html): five primitives and package boundaries
+- [Non-goals](https://nicolasmota.github.io/personal-context-hub/non-goals.html): what this repository refuses to be
+- [Research](https://nicolasmota.github.io/personal-context-hub/research.html): hypotheses, baselines, synthetic benchmark
+- [Export and import](https://nicolasmota.github.io/personal-context-hub/guides/export-import.html): portable personal state `0.2.0`
 
 ## Reference
 
@@ -28,14 +28,14 @@ Docs: https://nicolasmota.github.io/personal-context-hub/
 - [OpenAPI 3.1](https://nicolasmota.github.io/personal-context-hub/openapi.json): also `GET /openapi.json` while the Hub is running
 - [Data model](https://nicolasmota.github.io/personal-context-hub/reference/data-model.html)
 - [Situation package envelope](https://nicolasmota.github.io/personal-context-hub/reference/context-contract.schema.json): JSON Schema; check a package without the Hub
-- [CLI](https://nicolasmota.github.io/personal-context-hub/reference/cli.html): `pch` / `personal-context-hub`
+- [CLI](https://nicolasmota.github.io/personal-context-hub/reference/cli.html): `uv run pch-sdk`
 - [Configuration](https://nicolasmota.github.io/personal-context-hub/reference/configuration.html)
 - [Python SDK](https://nicolasmota.github.io/personal-context-hub/reference/python-sdk.html)
 
 ## How it is built
 
 - [Architecture](https://nicolasmota.github.io/personal-context-hub/architecture.html): pch-core (no network), pch-server, pch-sdk, pch-lab, pch-archive
-- [Security](https://nicolasmota.github.io/personal-context-hub/security.html): encryption, grants, plugins, reporting
+- [Security](https://nicolasmota.github.io/personal-context-hub/security.html): encryption, grants, ingested material, reporting
 - [Developing](https://nicolasmota.github.io/personal-context-hub/develop.html)
 
 ## Optional

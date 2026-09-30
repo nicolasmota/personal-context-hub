@@ -95,6 +95,14 @@ class PairingMixin:
             self.ledger.append(EventKind.CONNECTION_REVOKED, OWNER, "Connection revoked", [conn_id])
         return payload
 
+    def recipe_issued(self, connection_id: str, assistant: str) -> None:
+        self.ledger.append(
+            EventKind.CONNECTION_RECIPE_ISSUED,
+            OWNER,
+            f"recipe issued for {assistant}",
+            [connection_id],
+        )
+
     def _put_grant(self, grant: Grant) -> dict:
         payload = grant.model_dump(mode="json")
         payload.update({

@@ -36,14 +36,6 @@ Headers: `Authorization: Bearer {token}`.
 
 `raise_for_status()` is used; handle `httpx.HTTPStatusError` for 401 (revoked) and 4xx validation.
 
-## Plugin authoring
-
-```python
-from pch_sdk.plugin_runtime import hub, PermissionDenied
-```
-
-See [Plugins](../guides/plugins.md). Kit CLI: `pch-sdk plugin new|validate|pack|dev`.
-
 ## Capture guidance (for adapters)
 
 `pch_sdk.capture_guidance` exports the strings baked into recipes:
