@@ -10,11 +10,17 @@ from pch_core.memory.sensitivity import blocks_auto_accept
 from pch_core.schema.audit import EventKind
 from pch_core.schema.memory import Memory
 from pch_core.schema.proposal import OperationalProposal, ProposalStatus
-from pch_core.timeutil import now_iso, row_is_current
+from pch_core.timeutil import now_iso, parse_instant, row_is_current
 
 
 class ProposalsMixin:
-    def propose_memory(self, body: dict, actor: str, evidence_refs: list[str]) -> dict:
+    def propose_memory(
+        self,
+        body: dict,
+        actor: str,
+        evidence_refs: list[str],
+        expires_at: str | None = None,
+    ) -> dict:
         if actor == OWNER:
             raise ValidationFailed("owner writes memories directly")
         mem_body = {**body}
@@ -38,53 +44,66 @@ class ProposalsMixin:
         if blocks_auto_accept(memory) and proposal.status == ProposalStatus.AUTO_ACCEPTED:
             proposal.status = ProposalStatus.PENDING
             proposal.policy_verdict = "needs_review"
+        if evidence_refs and all(
+            self._evidence_kind(evidence_id) == "agent_inference" for evidence_id in evidence_refs
+        ):
+            proposal.status = ProposalStatus.PENDING
+            proposal.policy_verdict = "needs_review"
+        if expires_at:
+            parse_instant(expires_at)
         with self.engine.tx():
             p = proposal.model_dump(mode="json")
-            p.update({
-                "type": "proposal",
-                "owner": self.person_id(),
-                "labels": [],
-                "classification": "personal",
-                "created_at": proposal.created_at,
-                "updated_at": now_iso(),
-                "source_refs": evidence_refs,
-                "confidence": memory.confidence,
-                "authority": "proposed",
-                "retention": {"mode": "until_revoked"},
-                "policy_tags": [],
-                "version": 1,
-                "statement": memory.statement,
-            })
-            self.store.put(p)
-            for c in conflicts:
-                cp = c.model_dump(mode="json")
-                cp.update({
-                    "type": "conflict",
+            p.update(
+                {
+                    "type": "proposal",
                     "owner": self.person_id(),
                     "labels": [],
                     "classification": "personal",
-                    "created_at": now_iso(),
+                    "created_at": proposal.created_at,
                     "updated_at": now_iso(),
-                    "source_refs": [],
-                    "confidence": 1.0,
-                    "authority": "user_confirmed",
+                    "source_refs": evidence_refs,
+                    "confidence": memory.confidence,
+                    "authority": "proposed",
                     "retention": {"mode": "until_revoked"},
                     "policy_tags": [],
                     "version": 1,
-                })
+                    "statement": memory.statement,
+                    "expires_at": expires_at,
+                }
+            )
+            self.store.put(p)
+            for c in conflicts:
+                cp = c.model_dump(mode="json")
+                cp.update(
+                    {
+                        "type": "conflict",
+                        "owner": self.person_id(),
+                        "labels": [],
+                        "classification": "personal",
+                        "created_at": now_iso(),
+                        "updated_at": now_iso(),
+                        "source_refs": [],
+                        "confidence": 1.0,
+                        "authority": "user_confirmed",
+                        "retention": {"mode": "until_revoked"},
+                        "policy_tags": [],
+                        "version": 1,
+                    }
+                )
                 self.store.put(cp)
             self.ledger.append(EventKind.MEMORY_PROPOSED, actor, "memory proposed", [proposal.id])
         return {**p, "conflicts": [c.model_dump(mode="json") for c in conflicts]}
 
     def decide_proposal(self, proposal_id: str, accept: bool, edits: dict | None = None) -> dict:
+        self.expire_due_proposals()
         with self.engine.tx():
             p = self.store.get(proposal_id)
+            if p.get("status") == ProposalStatus.EXPIRED:
+                raise ValidationFailed("proposal expired")
             if accept:
                 mem = p["proposed_memory"]
                 origin = [
-                    lab
-                    for lab in (mem.get("labels") or [])
-                    if str(lab).startswith("origin:")
+                    lab for lab in (mem.get("labels") or []) if str(lab).startswith("origin:")
                 ]
                 if edits:
                     mem = {**mem, **edits}
@@ -111,12 +130,39 @@ class ProposalsMixin:
                     stored = self.store.put(mem)
                 p["status"] = "accepted"
                 self.store.put(p)
-                self.ledger.append(EventKind.MEMORY_ACCEPTED, OWNER, "proposal accepted", [stored["id"]])
+                self.ledger.append(
+                    EventKind.MEMORY_ACCEPTED, OWNER, "proposal accepted", [stored["id"]]
+                )
                 return stored
             p["status"] = "rejected"
             self.store.put(p)
             self.ledger.append(EventKind.MEMORY_REJECTED, OWNER, "proposal rejected", [proposal_id])
             return p
+
+    def expire_due_proposals(self, now: str | None = None) -> list[str]:
+        moment = parse_instant(now) if now else datetime.now(UTC)
+        expired: list[str] = []
+        with self.engine.tx():
+            for row in self.store.list("proposal"):
+                if row.get("status") != ProposalStatus.PENDING:
+                    continue
+                deadline = row.get("expires_at")
+                if not deadline or parse_instant(str(deadline)) > moment:
+                    continue
+                row["status"] = ProposalStatus.EXPIRED.value
+                row["updated_at"] = now_iso()
+                self.store.put(row)
+                expired.append(row["id"])
+        return expired
+
+    def _evidence_kind(self, evidence_id: str) -> str | None:
+        try:
+            row = self.get(evidence_id)
+        except NotFound:
+            return None
+        if row.get("type") != "evidence":
+            return None
+        return row.get("kind")
 
     def propose_operational_state(
         self,

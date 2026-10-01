@@ -22,6 +22,8 @@ class ActionIntent(BaseModel):
     payload: dict[str, Any] = Field(default_factory=dict)
     basis_refs: list[str] = Field(default_factory=list)
     idempotency_key: str
+    contract_id: str
+    decision: str | None = None
     status: IntentStatus = IntentStatus.PENDING
     declined_parent_id: str | None = None
     created_at: str

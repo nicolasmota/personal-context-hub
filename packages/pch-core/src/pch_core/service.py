@@ -9,6 +9,7 @@ from pch_core.hub.capture import CaptureMixin
 from pch_core.hub.const import OWNER
 from pch_core.hub.context import ContextMixin
 from pch_core.hub.evolution import EvolutionMixin
+from pch_core.hub.explain import ExplainMixin
 from pch_core.hub.objects import ObjectsMixin
 from pch_core.hub.pairing import PairingMixin
 from pch_core.hub.proposals import ProposalsMixin
@@ -36,6 +37,7 @@ class Hub(
     ActionsMixin,
     CaptureMixin,
     EvolutionMixin,
+    ExplainMixin,
 ):
     def __init__(
         self, data_dir: Path, passphrase: str | None = None, *, plain: bool | None = None

@@ -11,6 +11,7 @@ class ProposalStatus(StrEnum):
     ACCEPTED = "accepted"
     REJECTED = "rejected"
     SUPERSEDED = "superseded"
+    EXPIRED = "expired"
 
 
 class MemoryProposal(BaseModel):
@@ -23,6 +24,7 @@ class MemoryProposal(BaseModel):
     policy_verdict: str = "needs_review"
     conflict_ids: list[str] = Field(default_factory=list)
     created_at: str
+    expires_at: str | None = None
 
 
 class OperationalProposal(BaseModel):

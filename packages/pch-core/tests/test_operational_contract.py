@@ -43,6 +43,7 @@ def test_intent_not_action_intent(hub):
     seed = seed_trip(hub)
     pid = seed["project"]["id"]
     hub.patch(pid, {"situation_intent": "choose next itinerary"}, None)
+    contract = hub.get_context_contract(OWNER, "continue planning the trip")
     action = hub.propose_action(
         "owner",
         "send_message",
@@ -50,8 +51,8 @@ def test_intent_not_action_intent(hub):
         {},
         [],
         "k-book-hotel",
+        contract_id=contract["contract_id"],
     )
-    contract = hub.get_context_contract(OWNER, "continue planning the trip")
     assert contract["situation"]["situation_intent"] == "choose next itinerary"
     assert contract["situation"]["situation_intent"] != action["summary_human"]
     assert contract["situation"]["situation_intent"] != seed["goal"]["title"]

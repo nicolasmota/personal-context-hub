@@ -481,6 +481,25 @@
       ],
       "default": null,
       "title": "Budget"
+    },
+    "onward_sharing": {
+      "const": "prohibited",
+      "default": "prohibited",
+      "title": "Onward Sharing",
+      "type": "string"
+    },
+    "valid_until": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Valid Until"
     }
   },
   "required": [

@@ -1,7 +1,19 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
+
 from pch_core.ids import new_id
 from pch_core.schema.grant import PRESETS, Capability, Grant, GrantStatus
+from pch_core.timeutil import parse_instant
+
+
+def grant_is_current(grant: Grant, at: datetime | None = None) -> bool:
+    if grant.status != GrantStatus.ACTIVE:
+        return False
+    if not grant.expires_at:
+        return True
+    moment = at or datetime.now(UTC)
+    return parse_instant(grant.expires_at) > moment
 
 
 def grant_from_preset(

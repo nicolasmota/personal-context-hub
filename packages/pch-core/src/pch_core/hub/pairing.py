@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import secrets
+from datetime import UTC, datetime
 
 from pch_core.errors import PolicyDenied, Revoked, ValidationFailed
 from pch_core.hub.const import OWNER
@@ -10,8 +11,8 @@ from pch_core.policy.grants import grant_from_caps, grant_from_preset
 from pch_core.retrieval.manifests import build_manifest
 from pch_core.schema.audit import EventKind
 from pch_core.schema.connection import AgentConnection, ConnectionStatus
-from pch_core.schema.grant import Grant
-from pch_core.timeutil import now_iso
+from pch_core.schema.grant import Grant, GrantStatus
+from pch_core.timeutil import now_iso, parse_instant
 
 
 class PairingMixin:
@@ -19,11 +20,23 @@ class PairingMixin:
         code = secrets.token_urlsafe(16)
         conn = AgentConnection(id=new_id("connection"), name=name, status=ConnectionStatus.PENDING)
         with self.engine.tx():
-            self.store.put({**conn.model_dump(mode="json"), "type": "connection", "owner": self.person_id(),
-                            "labels": list(labels or []), "classification": "private", "created_at": now_iso(),
-                            "updated_at": now_iso(), "source_refs": [], "confidence": 1.0,
-                            "authority": "user_confirmed", "retention": {"mode": "until_revoked"},
-                            "policy_tags": [], "version": 1})
+            self.store.put(
+                {
+                    **conn.model_dump(mode="json"),
+                    "type": "connection",
+                    "owner": self.person_id(),
+                    "labels": list(labels or []),
+                    "classification": "private",
+                    "created_at": now_iso(),
+                    "updated_at": now_iso(),
+                    "source_refs": [],
+                    "confidence": 1.0,
+                    "authority": "user_confirmed",
+                    "retention": {"mode": "until_revoked"},
+                    "policy_tags": [],
+                    "version": 1,
+                }
+            )
             self._kv_set(f"link:{code}", conn.id)
         return {"link": f"pch://pair/{code}", "code": code, "connection_id": conn.id}
 
@@ -44,7 +57,9 @@ class PairingMixin:
             payload["version"] = int(payload.get("version", 1)) + 1
             self.store.put(payload)
             self._kv_set(f"token:{token_hash}", conn_id)
-            self.ledger.append(EventKind.CONNECTION_PAIRED, conn_id, f"Paired {payload.get('name')}", [conn_id])
+            self.ledger.append(
+                EventKind.CONNECTION_PAIRED, conn_id, f"Paired {payload.get('name')}", [conn_id]
+            )
         return {"connection_id": conn_id, "token": token}
 
     def issue_connection_token(self, connection_id: str) -> str:
@@ -105,32 +120,44 @@ class PairingMixin:
 
     def _put_grant(self, grant: Grant) -> dict:
         payload = grant.model_dump(mode="json")
-        payload.update({
-            "type": "grant",
-            "owner": self.person_id(),
-            "labels": [],
-            "classification": "private",
-            "created_at": now_iso(),
-            "updated_at": now_iso(),
-            "source_refs": [],
-            "confidence": 1.0,
-            "authority": "user_confirmed",
-            "retention": {"mode": "until_revoked"},
-            "policy_tags": [],
-            "version": 1,
-            "id": grant.id,
-        })
+        payload.update(
+            {
+                "type": "grant",
+                "owner": self.person_id(),
+                "labels": [],
+                "classification": "private",
+                "created_at": now_iso(),
+                "updated_at": now_iso(),
+                "source_refs": [],
+                "confidence": 1.0,
+                "authority": "user_confirmed",
+                "retention": {"mode": "until_revoked"},
+                "policy_tags": [],
+                "version": 1,
+                "id": grant.id,
+            }
+        )
         return self.store.put(payload)
 
-    def create_grant(self, connection_id: str, preset: str | None, capabilities: list[str] | None,
-                     selectors: dict | None, classification_ceiling: str = "private") -> dict:
+    def create_grant(
+        self,
+        connection_id: str,
+        preset: str | None,
+        capabilities: list[str] | None,
+        selectors: dict | None,
+        classification_ceiling: str = "private",
+    ) -> dict:
         if preset:
             grant = grant_from_preset(connection_id, preset, selectors, classification_ceiling)
         else:
-            grant = grant_from_caps(connection_id, capabilities or [], selectors, classification_ceiling)
+            grant = grant_from_caps(
+                connection_id, capabilities or [], selectors, classification_ceiling
+            )
         with self.engine.tx():
             stored = self._put_grant(grant)
-            self.ledger.append(EventKind.GRANT_CREATED, OWNER, grant.summary_human, [grant.id, connection_id])
+            self.ledger.append(
+                EventKind.GRANT_CREATED, OWNER, grant.summary_human, [grant.id, connection_id]
+            )
         return stored
 
     def revoke_grant(self, grant_id: str) -> dict:
@@ -143,10 +170,40 @@ class PairingMixin:
 
     def grants_for(self, connection_id: str) -> list[Grant]:
         out = []
-        for row in self.store.list("grant"):
-            if row.get("connection_id") == connection_id:
-                out.append(Grant.model_validate({k: v for k, v in row.items() if k in Grant.model_fields}))
+        moment = datetime.now(UTC)
+        with self.engine.tx():
+            for row in self.store.list("grant"):
+                if row.get("connection_id") != connection_id:
+                    continue
+                if row.get("status") == GrantStatus.ACTIVE and row.get("expires_at"):
+                    if parse_instant(str(row["expires_at"])) <= moment:
+                        row["status"] = GrantStatus.EXPIRED.value
+                        row["updated_at"] = now_iso()
+                        self.store.put(row)
+                out.append(
+                    Grant.model_validate({k: v for k, v in row.items() if k in Grant.model_fields})
+                )
         return out
+
+    def delegate_grant(
+        self, source_grant_id: str, connection_id: str, capabilities: list[str]
+    ) -> dict:
+        source = self.store.get(source_grant_id)
+        if source.get("type") != "grant":
+            raise ValidationFailed("source must be a grant")
+        if source.get("status") != GrantStatus.ACTIVE:
+            raise ValidationFailed("only an active grant can be delegated")
+        source_caps = {str(item) for item in (source.get("capabilities") or [])}
+        requested = [str(item) for item in capabilities]
+        if not requested or not set(requested) < source_caps:
+            raise ValidationFailed("delegation must be narrower")
+        return self.create_grant(
+            connection_id,
+            None,
+            requested,
+            dict(source.get("selectors") or {}),
+            source.get("classification_ceiling") or "private",
+        )
 
     def all_grants(self, connection_id: str | None = None) -> list[dict]:
         rows = self.store.list("grant")
@@ -154,8 +211,9 @@ class PairingMixin:
             rows = [r for r in rows if r.get("connection_id") == connection_id]
         return rows
 
-    def create_manifest(self, actor: str, purpose: str, requested: list[str],
-                        selectors: dict, ttl: int = 900) -> dict:
+    def create_manifest(
+        self, actor: str, purpose: str, requested: list[str], selectors: dict, ttl: int = 900
+    ) -> dict:
         if actor == OWNER:
             raise ValidationFailed("owner uses CRUD, not manifests")
         conn = self.store.get(actor)
@@ -168,23 +226,27 @@ class PairingMixin:
         # also include project itself if allowed
         manifest = build_manifest(actor, purpose, requested, selectors, entities, redactions, ttl)
         payload = manifest.model_dump(mode="json")
-        payload.update({
-            "type": "manifest",
-            "owner": self.person_id(),
-            "labels": [],
-            "classification": "private",
-            "created_at": now_iso(),
-            "updated_at": now_iso(),
-            "source_refs": [],
-            "confidence": 1.0,
-            "authority": "user_confirmed",
-            "retention": {"mode": "expires", "at": manifest.expires_at},
-            "policy_tags": [],
-            "version": 1,
-        })
+        payload.update(
+            {
+                "type": "manifest",
+                "owner": self.person_id(),
+                "labels": [],
+                "classification": "private",
+                "created_at": now_iso(),
+                "updated_at": now_iso(),
+                "source_refs": [],
+                "confidence": 1.0,
+                "authority": "user_confirmed",
+                "retention": {"mode": "expires", "at": manifest.expires_at},
+                "policy_tags": [],
+                "version": 1,
+            }
+        )
         with self.engine.tx():
             self.store.put(payload)
-            self.ledger.append(EventKind.CONTEXT_DISCLOSE, actor, f"manifest {purpose}", [manifest.id])
+            self.ledger.append(
+                EventKind.CONTEXT_DISCLOSE, actor, f"manifest {purpose}", [manifest.id]
+            )
         return payload
 
     def get_manifest(self, manifest_id: str, actor: str) -> dict:

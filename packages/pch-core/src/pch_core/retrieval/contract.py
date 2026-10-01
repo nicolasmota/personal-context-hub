@@ -13,6 +13,7 @@ from pch_core.context.selection import rank_established_first, select_for_purpos
 from pch_core.errors import NotFound
 from pch_core.ids import new_id
 from pch_core.policy.evaluator import Decision, PolicyInput, PolicyResult, evaluate
+from pch_core.policy.grants import grant_is_current
 from pch_core.retrieval.ask import significant_tokens
 from pch_core.retrieval.candidate import (
     RetrievalCandidate,
@@ -36,7 +37,7 @@ from pch_core.schema.contract import (
     ScopeSummary,
     SituationRef,
 )
-from pch_core.schema.grant import Grant, GrantStatus
+from pch_core.schema.grant import Grant
 from pch_core.timeutil import now_iso, parse_instant, row_is_current
 from pch_core.vault.objects import ObjectStore
 
@@ -292,7 +293,7 @@ def assemble_traced(
     tokens = significant_tokens(query.purpose)
     eval_at = parse_instant(query.as_of) if query.as_of else datetime.now(UTC)
     omission_counts: dict[OmissionCategory, int] = defaultdict(int)
-    active_grants = [g for g in grants if g.status == GrantStatus.ACTIVE]
+    active_grants = [g for g in grants if grant_is_current(g, eval_at)]
 
     def decide(obj: dict[str, Any], resource_project: str | None) -> PolicyResult:
         if is_owner:
@@ -370,7 +371,9 @@ def assemble_traced(
         if len(in_scope) == 1:
             selected = in_scope[0]
         elif len(in_scope) > 1:
-            situation_ties = [_situation_ref(p) for p in sorted(in_scope, key=lambda row: row["id"])]
+            situation_ties = [
+                _situation_ref(p) for p in sorted(in_scope, key=lambda row: row["id"])
+            ]
 
     if selected is None and not situation_ties and _purpose_is_generic(tokens):
         live = pick_home_project(projects)
@@ -572,6 +575,7 @@ def assemble_traced(
             conflicts.append(ConflictPair(item_ids=sorted(ids), reason="preference_key_collision"))
     conflicts.sort(key=lambda c: c.item_ids[0])
 
+    grant = None
     if is_owner:
         scope = ScopeSummary(
             grant_id="owner",
@@ -633,6 +637,12 @@ def assemble_traced(
             assembled_at=datetime.now(UTC),
             sufficient=sufficient,
             budget=query.max_items,
+            onward_sharing="prohibited",
+            valid_until=(
+                parse_instant(str(grant.expires_at))
+                if grant is not None and grant.expires_at
+                else None
+            ),
         ),
         store,
         query,

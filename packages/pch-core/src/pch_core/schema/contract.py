@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import StrEnum
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -142,6 +142,8 @@ class ContextContract(BaseModel):
     assembled_at: datetime
     sufficient: bool = False
     budget: int | None = None
+    onward_sharing: Literal["prohibited"] = "prohibited"
+    valid_until: datetime | None = None
 
 
 ENVELOPE_SCHEMA_ID = (
