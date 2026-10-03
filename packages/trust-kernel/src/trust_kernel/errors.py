@@ -59,3 +59,11 @@ class ApiVersionUnsupported(PclError):
 class ConsentRequired(PclError):
     def __init__(self, detail: str = "consent required") -> None:
         super().__init__("consent_required", detail, 422)
+
+
+class VaultKeyError(PclError):
+    def __init__(
+        self,
+        detail: str = "This record cannot be opened. No available key unlocks it.",
+    ) -> None:
+        super().__init__("vault_key", detail, 500)

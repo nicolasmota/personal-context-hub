@@ -99,15 +99,27 @@ def new_run(
     }
 
 
-def infer_stage(feature_path: Path) -> str:
+def gauntlet_enabled(repo: Path) -> bool:
+    """True unless `.specify/loop.json` sets `gauntlet` to false."""
+    path = repo / ".specify" / "loop.json"
+    if not path.is_file():
+        return True
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return True
+    return data.get("gauntlet", True) is not False
+
+
+def infer_stage(feature_path: Path, *, gauntlet: bool = True) -> str:
     if not (feature_path / "spec.md").is_file():
         return "specify"
-    if find_bar_file(feature_path) is None:
+    if gauntlet and find_bar_file(feature_path) is None:
         return "freeze_bar"
     if not pack_complete(feature_path):
         return "plan"
     if not (feature_path / "tasks.md").is_file():
-        return "gauntlet"
+        return "gauntlet" if gauntlet else "tasks"
     return "tasks"
 
 
@@ -170,6 +182,9 @@ def complete_allowed(run: dict[str, Any]) -> bool:
     if run.get("unmet_items"):
         return False
     if run.get("mode") == "design-only":
+        if run.get("gauntlet", True) is False:
+            plan = run.get("stages", {}).get("plan") or {}
+            return plan.get("outcome") == "pass"
         gauntlet = run.get("stages", {}).get("gauntlet") or {}
         return gauntlet.get("outcome") == "pass"
     test = run.get("stages", {}).get("test") or {}
@@ -240,7 +255,8 @@ def start(
         save_run(root, run)
         return run
 
-    current = infer_stage(root / feature_dir)
+    enabled = gauntlet_enabled(root)
+    current = infer_stage(root / feature_dir, gauntlet=enabled)
     run = new_run(
         feature_dir=feature_dir,
         mode=mode,
@@ -248,6 +264,7 @@ def start(
         source_value=source_value,
         current_stage=current,
     )
+    run["gauntlet"] = enabled
     save_run(root, run)
     return run
 
@@ -298,11 +315,12 @@ def record(
     if run["status"] == "failed":
         raise ValueError("Run already failed")
     if stage == "plan":
-        if not run.get("bar_sha256"):
-            raise ValueError("Cannot record plan before the Gauntlet bar is frozen")
-        bar = find_bar_file(feat)
-        if bar is None or sha256_file(bar) != run["bar_sha256"]:
-            raise ValueError("Gauntlet bar missing or hash drifted (bar)")
+        if run.get("gauntlet", True) is not False:
+            if not run.get("bar_sha256"):
+                raise ValueError("Cannot record plan before the Gauntlet bar is frozen")
+            bar = find_bar_file(feat)
+            if bar is None or sha256_file(bar) != run["bar_sha256"]:
+                raise ValueError("Gauntlet bar missing or hash drifted (bar)")
         if not pack_complete(feat):
             raise ValueError("Plan pack files missing")
     if stage == "freeze_bar":
@@ -356,22 +374,34 @@ def record(
 
 
 def _advance_after_pass(run: dict[str, Any], stage: str) -> None:
+    gauntlet = run.get("gauntlet", True) is not False
+    if stage in {"specify", "clarify"}:
+        run["current_stage"] = "freeze_bar" if gauntlet else "plan"
+        return
+    if stage == "plan":
+        if not gauntlet:
+            if run["mode"] == "design-only":
+                run["current_stage"] = "complete"
+                run["status"] = "complete"
+                run["stages"]["complete"]["outcome"] = "pass"
+                return
+            run["current_stage"] = "tasks"
+            return
+        run["current_stage"] = "gauntlet"
+        return
+    if stage == "gauntlet" and run["mode"] == "design-only":
+        run["current_stage"] = "complete"
+        run["status"] = "complete"
+        run["stages"]["complete"]["outcome"] = "pass"
+        return
     nxt = {
-        "specify": "freeze_bar",
-        "clarify": "freeze_bar",
-        "plan": "gauntlet",
-        "gauntlet": "complete" if run["mode"] == "design-only" else "tasks",
+        "gauntlet": "tasks",
         "tasks": "analyze",
         "analyze": "implement",
         "implement": "test",
         "test": "delivery",
         "converge": "implement",
     }
-    if stage == "gauntlet" and run["mode"] == "design-only":
-        run["current_stage"] = "complete"
-        run["status"] = "complete"
-        run["stages"]["complete"]["outcome"] = "pass"
-        return
     if stage in nxt:
         run["current_stage"] = nxt[stage]
 

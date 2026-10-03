@@ -32,6 +32,23 @@ def test_full_order_without_skip(loop_repo: Path, monkeypatch: pytest.MonkeyPatc
     assert next_step()["stage"] == "gauntlet"
 
 
+def test_gauntlet_off_skips_bar_and_critics(
+    loop_repo: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    repo = loop_repo
+    feat = repo / "specs" / "009-fixture"
+    (repo / ".specify" / "loop.json").write_text('{"gauntlet": false}\n', encoding="utf-8")
+    monkeypatch.chdir(repo)
+    start(mode="full", dir="specs/009-fixture")
+    assert next_step()["stage"] == "plan"
+    _pack(feat)
+    record(stage="plan", outcome="pass")
+    assert next_step()["stage"] == "tasks"
+    run = load_run(repo, "specs/009-fixture")
+    assert run["gauntlet"] is False
+    assert run["stages"].get("gauntlet", {}).get("outcome") is None
+
+
 def test_design_only_stops_after_gauntlet_win(
     loop_repo: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

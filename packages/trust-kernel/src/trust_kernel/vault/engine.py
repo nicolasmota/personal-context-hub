@@ -156,6 +156,31 @@ def _connect_sqlcipher(path: Path, key: bytes):
     return conn
 
 
+def key_opens(path: Path, key: bytes) -> bool:
+    """True when `key` reads this database. A failed probe does not change the file.
+
+    A plaintext SQLite file is not encrypted, so the probe leaves the bytes
+    untouched and reports that a key is not required to read it.
+    """
+    if not path.is_file() or path.stat().st_size == 0:
+        return False
+    before = path.read_bytes()
+    if before.startswith(b"SQLite format 3"):
+        return True
+    conn = None
+    try:
+        conn = _connect_sqlcipher(path, key)
+        conn.execute("SELECT count(*) FROM sqlite_master").fetchone()
+        return True
+    except Exception:
+        return False
+    finally:
+        if conn is not None:
+            conn.close()
+        if path.is_file() and path.read_bytes() != before:
+            path.write_bytes(before)
+
+
 def _connect_sqlite(path: Path) -> sqlite3.Connection:
     conn = sqlite3.connect(str(path), check_same_thread=False, isolation_level=None)
     conn.row_factory = dict_row

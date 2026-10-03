@@ -9,6 +9,7 @@ from portable_state.import_ import IntegrityError, UnsupportedArchive, import_ar
 from trust_kernel.errors import ValidationFailed
 from trust_kernel.ingest.vendor_memory import import_vendor_file
 from trust_kernel.service import OWNER, Hub
+from trust_kernel.vault.keys import announce_file_key
 
 
 def _print(payload: dict) -> None:
@@ -26,6 +27,7 @@ def vault_init(data_dir: str, name: str) -> None:
     try:
         created = hub.setup(name)
         _print({"owner_id": created["person"]["id"]})
+        announce_file_key(hub.data_dir)
     finally:
         hub.close()
 

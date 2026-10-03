@@ -52,9 +52,28 @@ uv run personal-context-server --reload --host 127.0.0.1 --port 8765 --data-dir 
 | `--host` | `127.0.0.1` (non-loopback exits 2; `::1` coerced to `127.0.0.1`) |
 | `--port` | `8765` |
 | `--data-dir` | `~/.personal-context` |
-| `--reload` / `--no-reload` | default **on** |
+| `--reload` / `--no-reload` | default **off**. `make serve` passes `--reload` |
+| `--wake` | off. Bind loopback and open the vault only after the first connection |
 
 Factory `dev_app()` is the reload target for `personal-context-server`. Simulator and catalog refresh stay off unless `PERSONAL_CONTEXT_SIM_ENABLED=1` / `PERSONAL_CONTEXT_CATALOG_REFRESH=1`.
+
+## `personal-context service`
+
+Installs a per-login background Hub. It does not watch project files. `--data-dir` defaults to `~/.personal-context`.
+
+```bash
+uv run personal-context service install --data-dir ~/.personal-context
+uv run personal-context service status --data-dir ~/.personal-context
+uv run personal-context service logs --data-dir ~/.personal-context
+uv run personal-context service uninstall --data-dir ~/.personal-context
+```
+
+| Command | Result |
+|---|---|
+| `install` | JSON `installed`, `listen` (`127.0.0.1` only), `platform`. Exit 1 if the port is taken or the vault key is missing. Exit 2 if `--host` is not loopback |
+| `uninstall` | JSON `installed: false` and `removed`. Does not delete the vault |
+| `status` | JSON `installed`, `state` (`absent`, `waiting`, `answering`), `listen`, `key_source` (`file` or `keychain`) |
+| `logs` | Recent lines. The vault key and the owner token are replaced with `[redacted]` |
 
 ---
 

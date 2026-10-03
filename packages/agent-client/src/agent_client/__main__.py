@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import sys
+from pathlib import Path
 
 from agent_client.client import Client
 from agent_client.local_cli import (
@@ -24,6 +25,12 @@ from agent_client.local_cli import (
     vault_init,
 )
 from agent_client.mcp_bridge import main as bridge_main
+from agent_client.service_cmd import (
+    install_service,
+    logs_service,
+    status_service,
+    uninstall_service,
+)
 
 
 def demo(base: str, code: str | None, token: str | None) -> None:
@@ -128,6 +135,17 @@ def main(argv: list[str] | None = None) -> None:
     accept.add_argument("proposal_id")
     reject = proposal_actions.add_parser("reject")
     reject.add_argument("proposal_id")
+    service = sub.add_parser("service")
+    service_actions = service.add_subparsers(dest="service_action", required=True)
+    for service_name in ("install", "uninstall", "status", "logs"):
+        service_command = service_actions.add_parser(service_name)
+        service_command.add_argument(
+            "--data-dir",
+            default=str(Path.home() / ".personal-context"),
+        )
+        if service_name == "install":
+            service_command.add_argument("--port", type=int, default=8765)
+            service_command.add_argument("--host", default="127.0.0.1")
     args = parser.parse_args(seq)
     if args.cmd == "demo-agent":
         demo(args.base, args.code, args.token or None)
@@ -183,6 +201,19 @@ def main(argv: list[str] | None = None) -> None:
         return
     if args.cmd == "archive-import":
         archive_import(args.data_dir, args)
+        return
+    if args.cmd == "service":
+        data_dir = Path(args.data_dir)
+        if args.service_action == "install":
+            print(json.dumps(install_service(data_dir=data_dir, port=args.port, host=args.host)))
+            return
+        if args.service_action == "uninstall":
+            print(json.dumps(uninstall_service(data_dir=data_dir)))
+            return
+        if args.service_action == "status":
+            print(json.dumps(status_service(data_dir=data_dir)))
+            return
+        print(logs_service(data_dir=data_dir))
         return
     parser.print_help()
     raise SystemExit(1)
