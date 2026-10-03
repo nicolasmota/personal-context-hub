@@ -57,7 +57,7 @@ A `ContextContract` object:
 | `purpose` | Echo of the request |
 | `situation` | Anchored project: title, status, `operational_phase`, `current_step`, `situation_intent` |
 | `candidates` | Other plausible situation frames |
-| `goals`, `preferences`, `memories`, `decisions`, `constraints`, `state` | `ContractItem` lists with body, citation, authority, confidence, freshness, `untrusted` |
+| `goals`, `preferences`, `memories`, `decisions`, `constraints`, `state`, `experiences` | `ContractItem` lists with body, citation, authority, confidence, freshness, `untrusted`. Experiences are episodes tied to the situation, not preferences or memories. |
 | `relations` | Typed edges: `owned_by`, `depends_on`, `blocked_by`, `related_to` |
 | `references` | Extra ids the agent may follow up on |
 | `conflicts` | Pairs the person has not resolved |

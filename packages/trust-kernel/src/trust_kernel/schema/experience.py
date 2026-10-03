@@ -13,4 +13,5 @@ class Experience(UniversalMetadata):
     lesson: str | None = None
     occurred_at: str
     provenance: str
+    project_id: str | None = None
     confidence: float = Field(default=1.0, ge=0.0, le=1.0)

@@ -173,6 +173,8 @@ def _expired_item(obj: dict[str, Any]) -> ContractItem:
 
 
 def _summary(obj: dict[str, Any]) -> str:
+    if obj.get("type") == "experience" and obj.get("action"):
+        return str(obj["action"])
     return str(
         obj.get("title") or obj.get("key") or obj.get("statement") or obj.get("name") or obj["id"]
     )
@@ -201,6 +203,16 @@ def _body(obj: dict[str, Any]) -> dict[str, Any]:
         return {k: obj.get(k) for k in ("title", "status", "due_at") if obj.get(k) is not None}
     if kind == "shared_state":
         return {k: obj.get(k) for k in ("key", "value", "visibility", "expires_at")}
+    if kind == "experience":
+        body = {
+            k: obj.get(k)
+            for k in ("action", "outcome", "occurred_at", "operating_context")
+            if obj.get(k) is not None
+        }
+        lesson = str(obj.get("lesson") or "").strip()
+        if lesson:
+            body["lesson"] = lesson
+        return body
     return {k: v for k, v in obj.items() if k in ("title", "statement", "key", "value")}
 
 
@@ -454,6 +466,7 @@ def assemble_traced(
     decs_out: list[ContractItem] = []
     constraints_out: list[ContractItem] = []
     state_out: list[ContractItem] = []
+    experiences_out: list[ContractItem] = []
     references: list[ItemRef] = []
     required_ids: set[str] = set()
     meaningful = _meaningful_tokens(tokens)
@@ -505,6 +518,20 @@ def assemble_traced(
         decs_out = take(dec_rows, cat_cap)
         constraints_out = take(cmt_rows, cat_cap)
         state_out = take(state_rows, cat_cap)
+        tied_episodes = [
+            row
+            for row in store.list("experience")
+            if row.get("project_id") == anchor_id and allowed(row, anchor_id)
+        ]
+        tied_episodes.sort(
+            key=lambda row: (str(row.get("occurred_at") or ""), row["id"]),
+            reverse=True,
+        )
+        kept = tied_episodes[:cat_cap]
+        experiences_out = [to_item(row) for row in kept]
+        overflow = len(tied_episodes) - len(kept)
+        if overflow:
+            omission_counts[OmissionCategory.OVER_CAP] += overflow
 
     moment = datetime.now(UTC)
     for type_ in ("preference", "memory"):
@@ -671,6 +698,7 @@ def assemble_traced(
             decisions=decs_out,
             constraints=constraints_out,
             state=state_out,
+            experiences=experiences_out,
             relations=relation_refs,
             references=references,
             conflicts=conflicts,

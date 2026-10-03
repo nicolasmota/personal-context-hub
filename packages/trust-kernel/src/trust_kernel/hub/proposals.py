@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from trust_kernel.errors import NotFound, ValidationFailed, VersionConflict
 from trust_kernel.hub.const import OWNER
@@ -13,6 +13,8 @@ from trust_kernel.schema.proposal import OperationalProposal, ProposalStatus
 from trust_kernel.timeutil import now_iso, parse_instant, row_is_current
 
 _SENSITIVE = {"health", "finance", "financial", "legal", "intimate", "safety"}
+_LESSON_LABEL = "origin:lesson"
+_LESSON_DAYS = 7
 
 
 class ProposalsMixin:
@@ -220,8 +222,10 @@ class ProposalsMixin:
                 origin = [
                     lab for lab in (mem.get("labels") or []) if str(lab).startswith("origin:")
                 ]
+                lesson_offer = _LESSON_LABEL in [str(lab) for lab in (p.get("labels") or [])]
                 if edits:
                     mem = {**mem, **edits}
+                if lesson_offer or edits:
                     mem["authority"] = "user_confirmed"
                 else:
                     mem["authority"] = "agent_inferred"
@@ -376,3 +380,119 @@ class ProposalsMixin:
                 [proposal_id],
             )
             return stored
+
+    def reconcile_lesson_offer(self, project_id: str) -> None:
+        grouped: dict[str, list[str]] = {}
+        for row in self.store.list("experience"):
+            if row.get("project_id") != project_id:
+                continue
+            text = str(row.get("lesson") or "").strip()
+            if not text:
+                continue
+            grouped.setdefault(text, []).append(row["id"])
+        if len(grouped) == 1:
+            lesson, episode_ids = next(iter(grouped.items()))
+            if len(episode_ids) >= 2:
+                self._upsert_lesson_offer(project_id, lesson, sorted(episode_ids))
+                return
+        if len(grouped) > 1:
+            self._withdraw_lesson_offer(project_id)
+
+    def _lesson_subject(self, project_id: str) -> str:
+        return f"lesson:{project_id}"
+
+    def _pending_lesson_offer(self, project_id: str) -> dict | None:
+        key = self._lesson_subject(project_id)
+        for row in self.store.list("proposal"):
+            if row.get("subject_key") == key and row.get("status") == "pending":
+                return row
+        return None
+
+    def _lesson_previous(self, project_id: str):
+        key = self._lesson_subject(project_id)
+        moment = datetime.now(UTC)
+        for row in self.store.list("memory"):
+            if row.get("subject_ref") == key and row_is_current(row, moment) and not row.get("tombstone"):
+                return row.get("statement")
+        return None
+
+    def _withdraw_lesson_offer(self, project_id: str) -> None:
+        pending = self._pending_lesson_offer(project_id)
+        if pending is None:
+            return
+        pending["status"] = "superseded"
+        pending["policy_verdict"] = "disagreement"
+        self.store.put(pending)
+
+    def _upsert_lesson_offer(self, project_id: str, lesson: str, episode_ids: list[str]) -> dict:
+        pending = self._pending_lesson_offer(project_id)
+        previous = self._lesson_previous(project_id)
+        if pending is not None:
+            memory = dict(pending.get("proposed_memory") or {})
+            memory["statement"] = lesson
+            memory["source_refs"] = episode_ids
+            pending["statement"] = lesson
+            pending["proposed_value"] = lesson
+            pending["proposed_memory"] = memory
+            pending["evidence_refs"] = episode_ids
+            pending["source_refs"] = episode_ids
+            pending["previous_value"] = previous
+            return self.store.put(pending)
+        now = now_iso()
+        expires = (datetime.now(UTC) + timedelta(days=_LESSON_DAYS)).replace(microsecond=0)
+        expires_at = expires.isoformat().replace("+00:00", "Z")
+        memory = {
+            "id": new_id("memory"),
+            "type": "memory",
+            "space_id": "personal",
+            "owner": self.person_id(),
+            "kind": "semantic",
+            "statement": lesson,
+            "subject_ref": self._lesson_subject(project_id),
+            "project_id": project_id,
+            "authority": "proposed",
+            "labels": [_LESSON_LABEL],
+            "classification": "personal",
+            "source_refs": episode_ids,
+            "confidence": 1.0,
+            "retention": {"mode": "until_revoked"},
+            "policy_tags": [],
+            "version": 1,
+            "created_at": now,
+            "updated_at": now,
+            "valid_from": now,
+            "valid_until": None,
+            "never_true": False,
+        }
+        proposal = {
+            "id": new_id("proposal"),
+            "type": "proposal",
+            "space_id": "personal",
+            "owner": self.person_id(),
+            "labels": [_LESSON_LABEL],
+            "classification": "personal",
+            "created_at": now,
+            "updated_at": now,
+            "source_refs": episode_ids,
+            "confidence": 1.0,
+            "authority": "proposed",
+            "retention": {"mode": "until_revoked"},
+            "policy_tags": [],
+            "version": 1,
+            "statement": lesson,
+            "proposed_memory": memory,
+            "evidence_refs": episode_ids,
+            "submitted_by": OWNER,
+            "status": "pending",
+            "policy_verdict": "needs_review",
+            "conflict_ids": [],
+            "expires_at": expires_at,
+            "subject_key": self._lesson_subject(project_id),
+            "previous_value": previous,
+            "risk_class": "sensitive",
+            "reversible": False,
+            "proposed_value": lesson,
+        }
+        stored = self.store.put(proposal, new=True)
+        self.ledger.append(EventKind.MEMORY_PROPOSED, OWNER, "lesson offered", [stored["id"]])
+        return stored

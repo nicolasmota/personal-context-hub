@@ -143,6 +143,7 @@ class ContextMixin:
             contract.decisions,
             contract.constraints,
             contract.state,
+            contract.experiences,
         ):
             for item in section:
                 item_refs.append({"id": item.ref.id, "type": item.ref.type})
@@ -176,6 +177,7 @@ class ContextMixin:
             contract.decisions,
             contract.constraints,
             contract.state,
+            contract.experiences,
         )
         for section in sections:
             for item in section:

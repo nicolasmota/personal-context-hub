@@ -82,6 +82,7 @@ def main(argv: list[str] | None = None) -> None:
             command.add_argument("--feedback", default=None)
             command.add_argument("--lesson", default=None)
             command.add_argument("--confidence", type=float, default=1.0)
+            command.add_argument("--project", default=None)
         if name == "evidence-add":
             command.add_argument("--kind", required=True)
             command.add_argument("--source", required=True)

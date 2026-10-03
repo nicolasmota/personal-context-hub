@@ -11,7 +11,7 @@ The contract is the smallest slice a guest should see for one purpose. It is not
 | `purpose` | The task the contract was compiled for |
 | `situation` | The operational frame, or null when the purpose does not pick one |
 | `candidates` | Situations that tied; the compiler must not merge them |
-| `goals` `preferences` `memories` `decisions` `constraints` `state` | Included items. Each item has `ref`, `body`, `citation`, `authority`, `freshness` |
+| `goals` `preferences` `memories` `decisions` `constraints` `state` `experiences` | Included items. Each item has `ref`, `body`, `citation`, `authority`, `freshness`. An experience stays an experience: what was tried, the outcome, when it happened, and the lesson when one was recorded. |
 | `omissions` | Counts of withheld items, by category, with no identifiers and no titles |
 | `granted_scope` | The grant that bounded this compilation |
 | `conflicts` `state_conflicts` | Collisions the compiler did not silently pick a winner for |

@@ -8,7 +8,7 @@ Local vault commands and the MCP bridge. From a checkout, after `make install`:
 
 ```bash
 uv run personal-context vault-init --data-dir /tmp/personal-context-demo --name Synthetic
-uv run personal-context experience-add --data-dir /tmp/personal-context-demo --action "noted a change" --context dinner --outcome recorded --at 2026-09-29T12:00:00Z --provenance owner
+uv run personal-context experience-add --data-dir /tmp/personal-context-demo --action "noted a change" --context dinner --outcome recorded --at 2026-09-29T12:00:00Z --provenance owner --project <project-id>
 uv run personal-context evidence-add --data-dir /tmp/personal-context-demo --kind user_confirmed --source owner --authority "the person" --at 2026-09-29T12:00:00Z --statement "weekdays differ" --verification verified
 uv run personal-context evolve --data-dir /tmp/personal-context-demo --subject food.spicy --value mild --reason "conditional exception" --condition weekdays
 uv run personal-context compile --data-dir /tmp/personal-context-demo --purpose "plan dinner" --budget 8

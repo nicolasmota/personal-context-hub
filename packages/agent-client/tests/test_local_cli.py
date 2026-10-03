@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pytest
 from agent_client.__main__ import main
+from agent_client.local_cli import _hub
 
 
 def _run(argv: list[str], capsys) -> dict:
@@ -29,9 +30,16 @@ def test_local_loop(tmp_path: Path, capsys):
             "2026-09-29T12:00:00Z",
             "--provenance",
             "owner",
+            "--project",
+            "prj_demo",
         ],
         capsys,
     )
+    opened = _hub(data)
+    try:
+        assert opened.get(experience["id"])["project_id"] == "prj_demo"
+    finally:
+        opened.close()
     evidence = _run(
         [
             "evidence-add",

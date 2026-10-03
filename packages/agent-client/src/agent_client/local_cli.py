@@ -42,6 +42,7 @@ def experience_add(data_dir: str, args) -> None:
             feedback=args.feedback,
             lesson=args.lesson,
             confidence=args.confidence,
+            project_id=args.project,
         )
         _print({"id": row["id"]})
     finally:

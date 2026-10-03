@@ -133,6 +133,7 @@ class ContextContract(BaseModel):
     decisions: list[ContractItem] = Field(default_factory=list)
     constraints: list[ContractItem] = Field(default_factory=list)
     state: list[ContractItem] = Field(default_factory=list)
+    experiences: list[ContractItem] = Field(default_factory=list)
     relations: list[RelationRef] = Field(default_factory=list)
     references: list[ItemRef] = Field(default_factory=list)
     conflicts: list[ConflictPair] = Field(default_factory=list)

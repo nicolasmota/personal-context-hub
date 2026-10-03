@@ -425,6 +425,13 @@
       "title": "State",
       "type": "array"
     },
+    "experiences": {
+      "items": {
+        "$ref": "#/$defs/ContractItem"
+      },
+      "title": "Experiences",
+      "type": "array"
+    },
     "relations": {
       "items": {
         "$ref": "#/$defs/RelationRef"

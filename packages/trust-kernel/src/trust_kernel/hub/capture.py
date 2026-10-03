@@ -6,12 +6,31 @@ from trust_kernel.errors import ValidationFailed
 from trust_kernel.hub.const import OWNER
 from trust_kernel.schema.evidence import EvidenceKind, VerificationStatus
 
+_CLASSES = {"public", "personal", "private", "sensitive"}
+
 
 def _required(value: str | None, label: str) -> str:
     text = str(value or "").strip()
     if not text:
         raise ValidationFailed(f"{label} is required")
     return text
+
+
+def _lesson(value: str | None) -> str | None:
+    text = str(value or "").strip()
+    return text or None
+
+
+def _same_episode(row: dict[str, Any], identity: tuple) -> bool:
+    stored = (
+        row.get("project_id"),
+        row.get("action"),
+        row.get("operating_context"),
+        row.get("outcome"),
+        _lesson(row.get("lesson")),
+        row.get("occurred_at"),
+    )
+    return stored == identity
 
 
 class CaptureMixin:
@@ -27,21 +46,45 @@ class CaptureMixin:
         lesson: str | None = None,
         confidence: float = 1.0,
         authority: str = "user_confirmed",
+        project_id: str | None = None,
+        classification: str | None = None,
         actor: str = OWNER,
     ) -> dict[str, Any]:
+        tied = str(project_id or "").strip() or None
+        lesson_text = _lesson(lesson)
+        identity = (
+            tied,
+            _required(action, "action"),
+            _required(operating_context, "operating_context"),
+            _required(outcome, "outcome"),
+            lesson_text,
+            _required(occurred_at, "occurred_at"),
+        )
+        if classification is not None and classification not in _CLASSES:
+            raise ValidationFailed("unknown classification")
         body = {
-            "action": _required(action, "action"),
-            "operating_context": _required(operating_context, "operating_context"),
-            "outcome": _required(outcome, "outcome"),
-            "occurred_at": _required(occurred_at, "occurred_at"),
+            "action": identity[1],
+            "operating_context": identity[2],
+            "outcome": identity[3],
+            "occurred_at": identity[5],
             "provenance": _required(provenance, "provenance"),
             "feedback": feedback,
-            "lesson": lesson,
+            "lesson": lesson_text,
             "confidence": confidence,
             "authority": authority,
         }
+        if tied:
+            body["project_id"] = tied
+        if classification:
+            body["classification"] = classification
         with self.engine.tx():
-            return self.create("experience", body, actor)
+            for row in self.list("experience"):
+                if _same_episode(row, identity):
+                    return row
+            stored = self.create("experience", body, actor)
+            if tied:
+                self.reconcile_lesson_offer(tied)
+            return stored
 
     def record_evidence(
         self,

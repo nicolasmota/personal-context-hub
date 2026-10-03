@@ -60,6 +60,8 @@ Changing a preference **supersedes** rather than silently overwriting. Use `as_o
 
 `procedural` is not a Skill object.
 
+**Experience** — `action`, `operating_context`, `outcome`, `feedback`, `lesson`, `occurred_at`, `provenance`, optional `project_id`. `project_id` ties the episode to that project, which is the situation. Without it, the episode is not part of any situation's context. A repeated lesson becomes a proposal. It does not by itself change a preference or a memory.
+
 **Artifact** — `kind`: `document` \| `message_thread` \| `conversation` \| `file` \| `url` \| `email`. Defaults `untrusted=true`. Email fields: `subject`, `sender`, `recipients`, `sent_at`, `body_text`.
 
 **CalendarEvent** (`type=event`) — `title`, `starts_at`, `ends_at`, `all_day`, `location`, `attendees`, `calendar_id`, `status` (`confirmed` \| `tentative` \| `cancelled`), `source_key`. Default classification `private`.
@@ -99,7 +101,7 @@ ContextContract
   situation?: SituationRef          # project_id, title, status, phase, step, intent
   candidates[]                      # other SituationRef
   goals[] preferences[] memories[]
-  decisions[] constraints[] state[] # ContractItem
+  decisions[] constraints[] state[] experiences[] # ContractItem
   relations[]                       # RelationRef (from / to ItemRef)
   references[]                      # ItemRef
   conflicts[]                       # item_ids + reason
