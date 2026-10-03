@@ -94,3 +94,29 @@ class CaptureMixin:
             if supports:
                 self.create_relation(supports, stored["id"], "supported_by", actor)
             return stored
+
+    def admit_observation(
+        self,
+        *,
+        source: str,
+        captured_at: str,
+        classification: str,
+        statement: str,
+        actor: str = OWNER,
+    ) -> dict[str, Any]:
+        stored_class = classification if classification in {"public", "personal", "private", "sensitive"} else "personal"
+        return self.create(
+            "evidence",
+            {
+                "kind": "import",
+                "source": _required(source, "source"),
+                "authority_label": _required(source, "source"),
+                "observed_at": _required(captured_at, "captured_at"),
+                "statement": _required(statement, "statement"),
+                "classification": stored_class,
+                "verification_status": "unverified",
+                "authority": "source_imported",
+                "untrusted": True,
+            },
+            actor,
+        )

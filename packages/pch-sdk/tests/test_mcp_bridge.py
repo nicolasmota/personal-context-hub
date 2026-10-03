@@ -116,6 +116,46 @@ def test_tool_call_hub_down_is_unreachable_json(monkeypatch):
     assert "Hub unreachable" in payload["message"]
 
 
+def test_explain_resource_uses_the_explain_door(monkeypatch):
+    def fake_call(base, token, name, arguments):
+        assert name == "explain_subject"
+        assert arguments == {"subject": "city"}
+        return 200, {"status": "live", "value": "Lisbon"}
+
+    monkeypatch.setattr("pch_sdk.mcp_bridge.call_hub", fake_call)
+    reply = handle_message(
+        {
+            "jsonrpc": "2.0",
+            "id": 4,
+            "method": "resources/read",
+            "params": {"uri": "pch://explain?subject=city"},
+        },
+        "http://x",
+        "tok",
+    )
+    payload = json.loads(reply["result"]["contents"][0]["text"])
+    assert payload["value"] == "Lisbon"
+
+
+def test_vault_resource_is_refused(monkeypatch):
+    def fail_call(*_args, **_kwargs):
+        raise AssertionError("vault read called the hub")
+
+    monkeypatch.setattr("pch_sdk.mcp_bridge.call_hub", fail_call)
+    reply = handle_message(
+        {
+            "jsonrpc": "2.0",
+            "id": 5,
+            "method": "resources/read",
+            "params": {"uri": "pch://vault"},
+        },
+        "http://x",
+        "tok",
+    )
+    text = reply["result"]["contents"][0]["text"]
+    assert "not available" in text.lower()
+
+
 def test_unreachable_mapping_is_json_code():
     down = map_tool_result(0, {"detail": "Connection refused"})
     payload = json.loads(down["content"][0]["text"])

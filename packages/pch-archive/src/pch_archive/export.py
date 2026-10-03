@@ -73,6 +73,9 @@ TYPE_FILES = {
     "state_conflict": "state_conflicts",
     "relation": "relations",
     "grant": "grants",
+    "disclosure_receipt": "disclosure_receipts",
+    "auto_rule": "auto_rules",
+    "disclosure_block": "disclosure_blocks",
 }
 
 

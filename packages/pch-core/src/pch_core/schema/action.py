@@ -24,6 +24,10 @@ class ActionIntent(BaseModel):
     idempotency_key: str
     contract_id: str
     decision: str | None = None
+    risk: str = "unspecified"
+    reversible: bool = False
+    valid_until: str | None = None
+    limits: dict[str, Any] = Field(default_factory=dict)
     status: IntentStatus = IntentStatus.PENDING
     declined_parent_id: str | None = None
     created_at: str

@@ -50,6 +50,7 @@ class EvolutionMixin:
         actor: str,
         valid_from: str | None = None,
         valid_until: str | None = None,
+        rule_id: str | None = None,
     ) -> dict:
         now = now_iso()
         body = {
@@ -77,6 +78,7 @@ class EvolutionMixin:
             "confidence": 1.0,
             "retention": {"mode": "until_revoked"},
             "policy_tags": [],
+            "rule_id": rule_id,
         }
         stored = self.store.put(body, new=True)
         self.ledger.append(
@@ -97,6 +99,7 @@ class EvolutionMixin:
         evidence_ids: list[str] | None = None,
         condition: str | None = None,
         actor: str = OWNER,
+        rule_id: str | None = None,
     ) -> dict:
         cause_reason = str(reason or "").strip()
         if not cause_reason:
@@ -162,6 +165,7 @@ class EvolutionMixin:
                     evidence_ids=evidence,
                     actor=actor,
                     valid_from=created.get("valid_from"),
+                    rule_id=rule_id,
                 )
                 self.sync_state_conflicts()
                 return {"preference": created, "transition": transition}
@@ -172,6 +176,7 @@ class EvolutionMixin:
                 experience_ids=experiences,
                 evidence_ids=evidence,
                 reason=cause_reason,
+                rule_id=rule_id,
             )
             self.sync_state_conflicts()
             return {

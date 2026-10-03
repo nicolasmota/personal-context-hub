@@ -23,6 +23,12 @@ TOOL_NAMES = [
     "propose_memory",
     "propose_relation",
     "get_context_manifest",
+    "explain_subject",
+    "source_impact",
+    "proposal_status",
+    "request_action",
+    "revoke_my_grant",
+    "read_everything",
 ]
 
 REMOVED_TOOLS = frozenset(
@@ -56,6 +62,44 @@ TOOL_SCHEMAS: dict[str, dict[str, Any]] = {
         },
         "required": ["purpose", "requested_capabilities"],
     },
+    "explain_subject": {
+        "type": "object",
+        "properties": {
+            "subject": {"type": "string"},
+            "projection_id": {"type": "string"},
+        },
+        "required": ["subject"],
+    },
+    "source_impact": {
+        "type": "object",
+        "properties": {"evidence_id": {"type": "string"}},
+        "required": ["evidence_id"],
+    },
+    "proposal_status": {
+        "type": "object",
+        "properties": {"proposal_id": {"type": "string"}},
+    },
+    "request_action": {
+        "type": "object",
+        "properties": {
+            "kind": {"type": "string"},
+            "summary": {"type": "string"},
+            "contract_id": {"type": "string"},
+            "payload": {"type": "object"},
+            "risk": {"type": "string"},
+            "reversible": {"type": "boolean"},
+            "valid_until": {"type": "string"},
+            "limits": {"type": "object"},
+            "idempotency_key": {"type": "string"},
+        },
+        "required": ["kind", "summary", "contract_id"],
+    },
+    "revoke_my_grant": {
+        "type": "object",
+        "properties": {"grant_id": {"type": "string"}},
+        "required": ["grant_id"],
+    },
+    "read_everything": {"type": "object", "properties": {}},
     "propose_memory": {
         "type": "object",
         "properties": {
@@ -161,6 +205,18 @@ def _tool_description(name: str) -> str:
         return MANIFEST_DESCRIPTION
     if name == "propose_relation":
         return RELATION_DESCRIPTION
+    if name == "explain_subject":
+        return "Explain why a fact is believed. Owner only."
+    if name == "source_impact":
+        return "List live facts, proposals, and issued projections that depend on a source. Owner only."
+    if name == "proposal_status":
+        return "Read the status of proposals the caller submitted."
+    if name == "request_action":
+        return "Request an action decision. This does not authorize or perform the effect."
+    if name == "revoke_my_grant":
+        return "Revoke the caller's own permission."
+    if name == "read_everything":
+        return "Refused. The whole personal record is not available."
     raise KeyError(name)
 
 
@@ -184,7 +240,25 @@ def _mcp_resources() -> list[dict[str, Any]]:
                 "The context contract for a purpose. Read pch://situation?purpose=<task>."
             ),
             "mimeType": "application/json",
-        }
+        },
+        {
+            "uri": "pch://explain",
+            "name": "explain",
+            "description": "Why a fact is believed. pch://explain?subject=<key-or-id>",
+            "mimeType": "application/json",
+        },
+        {
+            "uri": "pch://impact",
+            "name": "impact",
+            "description": "What a source affects. pch://impact?evidence=<id>",
+            "mimeType": "application/json",
+        },
+        {
+            "uri": "pch://proposal-status",
+            "name": "proposal-status",
+            "description": "Status of the caller's proposals.",
+            "mimeType": "application/json",
+        },
     ]
 
 
@@ -207,8 +281,32 @@ def _situation_purpose(uri: str) -> str | None:
 
 
 def _read_resource(uri: str, base: str, token: str) -> dict[str, Any]:
-    purpose = _situation_purpose(uri)
-    if purpose is None:
+    parsed = urlparse(uri)
+    if parsed.scheme == "pch" and parsed.netloc == "vault":
+        return {
+            "contents": [
+                {
+                    "uri": uri,
+                    "mimeType": "text/plain",
+                    "text": "The whole personal record is not available.",
+                }
+            ]
+        }
+    tool: str | None = None
+    arguments: dict[str, Any] = {}
+    if parsed.scheme == "pch" and parsed.netloc == "explain":
+        subject = (parse_qs(parsed.query).get("subject") or [""])[0]
+        tool, arguments = "explain_subject", {"subject": subject}
+    elif parsed.scheme == "pch" and parsed.netloc == "impact":
+        evidence_id = (parse_qs(parsed.query).get("evidence") or [""])[0]
+        tool, arguments = "source_impact", {"evidence_id": evidence_id}
+    elif parsed.scheme == "pch" and parsed.netloc == "proposal-status":
+        tool, arguments = "proposal_status", {}
+    else:
+        purpose = _situation_purpose(uri)
+        if purpose is not None:
+            tool, arguments = "get_context_contract", {"purpose": purpose}
+    if tool is None:
         return {
             "contents": [
                 {
@@ -219,7 +317,7 @@ def _read_resource(uri: str, base: str, token: str) -> dict[str, Any]:
             ]
         }
     try:
-        status, body = call_hub(base, token, "get_context_contract", {"purpose": purpose})
+        status, body = call_hub(base, token, tool, arguments)
     except httpx.HTTPError as exc:
         status, body = 0, {"detail": f"Hub unreachable at {base}: {exc}"}
     mapped = map_tool_result(status, body, base=base)

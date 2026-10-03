@@ -141,6 +141,7 @@ class ObjectsMixin:
         experience_ids: list[str] | None = None,
         evidence_ids: list[str] | None = None,
         reason: str | None = None,
+        rule_id: str | None = None,
     ) -> dict:
         with self.engine.tx():
             current = self.store.get(obj_id)
@@ -186,6 +187,7 @@ class ObjectsMixin:
                 evidence_ids=list(evidence_ids or []),
                 actor=actor,
                 valid_from=successor.get("valid_from"),
+                rule_id=rule_id,
             )
             self.ledger.append(
                 EventKind.OBJECT_WRITE,

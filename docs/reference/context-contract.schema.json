@@ -95,6 +95,16 @@
           "default": false,
           "title": "Untrusted",
           "type": "boolean"
+        },
+        "status": {
+          "default": "asserted",
+          "enum": [
+            "asserted",
+            "uncertain",
+            "expired"
+          ],
+          "title": "Status",
+          "type": "string"
         }
       },
       "required": [
@@ -500,6 +510,23 @@
       ],
       "default": null,
       "title": "Valid Until"
+    },
+    "training_use": {
+      "const": "prohibited",
+      "default": "prohibited",
+      "title": "Training Use",
+      "type": "string"
+    },
+    "retention": {
+      "const": "session",
+      "default": "session",
+      "title": "Retention",
+      "type": "string"
+    },
+    "policy_version": {
+      "default": "0.2",
+      "title": "Policy Version",
+      "type": "string"
     }
   },
   "required": [

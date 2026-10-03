@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pydantic import ValidationError
 
-from pch_core.errors import PolicyDenied, Revoked, ValidationFailed
+from pch_core.errors import NotFound, PolicyDenied, Revoked, ValidationFailed
 from pch_core.hub.const import OWNER
 from pch_core.policy.evaluator import PolicyInput, evaluate
 from pch_core.retrieval.ask import compose as compose_ask
@@ -163,7 +163,49 @@ class ContextMixin:
             [r["id"] for r in item_refs],
             extra=extra,
         )
+        self._store_disclosure(actor, contract)
         return contract.model_dump(mode="json", by_alias=True)
+
+    def _store_disclosure(self, actor: str, contract) -> None:
+        item_ids: list[str] = []
+        evidence_ids: list[str] = []
+        sections = (
+            contract.goals,
+            contract.preferences,
+            contract.memories,
+            contract.decisions,
+            contract.constraints,
+            contract.state,
+        )
+        for section in sections:
+            for item in section:
+                item_ids.append(item.ref.id)
+                for cite in item.citation:
+                    evidence_ids.append(cite.id)
+                try:
+                    row = self.store.get(item.ref.id)
+                except NotFound:
+                    row = None
+                if row:
+                    evidence_ids.extend(str(ref) for ref in (row.get("source_refs") or []))
+        self.create(
+            "disclosure_receipt",
+            {
+                "contract_id": contract.contract_id,
+                "connection_id": actor,
+                "purpose": contract.purpose,
+                "item_ids": item_ids,
+                "evidence_ids": list(dict.fromkeys(evidence_ids)),
+                "omissions": [note.model_dump(mode="json") for note in contract.omissions],
+                "valid_until": contract.valid_until.isoformat() if contract.valid_until else None,
+            },
+        )
+
+    def withhold_category(self, classification: str) -> dict:
+        name = str(classification or "").strip()
+        if not name:
+            raise ValidationFailed("classification is required")
+        return self.create("disclosure_block", {"blocked_classification": name})
 
     def current_situation(self) -> dict:
         project = pick_home_project(self.list("project"))

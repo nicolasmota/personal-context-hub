@@ -149,6 +149,29 @@ def _relevance(retriever: PurposeRetriever, obj: dict[str, Any], purpose: str) -
     return retriever.relevance(_blob(obj), purpose)
 
 
+def _item_status(obj: dict[str, Any], moment: datetime) -> str:
+    if obj.get("valid_until") and not row_is_current(obj, moment):
+        return "expired"
+    authority = str(obj.get("authority") or "")
+    if authority in {"user_confirmed", "user"} and not obj.get("untrusted"):
+        return "asserted"
+    return "uncertain"
+
+
+def _expired_item(obj: dict[str, Any]) -> ContractItem:
+    subject = str(obj.get("key") or obj.get("subject_ref") or obj["id"])
+    return ContractItem(
+        ref=ItemRef(id=obj["id"], type=str(obj.get("type") or ""), summary=subject),
+        body={"current": False},
+        citation=_citations(obj),
+        authority=str(obj.get("authority") or "user_confirmed"),
+        confidence=obj.get("confidence"),
+        freshness=_parse_dt(obj.get("updated_at")),
+        untrusted=bool(obj.get("untrusted")),
+        status="expired",
+    )
+
+
 def _summary(obj: dict[str, Any]) -> str:
     return str(
         obj.get("title") or obj.get("key") or obj.get("statement") or obj.get("name") or obj["id"]
@@ -312,6 +335,14 @@ def assemble_traced(
         )
 
     def allowed(obj: dict[str, Any], resource_project: str | None) -> bool:
+        blocked = {
+            str(row.get("blocked_classification"))
+            for row in store.list("disclosure_block")
+            if row.get("blocked_classification")
+        }
+        if str(obj.get("classification") or "") in blocked:
+            omission_counts[OmissionCategory.POLICY_EXCLUSION] += 1
+            return False
         if (
             str(obj.get("type") or "") in _CANONICAL_TYPES
             and str(obj.get("authority") or "") in _NON_CANONICAL_AUTHORITY
@@ -391,6 +422,7 @@ def assemble_traced(
             confidence=obj.get("confidence"),
             freshness=_parse_dt(obj.get("updated_at")),
             untrusted=bool(obj.get("untrusted")),
+            status=_item_status(obj, datetime.now(UTC)),
         )
 
     def take(
@@ -473,6 +505,17 @@ def assemble_traced(
         decs_out = take(dec_rows, cat_cap)
         constraints_out = take(cmt_rows, cat_cap)
         state_out = take(state_rows, cat_cap)
+
+    moment = datetime.now(UTC)
+    for type_ in ("preference", "memory"):
+        for row in store.list(type_):
+            if not row.get("valid_until") or row_is_current(row, moment):
+                continue
+            if row.get("tombstone"):
+                continue
+            if not allowed(row, anchor_id):
+                continue
+            state_out.append(_expired_item(row))
 
     relation_refs: list[RelationRef] = []
     if anchor_id:
@@ -638,6 +681,9 @@ def assemble_traced(
             sufficient=sufficient,
             budget=query.max_items,
             onward_sharing="prohibited",
+            training_use="prohibited",
+            retention="session",
+            policy_version="0.2",
             valid_until=(
                 parse_instant(str(grant.expires_at))
                 if grant is not None and grant.expires_at

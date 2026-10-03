@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
+
 from pch_core.errors import PolicyDenied, ValidationFailed
 from pch_core.hub.const import OWNER
 from pch_core.ids import new_id
 from pch_core.schema.action import ActionIntent, IntentStatus
 from pch_core.schema.approval import Approval, DecisionKind
 from pch_core.schema.audit import EventKind
-from pch_core.timeutil import now_iso
+from pch_core.timeutil import now_iso, parse_instant
 
 
 class ActionsMixin:
@@ -19,6 +21,11 @@ class ActionsMixin:
         basis_refs: list[str],
         idempotency_key: str,
         contract_id: str | None = None,
+        *,
+        risk: str = "unspecified",
+        reversible: bool = False,
+        valid_until: str | None = None,
+        limits: dict | None = None,
     ) -> dict:
         if not str(contract_id or "").strip():
             raise ValidationFailed("contract_id is required")
@@ -38,6 +45,10 @@ class ActionsMixin:
             basis_refs=basis_refs,
             idempotency_key=idempotency_key,
             contract_id=str(contract_id),
+            risk=risk,
+            reversible=reversible,
+            valid_until=valid_until,
+            limits=dict(limits or {}),
             status=IntentStatus.PENDING,
             created_at=now_iso(),
         )
@@ -131,7 +142,11 @@ class ActionsMixin:
             if decision == "refuse":
                 intent["status"] = "declined"
             elif decision == "authorize":
-                intent["status"] = "approved"
+                until = intent.get("valid_until")
+                if until and parse_instant(str(until)) <= datetime.now(UTC):
+                    intent["status"] = "expired"
+                else:
+                    intent["status"] = "approved"
             elif decision == "require_approval":
                 intent["status"] = "pending"
             else:

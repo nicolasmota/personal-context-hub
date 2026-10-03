@@ -99,6 +99,7 @@ class ContractItem(BaseModel):
     confidence: float | None = None
     freshness: datetime
     untrusted: bool = False
+    status: Literal["asserted", "uncertain", "expired"] = "asserted"
 
 
 class RelationRef(BaseModel):
@@ -144,6 +145,9 @@ class ContextContract(BaseModel):
     budget: int | None = None
     onward_sharing: Literal["prohibited"] = "prohibited"
     valid_until: datetime | None = None
+    training_use: Literal["prohibited"] = "prohibited"
+    retention: Literal["session"] = "session"
+    policy_version: str = "0.2"
 
 
 ENVELOPE_SCHEMA_ID = (
