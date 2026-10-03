@@ -13,9 +13,9 @@ from eval_harness.baselines.judgments import (
     superseded_values,
 )
 
-APPROACHES = ("no_stored_context", "raw_retrieval", "agent_owned_memory", "pch")
+APPROACHES = ("no_stored_context", "raw_retrieval", "agent_owned_memory", "personal-context")
 
-# Plug an external memory library in here. The scorer does not special-case pch.
+# Plug an external memory library in here. The scorer does not special-case personal-context.
 RENDERERS: dict[str, Any] = {}
 
 
@@ -96,7 +96,7 @@ def render(scenario: dict[str, Any], approach: str) -> str:
         return json.dumps(scenario.get("user_state", {})) + json.dumps(scenario.get("events", []))
     if approach == "agent_owned_memory":
         return json.dumps(scenario.get("experiences") or [])
-    if approach == "pch":
+    if approach == "personal-context":
         return _run_pch(scenario)
     raise KeyError(approach)
 
@@ -113,7 +113,7 @@ def score(scenario: dict[str, Any], approach: str, *, latency_ms: float) -> dict
     """Score rendered text. The approach name is not an input to any metric."""
     contract: dict[str, Any] | None = None
     trace: dict[str, Any] | None = None
-    if approach == "pch" and approach not in RENDERERS:
+    if approach == "personal-context" and approach not in RENDERERS:
         text, contract, trace = _compile_pch(scenario)
     else:
         text = render(scenario, approach)

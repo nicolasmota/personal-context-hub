@@ -1,7 +1,7 @@
 [project]
 name = "trust-kernel"
 version = "0.2.0"
-description = "Personal Context Hub trust kernel: vault, policy, memory, retrieval, audit"
+description = "Personal Context trust kernel: vault, policy, memory, retrieval, audit"
 requires-python = ">=3.12"
 license = "MIT"
 dependencies = [

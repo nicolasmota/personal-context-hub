@@ -1,7 +1,7 @@
 [project]
 name = "agent-client"
 version = "0.2.0"
-description = "Python SDK and demo agent for Personal Context Hub"
+description = "Python SDK and demo agent for Personal Context"
 requires-python = ">=3.12"
 license = "MIT"
 dependencies = [
@@ -13,8 +13,7 @@ dependencies = [
 ]
 
 [project.scripts]
-pch = "agent_client.__main__:main"
-pch-sdk = "agent_client.__main__:main"
+personal-context = "agent_client.__main__:main"
 
 [build-system]
 requires = ["hatchling"]

@@ -11,26 +11,26 @@ Install the core, create a vault, and compile a context contract. The checkout d
 
 ```bash
 make install
-uv run pch-sdk vault-init --data-dir /tmp/pch-demo --name Synthetic
-uv run pch-server --host 127.0.0.1 --port 8765 --data-dir /tmp/pch-demo
+uv run personal-context vault-init --data-dir /tmp/personal-context-demo --name Synthetic
+uv run personal-context-server --host 127.0.0.1 --port 8765 --data-dir /tmp/personal-context-demo
 ```
 
 Python 3.12 or newer is pulled in by uv. The Hub listens on `http://127.0.0.1:8765`. Full flags: [CLI](reference/cli.md).
 
 ## First-run setup
 
-1. `uv run pch-sdk vault-init` creates the vault in the directory you pass.
-2. Record an experience and evidence, then `uv run pch-sdk evolve` when a preference changes.
-3. `uv run pch-sdk compile` prints one context contract for a purpose and a budget.
+1. `uv run personal-context vault-init` creates the vault in the directory you pass.
+2. Record an experience and evidence, then `uv run personal-context evolve` when a preference changes.
+3. `uv run personal-context compile` prints one context contract for a purpose and a budget.
 
-The vault file is `~/.pch/vault.db`, encrypted with SQLCipher. The key lives in the OS keyring when available. See [Configuration](reference/configuration.md).
+The vault file is `~/.personal-context/vault.db`, encrypted with SQLCipher. The key lives in the OS keyring when available. See [Configuration](reference/configuration.md).
 
 ## Pair an assistant (five minutes)
 
 The Hub does not scrape your chats. An assistant sees only what a **grant** allows. Cursor and Hermes are validated MCP runtimes; other runtimes ship a recipe.
 
-1. Start the loopback server (`make serve` or the `pch-server` command above).
-2. Read the owner token from `owner.token` in the data directory, or `uv run pch token --data-dir` that directory. The HTTP API does not return it.
+1. Start the loopback server (`make serve` or the `personal-context-server` command above).
+2. Read the owner token from `owner.token` in the data directory, or `uv run personal-context token --data-dir` that directory. The HTTP API does not return it.
 3. `POST /v1/connections/links` with that token to mint a pairing link.
 4. `POST /v1/connections/{id}/recipe` with `"assistant": "cursor"` or `"hermes"` and paste the snippet into that runtime’s user or machine MCP settings.
 5. `POST /v1/grants` for that connection.
@@ -46,12 +46,12 @@ The recipe endpoint returns this shape. Do not commit `.cursor/mcp.json` — it 
 ```json
 {
   "mcpServers": {
-    "personal-context-hub": {
+    "personal-context": {
       "command": "<python>",
       "args": ["-m", "agent_client", "mcp-bridge"],
       "env": {
-        "PCH_TOKEN": "<connection-token>",
-        "PCH_BASE": "http://127.0.0.1:8765"
+        "PERSONAL_CONTEXT_TOKEN": "<connection-token>",
+        "PERSONAL_CONTEXT_BASE": "http://127.0.0.1:8765"
       }
     }
   }
@@ -66,7 +66,7 @@ If you are developing the Hub itself:
 
 ```bash
 git clone <this-repo>
-cd pch
+cd personal-context
 make install
 make serve
 ```
@@ -86,11 +86,11 @@ Interactive HTTP docs while the server is up: [http://127.0.0.1:8765/docs](http:
 
 | Symptom | What to check |
 |---|---|
-| Hub refuses to start / SQLCipher | The vault uses SQLCipher. A plaintext vault opens only when `PCH_PLAIN_SQLITE=1`. |
+| Hub refuses to start / SQLCipher | The vault uses SQLCipher. A plaintext vault opens only when `PERSONAL_CONTEXT_PLAIN_SQLITE=1`. |
 | Non-loopback host rejected (exit 2) | The Hub binds `127.0.0.1` only. Do not pass `0.0.0.0`. |
-| Assistant has no tools | Recipe `PCH_BASE` must match the running port; reload MCP; grant is separate from pairing. |
+| Assistant has no tools | Recipe `PERSONAL_CONTEXT_BASE` must match the running port; reload MCP; grant is separate from pairing. |
 | Empty situation package | Grant selector vs project id; revoked connection. |
-| Port already in use | Another process holds `8765`. Start `pch-server` with `--port 8766` and point `PCH_BASE` at that port. |
+| Port already in use | Another process holds `8765`. Start `personal-context-server` with `--port 8766` and point `PERSONAL_CONTEXT_BASE` at that port. |
 
 ## Next
 

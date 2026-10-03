@@ -1,7 +1,7 @@
 [project]
 name = "loopback-service"
 version = "0.2.0"
-description = "Local Personal Context Hub service: FastAPI control plane and MCP server"
+description = "Local Personal Context service: FastAPI control plane and MCP server"
 requires-python = ">=3.12"
 license = "MIT"
 dependencies = [
@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [project.scripts]
-pch-server = "loopback_service.__main__:main"
+personal-context-server = "loopback_service.__main__:main"
 
 [build-system]
 requires = ["hatchling"]

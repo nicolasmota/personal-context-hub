@@ -11,7 +11,7 @@ dependencies = [
 ]
 
 [project.scripts]
-pch-archive = "portable_state.cli:main"
+personal-context-archive = "portable_state.cli:main"
 
 [build-system]
 requires = ["hatchling"]

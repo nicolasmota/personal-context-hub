@@ -9,8 +9,8 @@ from trust_kernel.service import Hub
 
 from loopback_service.rest.auth import require_owner
 
-SIM_DISABLED = "simulation disabled; set PCH_SIM_ENABLED=1 or pass --sim to pch serve"
-SIM_LAB_MISSING = "simulation requires the eval-harness package (contributor tooling); use uv run pch-lab sim"
+SIM_DISABLED = "simulation disabled; set PERSONAL_CONTEXT_SIM_ENABLED=1 or pass --sim to personal-context serve"
+SIM_LAB_MISSING = "simulation requires the eval-harness package (contributor tooling); use uv run personal-context-lab sim"
 
 
 def require_sim(request: Request) -> None:

@@ -5,8 +5,8 @@ Portable personal state is an encrypted archive of the person's vault: state, me
 Connection tokens and shared-state handoff rows stay out. A subset filter is refused.
 
 ```bash
-uv run pch-sdk archive-export --data-dir "$PCH_DATA" --dest "$PCH_DATA/state.pch" --passphrase test
-uv run pch-sdk archive-import --data-dir "$PCH_NEXT" --src "$PCH_DATA/state.pch" --passphrase test
+uv run personal-context archive-export --data-dir "$PERSONAL_CONTEXT_DATA" --dest "$PERSONAL_CONTEXT_DATA/state.personal-context" --passphrase test
+uv run personal-context archive-import --data-dir "$PERSONAL_CONTEXT_NEXT" --src "$PERSONAL_CONTEXT_DATA/state.personal-context" --passphrase test
 ```
 
 ## Owner HTTP
@@ -56,10 +56,10 @@ Treat vendor batches as untrusted until you archive/admit them. Do not paste oth
 
 ## Round-trip check (developers)
 
-The `pch-archive` tool compares two Hub data directories:
+The `personal-context-archive` tool compares two Hub data directories:
 
 ```bash
-uv run pch-archive verify-roundtrip /path/to/src-hub /path/to/dst-hub
+uv run personal-context-archive verify-roundtrip /path/to/src-hub /path/to/dst-hub
 ```
 
 It lists `project`, `goal`, `commitment`, `decision`, `memory`, `preference`, `artifact`, and `profile` and compares `(id, authority, classification)`. Automated coverage: `packages/portable-state/tests/test_roundtrip.py`.

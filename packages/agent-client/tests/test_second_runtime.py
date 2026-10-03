@@ -86,9 +86,9 @@ def _wait_healthy(base: str) -> None:
 def _bridge_from_recipe(recipe: dict) -> dict:
     snippet = recipe["snippet"]
     if "mcpServers" in snippet:
-        return snippet["mcpServers"]["personal-context-hub"]
+        return snippet["mcpServers"]["personal-context"]
     if "mcp_servers" in snippet:
-        return snippet["mcp_servers"]["personal-context-hub"]
+        return snippet["mcp_servers"]["personal-context"]
     raise AssertionError(sorted(snippet))
 
 
@@ -228,19 +228,19 @@ def test_hermes_cli_mcp_test_isolated_home(tmp_path: Path) -> None:
             json={"assistant": "hermes"},
             timeout=10,
         )
-        bridge = recipe.json()["snippet"]["mcp_servers"]["personal-context-hub"]
+        bridge = recipe.json()["snippet"]["mcp_servers"]["personal-context"]
         env = {**os.environ, "HERMES_HOME": str(hermes_home)}
         add = subprocess.run(
             [
                 "hermes",
                 "mcp",
                 "add",
-                "personal-context-hub",
+                "personal-context",
                 "--command",
                 bridge["command"],
                 "--env",
-                f"PCH_TOKEN={bridge['env']['PCH_TOKEN']}",
-                f"PCH_BASE={bridge['env']['PCH_BASE']}",
+                f"PERSONAL_CONTEXT_TOKEN={bridge['env']['PERSONAL_CONTEXT_TOKEN']}",
+                f"PERSONAL_CONTEXT_BASE={bridge['env']['PERSONAL_CONTEXT_BASE']}",
                 "--args",
                 *bridge["args"],
             ],
@@ -254,10 +254,10 @@ def test_hermes_cli_mcp_test_isolated_home(tmp_path: Path) -> None:
         )
         assert add.returncode == 0, add.stdout + add.stderr
         saved = (hermes_home / "config.yaml").read_text(encoding="utf-8")
-        assert "personal-context-hub" in saved
-        assert bridge["env"]["PCH_TOKEN"] in saved
+        assert "personal-context" in saved
+        assert bridge["env"]["PERSONAL_CONTEXT_TOKEN"] in saved
         probed = subprocess.run(
-            ["hermes", "mcp", "test", "personal-context-hub"],
+            ["hermes", "mcp", "test", "personal-context"],
             cwd=str(tmp_path),
             env=env,
             capture_output=True,

@@ -1,5 +1,5 @@
 blank_issues_enabled: true
 contact_links:
   - name: Security vulnerability
-    url: https://github.com/nicolasmota/personal-context-hub/security/advisories/new
+    url: https://github.com/nicolasmota/personal-context/security/advisories/new
     about: Report Hub software vulnerabilities privately — do not file a public issue with exploit detail.

@@ -20,8 +20,8 @@ Pasting into a single project’s `.cursor/mcp.json` works but is optional. Pref
 ## On the loopback API
 
 1. Start the Hub (`make serve`).
-2. Read the owner token from `owner.token` in the data directory, or run `uv run pch token --data-dir ~/.pch`. HTTP does not return it.
-3. `POST /v1/connections/links` with `Authorization: Bearer <owner token>` and a name such as `Cursor`. Or `uv run pch link --data-dir ~/.pch --name Cursor`, then `uv run pch grant`.
+2. Read the owner token from `owner.token` in the data directory, or run `uv run personal-context token --data-dir ~/.personal-context`. HTTP does not return it.
+3. `POST /v1/connections/links` with `Authorization: Bearer <owner token>` and a name such as `Cursor`. Or `uv run personal-context link --data-dir ~/.personal-context --name Cursor`, then `uv run personal-context grant`.
 4. Either:
    - Pair from the runtime with the one-time code, or
    - `POST /v1/connections/{id}/recipe` with `{"assistant":"cursor"}` or `{"assistant":"hermes"}` and copy the snippet.
@@ -42,8 +42,8 @@ All recipes run the stdio bridge:
 
 with environment:
 
-- `PCH_TOKEN` — connection token
-- `PCH_BASE` — `http://127.0.0.1:8765` (or your `--port`)
+- `PERSONAL_CONTEXT_TOKEN` — connection token
+- `PERSONAL_CONTEXT_BASE` — `http://127.0.0.1:8765` (or your `--port`)
 
 From a source checkout:
 
@@ -54,7 +54,7 @@ make bridge TOKEN=<connection-token>
 or:
 
 ```bash
-PCH_TOKEN=... PCH_BASE=http://127.0.0.1:8765 uv run pch-sdk mcp-bridge
+PERSONAL_CONTEXT_TOKEN=... PERSONAL_CONTEXT_BASE=http://127.0.0.1:8765 uv run personal-context mcp-bridge
 ```
 
 The bridge health-checks `GET /health` and forwards MCP tools to `POST /v1/mcp/tools/{name}`. It does **not** expose MCP resources over stdio (tools only). Resources remain available over HTTP: `GET /v1/mcp/resources?uri=`.
@@ -94,8 +94,8 @@ Verify the tools appear: `search_personal_context`, `get_context_contract`, `pro
 From a checkout you can also:
 
 ```bash
-hermes mcp add personal-context-hub --command <python> --env PCH_TOKEN=… PCH_BASE=http://127.0.0.1:8765 --args -m agent_client mcp-bridge
-hermes mcp test personal-context-hub
+hermes mcp add personal-context --command <python> --env PERSONAL_CONTEXT_TOKEN=… PERSONAL_CONTEXT_BASE=http://127.0.0.1:8765 --args -m agent_client mcp-bridge
+hermes mcp test personal-context
 ```
 
 Do not point a test `HERMES_HOME` at your real `~/.hermes`. The validated path is the published recipe command plus MCP `get_context_contract`.
@@ -103,7 +103,7 @@ Do not point a test `HERMES_HOME` at your real `~/.hermes`. The validated path i
 ## Pair from code (reference agent)
 
 ```bash
-uv run pch-sdk demo-agent --pair <code>
+uv run personal-context demo-agent --pair <code>
 # or
 make demo-agent CODE=<code>
 ```

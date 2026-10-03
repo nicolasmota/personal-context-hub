@@ -39,7 +39,7 @@ def pam_memory_store(
                 "type": _pam_type(row),
                 "content": content,
                 "provenance": {
-                    "platform": "personal-context-hub",
+                    "platform": "personal-context",
                     "extraction_method": "api_export",
                 },
             }

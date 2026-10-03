@@ -28,13 +28,13 @@ Runtime notes for coding agents: [AGENTS.md](../AGENTS.md). Speckit constitution
 
 ## Feature loop
 
-Default driver: `/speckit-loop` plus `uv run pch-lab loop start|next|record|status`.
+Default driver: `/speckit-loop` plus `uv run personal-context-lab loop start|next|record|status`.
 
 ```text
 specify → freeze bar → plan → Gauntlet critics → tasks → analyze → implement → tests
 ```
 
-CLI: [pch-lab loop](reference/cli.md#development-loop). Do not commit unless the person asked.
+CLI: [personal-context-lab loop](reference/cli.md#development-loop). Do not commit unless the person asked.
 
 ## Tests that encode policy
 

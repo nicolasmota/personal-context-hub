@@ -38,7 +38,7 @@ class PairingMixin:
                 }
             )
             self._kv_set(f"link:{code}", conn.id)
-        return {"link": f"pch://pair/{code}", "code": code, "connection_id": conn.id}
+        return {"link": f"personal-context://pair/{code}", "code": code, "connection_id": conn.id}
 
     def pair(self, code: str, runtime_info: dict | None = None) -> dict:
         conn_id = self._kv_get(f"link:{code}")

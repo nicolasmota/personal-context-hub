@@ -66,6 +66,6 @@ def test_eval_writes_tooling_labels(tmp_path: Path):
         for conn in guests:
             assert "eval" in (conn.get("labels") or [])
             assert "test-tooling" in (conn.get("labels") or [])
-            assert (conn.get("runtime_info") or {}).get("harness") == "pch-lab-eval"
+            assert (conn.get("runtime_info") or {}).get("harness") == "personal-context-lab-eval"
     finally:
         hub.close()

@@ -2,76 +2,76 @@
 
 Entry points from the workspace packages. Python 3.12 or newer via uv.
 
-## `pch-sdk`
+## `personal-context`
 
 Local vault commands and the MCP bridge. From a checkout, after `make install`:
 
 ```bash
-uv run pch vault-init --data-dir /tmp/pch-demo --name Synthetic
-uv run pch-sdk experience-add --data-dir /tmp/pch-demo --action "noted a change" --context dinner --outcome recorded --at 2026-09-29T12:00:00Z --provenance owner
-uv run pch-sdk evidence-add --data-dir /tmp/pch-demo --kind user_confirmed --source owner --authority "the person" --at 2026-09-29T12:00:00Z --statement "weekdays differ" --verification verified
-uv run pch-sdk evolve --data-dir /tmp/pch-demo --subject food.spicy --value mild --reason "conditional exception" --condition weekdays
-uv run pch-sdk compile --data-dir /tmp/pch-demo --purpose "plan dinner" --budget 8
-uv run pch-sdk archive-export --data-dir /tmp/pch-demo --dest /tmp/state.pch --passphrase test
-uv run pch-sdk archive-import --data-dir /tmp/pch-imported --src /tmp/state.pch --passphrase test
-uv run pch-sdk mcp-bridge --token "$PCH_TOKEN" --base "$PCH_BASE"
-uv run pch-sdk demo-agent --pair <code> --base http://127.0.0.1:8765 [--token]
+uv run personal-context vault-init --data-dir /tmp/personal-context-demo --name Synthetic
+uv run personal-context experience-add --data-dir /tmp/personal-context-demo --action "noted a change" --context dinner --outcome recorded --at 2026-09-29T12:00:00Z --provenance owner
+uv run personal-context evidence-add --data-dir /tmp/personal-context-demo --kind user_confirmed --source owner --authority "the person" --at 2026-09-29T12:00:00Z --statement "weekdays differ" --verification verified
+uv run personal-context evolve --data-dir /tmp/personal-context-demo --subject food.spicy --value mild --reason "conditional exception" --condition weekdays
+uv run personal-context compile --data-dir /tmp/personal-context-demo --purpose "plan dinner" --budget 8
+uv run personal-context archive-export --data-dir /tmp/personal-context-demo --dest /tmp/state.personal-context --passphrase test
+uv run personal-context archive-import --data-dir /tmp/personal-context-imported --src /tmp/state.personal-context --passphrase test
+uv run personal-context mcp-bridge --token "$PERSONAL_CONTEXT_TOKEN" --base "$PERSONAL_CONTEXT_BASE"
+uv run personal-context demo-agent --pair <code> --base http://127.0.0.1:8765 [--token]
 ```
 
-`pch` is the same entry point as `pch-sdk`. It does not run loop, sim, or eval. Use `pch-lab` for those.
+`personal-context` does not run loop, sim, or eval. Use `personal-context-lab` for those.
 
 Owner door, against a data directory (stop is not required; sqlite locks the short write):
 
 ```bash
-uv run pch token --data-dir ~/.pch
-uv run pch link --data-dir ~/.pch --name Cursor
-uv run pch connections --data-dir ~/.pch
-uv run pch grant --data-dir ~/.pch --connection <id> --preset read_project --project <project-id>
-uv run pch revoke --data-dir ~/.pch --connection <id>
-uv run pch proposals --data-dir ~/.pch list
-uv run pch proposals --data-dir ~/.pch accept <proposal-id>
-uv run pch proposals --data-dir ~/.pch reject <proposal-id>
-uv run pch import-memories --data-dir ~/.pch --src ~/memory.json --provider chatgpt
-uv run pch contract --data-dir ~/.pch --purpose "plan dinner" --budget 8
+uv run personal-context token --data-dir ~/.personal-context
+uv run personal-context link --data-dir ~/.personal-context --name Cursor
+uv run personal-context connections --data-dir ~/.personal-context
+uv run personal-context grant --data-dir ~/.personal-context --connection <id> --preset read_project --project <project-id>
+uv run personal-context revoke --data-dir ~/.personal-context --connection <id>
+uv run personal-context proposals --data-dir ~/.personal-context list
+uv run personal-context proposals --data-dir ~/.personal-context accept <proposal-id>
+uv run personal-context proposals --data-dir ~/.personal-context reject <proposal-id>
+uv run personal-context import-memories --data-dir ~/.personal-context --src ~/memory.json --provider chatgpt
+uv run personal-context contract --data-dir ~/.personal-context --purpose "plan dinner" --budget 8
 ```
 
 `contract` is `compile`. `import-memories` is documented in [Import memories](../guides/import-memories.md).
 
 ---
 
-## `pch-server`
+## `personal-context-server`
 
 Headless API used by `make serve`:
 
 ```bash
-uv run pch-server --reload --host 127.0.0.1 --port 8765 --data-dir ~/.pch
+uv run personal-context-server --reload --host 127.0.0.1 --port 8765 --data-dir ~/.personal-context
 ```
 
 | Flag | Default |
 |---|---|
 | `--host` | `127.0.0.1` (non-loopback exits 2; `::1` coerced to `127.0.0.1`) |
 | `--port` | `8765` |
-| `--data-dir` | `~/.pch` |
+| `--data-dir` | `~/.personal-context` |
 | `--reload` / `--no-reload` | default **on** |
 
-Factory `dev_app()` is the reload target for `pch-server`. Simulator and catalog refresh stay off unless `PCH_SIM_ENABLED=1` / `PCH_CATALOG_REFRESH=1`.
+Factory `dev_app()` is the reload target for `personal-context-server`. Simulator and catalog refresh stay off unless `PERSONAL_CONTEXT_SIM_ENABLED=1` / `PERSONAL_CONTEXT_CATALOG_REFRESH=1`.
 
 ---
 
-## `pch-lab`
+## `personal-context-lab`
 
 Repository tooling. Not the user SDK.
 
 ### Development loop
 
 ```bash
-uv run pch-lab loop start [--mode full|design-only] [--desc] [--epic] [--dir] [--roadmap] [--resume] [--redo STAGE]
-uv run pch-lab loop next
-uv run pch-lab loop record --stage specify --outcome pass|fail|blocked_on_person
-uv run pch-lab loop record-verdict --critic A|B --verdict WIN|LOSE --round N [--failing …]
-uv run pch-lab loop status
-uv run pch-lab loop stop
-uv run pch-lab loop evidence --command "pytest" --exit-code 0 --summary "…"
+uv run personal-context-lab loop start [--mode full|design-only] [--desc] [--epic] [--dir] [--roadmap] [--resume] [--redo STAGE]
+uv run personal-context-lab loop next
+uv run personal-context-lab loop record --stage specify --outcome pass|fail|blocked_on_person
+uv run personal-context-lab loop record-verdict --critic A|B --verdict WIN|LOSE --round N [--failing …]
+uv run personal-context-lab loop status
+uv run personal-context-lab loop stop
+uv run personal-context-lab loop evidence --command "pytest" --exit-code 0 --summary "…"
 ```
 
 Default for new feature work: `/speckit-loop` plus this sequencer. It must not commit unless you asked, and must not treat VISION/ROADMAP as implementable features.
@@ -79,10 +79,10 @@ Default for new feature work: `/speckit-loop` plus this sequencer. It must not c
 ### Simulator harness
 
 ```bash
-uv run pch-lab sim dump [--persona lived-stretch]
-uv run pch-lab sim run [--persona] [--delay-ms] [--data-dir] [--target isolated|everyday] \
+uv run personal-context-lab sim dump [--persona lived-stretch]
+uv run personal-context-lab sim run [--persona] [--delay-ms] [--data-dir] [--target isolated|everyday] \
   [--confirm] [--paired-assistant] [--print-mcp-recipe] [--leave-proposals]
-uv run pch-lab sim status [--data-dir]
+uv run personal-context-lab sim status [--data-dir]
 ```
 
 `pause` / `resume` / `stop` print that those apply to the **server-hosted** simulator (`/v1/sim/runs`), not this CLI runner.
@@ -90,18 +90,18 @@ uv run pch-lab sim status [--data-dir]
 ### Eval
 
 ```bash
-uv run pch-lab eval run          # exit 1 if any case fails
+uv run personal-context-lab eval run          # exit 1 if any case fails
 ```
 
 ---
 
-## `pch-archive`
+## `personal-context-archive`
 
 ```bash
-uv run pch-archive verify-roundtrip <src_hub_dir> <dst_hub_dir>
+uv run personal-context-archive verify-roundtrip <src_hub_dir> <dst_hub_dir>
 ```
 
-Compares listed object types between two data dirs. Export and import of portable personal state are `uv run pch-sdk archive-export` and `uv run pch-sdk archive-import`.
+Compares listed object types between two data dirs. Export and import of portable personal state are `uv run personal-context archive-export` and `uv run personal-context archive-import`.
 
 ---
 
@@ -112,7 +112,7 @@ Run `make help`.
 | Target | Meaning |
 |---|---|
 | `install` | `uv sync --all-packages` |
-| `serve` | `pch-server --reload` |
+| `serve` | `personal-context-server --reload` |
 | `test` / `test-forbidden` / `test-perf` / `test-all` / `test-dist` | pytest (`test-dist` is packaged wheel install) |
 | `lint` / `format` | ruff |
 | `check-secrets` | tracked-path deny-list |

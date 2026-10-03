@@ -1,46 +1,46 @@
-# Personal Context Hub
+# Personal Context
 
 > Local-first personal context layer. Agents connect over MCP; the encrypted vault stays on the device. Loopback only (`127.0.0.1`). Not a chatbot, not a model, not a vector database.
 
-Canonical facts live in `~/.pch` (SQLCipher). An agent receives only a granted slice — the situation package from `get_context_contract` — never the whole vault. Imported mail and calendar are data, never instructions. A coding agent working on this repository is not a Hub client; pairing is a separate connection.
+Canonical facts live in `~/.personal-context` (SQLCipher). An agent receives only a granted slice — the situation package from `get_context_contract` — never the whole vault. Imported mail and calendar are data, never instructions. A coding agent working on this repository is not a Hub client; pairing is a separate connection.
 
-Source: https://github.com/nicolasmota/personal-context-hub
-Docs: https://nicolasmota.github.io/personal-context-hub/
+Source: https://github.com/nicolasmota/personal-context
+Docs: https://nicolasmota.github.io/personal-context/
 
 ## Start
 
-- [Getting started](https://nicolasmota.github.io/personal-context-hub/getting-started.html): `make install`, then `uv run pch-sdk vault-init` and `uv run pch-sdk compile`
-- [Concepts](https://nicolasmota.github.io/personal-context-hub/concepts.html): memory vs context vs situation; grants; classification
-- [Pair an agent](https://nicolasmota.github.io/personal-context-hub/guides/pair-an-agent.html): pairing link, grant presets, Cursor and Hermes recipes
-- [Situation package](https://nicolasmota.github.io/personal-context-hub/guides/situation-package.html): `get_context_contract` and what comes back
+- [Getting started](https://nicolasmota.github.io/personal-context/getting-started.html): `make install`, then `uv run personal-context vault-init` and `uv run personal-context compile`
+- [Concepts](https://nicolasmota.github.io/personal-context/concepts.html): memory vs context vs situation; grants; classification
+- [Pair an agent](https://nicolasmota.github.io/personal-context/guides/pair-an-agent.html): pairing link, grant presets, Cursor and Hermes recipes
+- [Situation package](https://nicolasmota.github.io/personal-context/guides/situation-package.html): `get_context_contract` and what comes back
 
 ## Product guides
 
-- [Architecture](https://nicolasmota.github.io/personal-context-hub/architecture.html): five primitives and package boundaries
-- [Non-goals](https://nicolasmota.github.io/personal-context-hub/non-goals.html): what this repository refuses to be
-- [Research](https://nicolasmota.github.io/personal-context-hub/research.html): hypotheses, baselines, synthetic benchmark
-- [Export and import](https://nicolasmota.github.io/personal-context-hub/guides/export-import.html): portable personal state `0.2.0`
-- [Import memories](https://nicolasmota.github.io/personal-context-hub/guides/import-memories.html): ChatGPT `memory.json` and Claude `memories.json`, untrusted
-- [Context contract](https://nicolasmota.github.io/personal-context-hub/spec/context-contract.html): normative envelope
+- [Architecture](https://nicolasmota.github.io/personal-context/architecture.html): five primitives and package boundaries
+- [Non-goals](https://nicolasmota.github.io/personal-context/non-goals.html): what this repository refuses to be
+- [Research](https://nicolasmota.github.io/personal-context/research.html): hypotheses, baselines, synthetic benchmark
+- [Export and import](https://nicolasmota.github.io/personal-context/guides/export-import.html): portable personal state `0.2.0`
+- [Import memories](https://nicolasmota.github.io/personal-context/guides/import-memories.html): ChatGPT `memory.json` and Claude `memories.json`, untrusted
+- [Context contract](https://nicolasmota.github.io/personal-context/spec/context-contract.html): normative envelope
 
 ## Reference
 
-- [MCP tools](https://nicolasmota.github.io/personal-context-hub/reference/mcp.html): eleven tools; start with `get_context_contract`
-- [HTTP API](https://nicolasmota.github.io/personal-context-hub/reference/http-api.html): loopback REST
-- [OpenAPI 3.1](https://nicolasmota.github.io/personal-context-hub/openapi.json): also `GET /openapi.json` while the Hub is running
-- [Data model](https://nicolasmota.github.io/personal-context-hub/reference/data-model.html)
-- [Situation package envelope](https://nicolasmota.github.io/personal-context-hub/reference/context-contract.schema.json): JSON Schema; check a package without the Hub
-- [CLI](https://nicolasmota.github.io/personal-context-hub/reference/cli.html): `uv run pch-sdk`
-- [Configuration](https://nicolasmota.github.io/personal-context-hub/reference/configuration.html)
-- [Python SDK](https://nicolasmota.github.io/personal-context-hub/reference/python-sdk.html)
+- [MCP tools](https://nicolasmota.github.io/personal-context/reference/mcp.html): eleven tools; start with `get_context_contract`
+- [HTTP API](https://nicolasmota.github.io/personal-context/reference/http-api.html): loopback REST
+- [OpenAPI 3.1](https://nicolasmota.github.io/personal-context/openapi.json): also `GET /openapi.json` while the Hub is running
+- [Data model](https://nicolasmota.github.io/personal-context/reference/data-model.html)
+- [Situation package envelope](https://nicolasmota.github.io/personal-context/reference/context-contract.schema.json): JSON Schema; check a package without the Hub
+- [CLI](https://nicolasmota.github.io/personal-context/reference/cli.html): `uv run personal-context`
+- [Configuration](https://nicolasmota.github.io/personal-context/reference/configuration.html)
+- [Python SDK](https://nicolasmota.github.io/personal-context/reference/python-sdk.html)
 
 ## How it is built
 
-- [Architecture](https://nicolasmota.github.io/personal-context-hub/architecture.html): trust-kernel (no network), loopback-service, agent-client, eval-harness, portable-state
-- [Security](https://nicolasmota.github.io/personal-context-hub/security.html): encryption, grants, ingested material, reporting
-- [Developing](https://nicolasmota.github.io/personal-context-hub/develop.html)
+- [Architecture](https://nicolasmota.github.io/personal-context/architecture.html): trust-kernel (no network), loopback-service, agent-client, eval-harness, portable-state
+- [Security](https://nicolasmota.github.io/personal-context/security.html): encryption, grants, ingested material, reporting
+- [Developing](https://nicolasmota.github.io/personal-context/develop.html)
 
 ## Optional
 
-- [Full agent bundle](https://nicolasmota.github.io/personal-context-hub/llms-full.txt): install, pairing rules, tool catalog, constraints
-- [Contributing](https://github.com/nicolasmota/personal-context-hub/blob/main/CONTRIBUTING.md)
+- [Full agent bundle](https://nicolasmota.github.io/personal-context/llms-full.txt): install, pairing rules, tool catalog, constraints
+- [Contributing](https://github.com/nicolasmota/personal-context/blob/main/CONTRIBUTING.md)

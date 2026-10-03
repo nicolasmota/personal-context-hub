@@ -10,7 +10,7 @@ from trust_kernel.testing.spicy_seed import seed_spicy
 from trust_kernel.testing.trip_seed import drop_london, seed_trip
 
 EVAL_LABELS = ["eval", "test-tooling"]
-EVAL_RUNTIME = {"harness": "pch-lab-eval"}
+EVAL_RUNTIME = {"harness": "personal-context-lab-eval"}
 COST_BUDGET = 2.0
 
 

@@ -1,4 +1,4 @@
-# Personal Context Hub
+# Personal Context
 
 Local-first home for personal context. Agents connect; the context stays on this device.
 
@@ -8,7 +8,7 @@ Cursor is the default Speckit integration. Hermes is installed alongside it — 
 
 Hermes discovers Speckit skills globally under `~/.hermes/skills/speckit-*/`. Invoke them with hyphens, not dots: `/speckit-specify`, `/speckit-plan`, `/speckit-tasks`, `/speckit-implement`, `/speckit-analyze`, `/speckit-clarify`, `/speckit-converge`, `/speckit-constitution`, `/speckit-checklist`, `/speckit-taskstoissues`. Restart Hermes after skill install or upgrade.
 
-**One-trigger loop:** `/speckit-loop` (skill `.cursor/skills/speckit-loop/SKILL.md`) plus `uv run pch-lab loop start|next|record|status`. Default for new feature work so specify → Gauntlet → tasks → implement → tests is not driven stage-by-stage by hand. Do not implement local `docs/VISION.md` or `docs/ROADMAP.md` (gitignored).
+**One-trigger loop:** `/speckit-loop` (skill `.cursor/skills/speckit-loop/SKILL.md`) plus `uv run personal-context-lab loop start|next|record|status`. Default for new feature work so specify → Gauntlet → tasks → implement → tests is not driven stage-by-stage by hand. Do not implement local `docs/VISION.md` or `docs/ROADMAP.md` (gitignored).
 
 The empty `.hermes/skills/` directory in this repo is only a Speckit marker. Real skill files are not in the project tree.
 
@@ -33,7 +33,7 @@ make test       # pytest
 make lint       # ruff
 ```
 
-Python 3.12 or newer via `uv`. Hub data lives in `~/.pch` (encrypted). Never commit vault DBs, `.env`, `google_oauth.json`, pairing tokens, or `.cursor/mcp.json`.
+Python 3.12 or newer via `uv`. Hub data lives in `~/.personal-context` (encrypted). Never commit vault DBs, `.env`, `google_oauth.json`, pairing tokens, or `.cursor/mcp.json`.
 
 ## Constraints
 

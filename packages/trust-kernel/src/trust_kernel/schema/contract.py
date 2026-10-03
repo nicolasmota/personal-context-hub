@@ -151,7 +151,7 @@ class ContextContract(BaseModel):
 
 
 ENVELOPE_SCHEMA_ID = (
-    "https://github.com/nicolasmota/pch/docs/reference/context-contract.schema.json"
+    "https://github.com/nicolasmota/personal-context/docs/reference/context-contract.schema.json"
 )
 
 

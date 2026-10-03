@@ -145,7 +145,7 @@ def export_archive(
         ]
         pam_doc = pam_memory_store(
             projectable,
-            exported_by=f"personal-context-hub/{PCA_VERSION}",
+            exported_by=f"personal-context/{PCA_VERSION}",
             export_date=now_iso(),
         )
         ump_doc = ump_records(projectable, hub.person_id())
@@ -165,7 +165,7 @@ def export_archive(
             "format": PCA_VERSION,
             "pca_version": PCA_VERSION,
             "created_at": now_iso(),
-            "generator": {"name": "personal-context-hub", "version": PCA_VERSION},
+            "generator": {"name": "personal-context", "version": PCA_VERSION},
             "space": {"id": "personal", "kind": "personal"},
             "filters": filters,
             "counts": counts,

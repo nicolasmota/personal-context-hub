@@ -1,12 +1,12 @@
-# Personal Context Hub
+# Personal Context
 # Usage: make [target]
-# Override: make serve PORT=9000 DATA_DIR=/tmp/pch
+# Override: make serve PORT=9000 DATA_DIR=/tmp/personal-context
 # Python 3.12+ workspace via uv.
 
 UV       ?= uv
 PORT     ?= 8765
 HOST     ?= 127.0.0.1
-DATA_DIR ?= $(HOME)/.pch
+DATA_DIR ?= $(HOME)/.personal-context
 
 .DEFAULT_GOAL := help
 
@@ -48,7 +48,7 @@ test-perf: ## Run search/scale performance tests (SC-009)
 test-all: test test-forbidden ## Default suite plus forbidden-context
 
 serve: ## Loopback API with auto-reload
-	$(UV) run pch-server --reload --host $(HOST) --port $(PORT) --data-dir $(DATA_DIR)
+	$(UV) run personal-context-server --reload --host $(HOST) --port $(PORT) --data-dir $(DATA_DIR)
 
 openapi: ## Dump OpenAPI 3.1 JSON to docs/openapi.json
 	$(UV) run python -c "from pathlib import Path; from trust_kernel.service import Hub; from loopback_service.rest.app import create_app; import json, tempfile; \
@@ -58,11 +58,11 @@ Path('docs/openapi.json').write_text(json.dumps(create_app(hub).openapi(), inden
 
 demo-agent: ## Pair the reference agent (CODE= from Hub pairing link)
 	@test -n "$(CODE)" || (echo "usage: make demo-agent CODE=<pairing-code>"; exit 1)
-	$(UV) run pch-sdk demo-agent --pair $(CODE) --base http://$(HOST):$(PORT)
+	$(UV) run personal-context demo-agent --pair $(CODE) --base http://$(HOST):$(PORT)
 
 bridge: ## Run the MCP stdio bridge (TOKEN= from a connection recipe)
 	@test -n "$(TOKEN)" || (echo "usage: make bridge TOKEN=<connection-token>"; exit 1)
-	PCH_TOKEN=$(TOKEN) PCH_BASE=http://$(HOST):$(PORT) $(UV) run pch-sdk mcp-bridge
+	PERSONAL_CONTEXT_TOKEN=$(TOKEN) PERSONAL_CONTEXT_BASE=http://$(HOST):$(PORT) $(UV) run personal-context mcp-bridge
 
 dist: ## Build wheels and run the release gate (no publish)
 	$(UV) run python scripts/build_release.py

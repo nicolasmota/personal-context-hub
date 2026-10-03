@@ -45,7 +45,7 @@ jobs:
         run: uv tool install --find-links dist "loopback-service==${{ steps.ver.outputs.version }}"
       - name: Server help
         shell: bash
-        run: pch-server --help
+        run: personal-context-server --help
 
   publish:
     needs: matrix

@@ -21,7 +21,7 @@ def main(argv: list[str] | None = None) -> None:
         from eval_harness.sim.cli import dispatch_sim
 
         raise SystemExit(dispatch_sim(seq[1:]))
-    parser = argparse.ArgumentParser(prog="pch-lab")
+    parser = argparse.ArgumentParser(prog="personal-context-lab")
     sub = parser.add_subparsers(dest="cmd")
     sub.add_parser("loop", help="Speckit + Gauntlet development loop")
     sub.add_parser("sim", help="Simulation harness")
@@ -33,7 +33,7 @@ def main(argv: list[str] | None = None) -> None:
     args = parser.parse_args(seq)
     if args.cmd == "eval":
         if args.eval_cmd != "run":
-            parser.error("usage: pch-lab eval run")
+            parser.error("usage: personal-context-lab eval run")
         from eval_harness.eval.harness import run_eval
 
         report = run_eval()

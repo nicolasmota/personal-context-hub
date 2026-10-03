@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 # Deny-list tokens documented for tests and contributors:
-# .env, google_oauth.json, .cursor/mcp.json, .pch, .pch-sim, .vault
+# .env, google_oauth.json, .cursor/mcp.json, .personal-context, .personal-context-sim, .vault
 DENY_SUFFIX_GLOBS = (
     "*.db",
     "*.db-wal",
@@ -28,13 +28,13 @@ DENY_PATH_SUFFIXES = (
 )
 DENY_SEGMENTS = (
     ".vault",
-    ".pch",
-    ".pch-sim",
+    ".personal-context",
+    ".personal-context-sim",
 )
 
 
 def _repo_root() -> Path:
-    override = os.environ.get("PCH_SECRETS_REPO")
+    override = os.environ.get("PERSONAL_CONTEXT_SECRETS_REPO")
     if override:
         return Path(override).resolve()
     return Path(__file__).resolve().parents[1]

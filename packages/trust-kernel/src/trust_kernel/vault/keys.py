@@ -7,7 +7,7 @@ from pathlib import Path
 
 from argon2.low_level import Type, hash_secret_raw
 
-SERVICE = "personal-context-hub"
+SERVICE = "personal-context"
 ACCOUNT = "vault-key"
 
 
@@ -28,7 +28,7 @@ def random_key() -> bytes:
 
 
 def load_or_create_key(data_dir: Path, passphrase: str | None = None) -> bytes:
-    env = os.environ.get("PCH_VAULT_KEY")
+    env = os.environ.get("PERSONAL_CONTEXT_VAULT_KEY")
     if env:
         return bytes.fromhex(env)
     salt_path = data_dir / "vault.salt"

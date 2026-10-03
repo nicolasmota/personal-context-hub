@@ -17,7 +17,7 @@ def test_catalog_and_recipe(client):
     assert recipe.status_code == 200
     body = recipe.json()
     assert "agent_client" in str(body["snippet"])
-    assert body["snippet"]["mcpServers"]["personal-context-hub"]["env"]["PCH_TOKEN"]
+    assert body["snippet"]["mcpServers"]["personal-context"]["env"]["PERSONAL_CONTEXT_TOKEN"]
     events = client.get("/v1/events").json()
     assert any(e.get("kind") == "connection.recipe_issued" for e in events)
     bad = client.post(
@@ -55,18 +55,18 @@ def test_hermes_and_openclaw_recipes(client):
     assert hermes.status_code == 200
     h = hermes.json()
     assert h["format"] == "hermes-yaml"
-    env = h["snippet"]["mcp_servers"]["personal-context-hub"]["env"]
-    assert env["PCH_TOKEN"]
-    assert env["PCH_BASE"] == "http://127.0.0.1:8765"
+    env = h["snippet"]["mcp_servers"]["personal-context"]["env"]
+    assert env["PERSONAL_CONTEXT_TOKEN"]
+    assert env["PERSONAL_CONTEXT_BASE"] == "http://127.0.0.1:8765"
     assert "agent_client" in str(h["snippet"])
     assert "mcp_servers" in h["instructions"] or "hermes" in h["instructions"].lower()
     claw = client.post(f"/v1/connections/{conn}/recipe", json={"assistant": "openclaw"})
     assert claw.status_code == 200
     c = claw.json()
     assert c["format"] == "openclaw-json"
-    claw_env = c["snippet"]["mcp"]["servers"]["personal-context-hub"]["env"]
-    assert claw_env["PCH_BASE"] == "http://127.0.0.1:8765"
-    assert "127.0.0.1" in claw_env["PCH_BASE"]
+    claw_env = c["snippet"]["mcp"]["servers"]["personal-context"]["env"]
+    assert claw_env["PERSONAL_CONTEXT_BASE"] == "http://127.0.0.1:8765"
+    assert "127.0.0.1" in claw_env["PERSONAL_CONTEXT_BASE"]
 
 
 def test_unknown_assistant_recipe_rejected(client):
@@ -112,13 +112,13 @@ def test_recipes_include_copyable_runtime_rule(client):
 
 def test_bridge_uses_installed_interpreter():
     body = render_recipe("cursor", "tok", "http://127.0.0.1:18765")
-    bridge = body["snippet"]["mcpServers"]["personal-context-hub"]
+    bridge = body["snippet"]["mcpServers"]["personal-context"]
     command = Path(bridge["command"])
     assert command.is_absolute()
     assert command.exists()
     assert "uv run" not in " ".join([bridge["command"], *bridge["args"]])
     assert bridge["args"] == ["-m", "agent_client", "mcp-bridge"]
-    assert bridge["env"]["PCH_BASE"] == "http://127.0.0.1:18765"
+    assert bridge["env"]["PERSONAL_CONTEXT_BASE"] == "http://127.0.0.1:18765"
     assert bridge["command"] == sys.executable
 
 

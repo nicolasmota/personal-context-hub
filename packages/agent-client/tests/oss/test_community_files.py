@@ -60,33 +60,33 @@ def test_discoverability_files_exist() -> None:
     robots = (ROOT / "docs" / "robots.txt").read_text(encoding="utf-8")
     assert "Disallow: /" not in robots
     citation = (ROOT / "CITATION.cff").read_text(encoding="utf-8")
-    assert "Personal Context Hub" in citation
+    assert "Personal Context" in citation
     assert "MIT" in citation
-    assert "github.com/nicolasmota/personal-context-hub" in citation
-    assert "github.com/nicolasmota/personal-context-hub" in llms
+    assert "github.com/nicolasmota/personal-context" in citation
+    assert "github.com/nicolasmota/personal-context" in llms
     config = (ROOT / "docs" / "_config.yml").read_text(encoding="utf-8")
-    assert "baseurl: /personal-context-hub" in config
+    assert "baseurl: /personal-context" in config
 
 
 def test_checkout_launch_docs_match_venv() -> None:
     gs = (ROOT / "docs" / "getting-started.md").read_text(encoding="utf-8")
-    assert "you can type `pch`" not in gs
-    assert "uv run pch-sdk" in gs
+    assert "you can type `personal-context`" not in gs
+    assert "uv run personal-context" in gs
     cli = (ROOT / "docs" / "reference" / "cli.md").read_text(encoding="utf-8")
     assert "Simulator + catalog refresh" not in cli
     assert "dev_app() enables simulator" not in cli
-    assert "uv tool upgrade personal-context-hub" not in cli
+    assert "uv tool upgrade personal-context" not in cli
     assert "pin the uv tool" not in cli.lower()
-    assert "uv run pch-sdk" in cli
+    assert "uv run personal-context" in cli
 
 
 def test_readme_front_door() -> None:
     text = (ROOT / "README.md").read_text(encoding="utf-8")
     lower = text.lower()
-    assert "local" in lower and ("~/.pch" in text or "your device" in lower)
+    assert "local" in lower and ("~/.personal-context" in text or "your device" in lower)
     assert "mcp" in lower
     assert "make install" in text
-    assert "uv run pch-sdk" in text
+    assert "uv run personal-context" in text
     assert "MIT" in text or "LICENSE" in text
     assert "CONTRIBUTING" in text
     assert "SECURITY" in text
@@ -122,8 +122,8 @@ def test_ci_workflow_runs_gates() -> None:
 
 def test_gitignore_covers_hub_data_dirs() -> None:
     text = (ROOT / ".gitignore").read_text(encoding="utf-8")
-    assert ".pch/" in text or ".pch" in text
-    assert ".pch-sim/" in text or ".pch-sim" in text
+    assert ".personal-context/" in text or ".personal-context" in text
+    assert ".personal-context-sim/" in text or ".personal-context-sim" in text
     assert "pairing_token" in text
     assert "docs/VISION.md" in text
     assert "docs/ROADMAP.md" in text
@@ -158,7 +158,7 @@ def test_speckit_local_dirs_are_not_tracked() -> None:
 
 
 def test_published_docs_do_not_link_local_speckit() -> None:
-    blob = "github.com/nicolasmota/personal-context-hub/blob/"
+    blob = "github.com/nicolasmota/personal-context/blob/"
     for rel in (
         "docs/index.md",
         "docs/llms.txt",

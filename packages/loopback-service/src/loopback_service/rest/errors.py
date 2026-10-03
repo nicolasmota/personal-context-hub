@@ -9,7 +9,7 @@ def problem(code: str, detail: str, status: int) -> JSONResponse:
     return JSONResponse(
         status_code=status,
         content={
-            "type": f"https://pch.local/errors/{code}",
+            "type": f"https://personal-context.local/errors/{code}",
             "title": code,
             "status": status,
             "detail": detail,

@@ -10,7 +10,7 @@
 
 ## Secrets confirmation
 
-- [ ] This PR does **not** include vault databases, `.env` / `.env.*`, `google_oauth.json`, pairing tokens, `.pch/` / `.pch-sim/` data, or `.cursor/mcp.json`.
+- [ ] This PR does **not** include vault databases, `.env` / `.env.*`, `google_oauth.json`, pairing tokens, `.personal-context/` / `.personal-context-sim/` data, or `.cursor/mcp.json`.
 
 ## Notes
 

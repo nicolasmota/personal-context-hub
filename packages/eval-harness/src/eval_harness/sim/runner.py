@@ -24,11 +24,11 @@ ASSISTANT_CAPS = [
 
 
 def default_sim_dir() -> Path:
-    return Path.home() / ".pch-sim"
+    return Path.home() / ".personal-context-sim"
 
 
 def default_everyday_dir() -> Path:
-    return Path.home() / ".pch"
+    return Path.home() / ".personal-context"
 
 
 def resolve_data_dir(
@@ -69,7 +69,7 @@ def cited_ids(contract: dict[str, Any]) -> list[str]:
 
 def mint_assistant(hub: Hub, project_id: str | None = None) -> dict[str, Any]:
     link = hub.mint_link("sim-assistant", labels=["sim", "test-tooling"])
-    paired = hub.pair(link["code"], runtime_info={"harness": "pch-lab-sim"})
+    paired = hub.pair(link["code"], runtime_info={"harness": "personal-context-lab-sim"})
     selectors = {"project": project_id} if project_id else None
     hub.create_grant(
         paired["connection_id"],

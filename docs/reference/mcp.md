@@ -1,10 +1,10 @@
 # MCP tools
 
-The Hub exposes **five** tools over the stdio bridge (`pch mcp-bridge`) and over HTTP (`POST /v1/mcp/tools/{name}`).
+The Hub exposes **five** tools over the stdio bridge (`personal-context mcp-bridge`) and over HTTP (`POST /v1/mcp/tools/{name}`).
 
-Auth: connection token (`PCH_TOKEN`) or owner Bearer token. Policy is applied per actor. A revoked connection returns an error the bridge maps to *Connection revoked by the user in the Hub.*
+Auth: connection token (`PERSONAL_CONTEXT_TOKEN`) or owner Bearer token. Policy is applied per actor. A revoked connection returns an error the bridge maps to *Connection revoked by the user in the Hub.*
 
-Stdio also lists the `pch://situation` resource and the `runtime-rule` prompt. HTTP resources: [below](#resources).
+Stdio also lists the `personal-context://situation` resource and the `runtime-rule` prompt. HTTP resources: [below](#resources).
 
 ## Catalog
 
@@ -111,7 +111,7 @@ Memory kinds: `semantic`, `episodic`, `procedural`, `summary`.
 
 ## Resources (HTTP and stdio)
 
-Stdio: `resources/read` on `pch://situation?purpose=<task>` returns the same contract as `get_context_contract`.
+Stdio: `resources/read` on `personal-context://situation?purpose=<task>` returns the same contract as `get_context_contract`.
 
 `GET /v1/mcp/resources?uri=`
 
@@ -132,7 +132,7 @@ Python: `Client.resource(uri)`.
 
 | Variable | Meaning |
 |---|---|
-| `PCH_TOKEN` | Connection token (`--token` overrides) |
-| `PCH_BASE` | Hub base URL, default `http://127.0.0.1:8765` |
+| `PERSONAL_CONTEXT_TOKEN` | Connection token (`--token` overrides) |
+| `PERSONAL_CONTEXT_BASE` | Hub base URL, default `http://127.0.0.1:8765` |
 
 The stdio `serverInfo.version` is `0.2.0`. `prompts/get` with `runtime-rule` returns the capture rule.

@@ -18,7 +18,7 @@ def test_default_sim_routes_404(tmp_path: Path):
         "/v1/sim/runs", json={"target": "everyday", "confirm": "yes-wipe-my-everyday-vault"}
     )
     assert posted.status_code == 404
-    assert "PCH_SIM_ENABLED=1" in posted.json()["detail"]
+    assert "PERSONAL_CONTEXT_SIM_ENABLED=1" in posted.json()["detail"]
     assert "hub-desktop --dev" not in posted.json()["detail"]
     assert not (tmp_path / "_sim").exists()
 
@@ -38,7 +38,7 @@ def test_sim_hub_enables_routes(tmp_path: Path):
 
 
 def test_env_enables_lazy_sim(tmp_path: Path, monkeypatch):
-    monkeypatch.setenv("PCH_SIM_ENABLED", "1")
+    monkeypatch.setenv("PERSONAL_CONTEXT_SIM_ENABLED", "1")
     hub = Hub(tmp_path / "hub", plain=True)
     app = create_app(hub)
     assert app.state.sim_enabled is True

@@ -47,6 +47,6 @@ def test_sim_assistant_is_labeled_tooling(tmp_path: Path) -> None:
         conn = hub.get(paired["connection_id"])
         assert "sim" in (conn.get("labels") or [])
         assert "test-tooling" in (conn.get("labels") or [])
-        assert (conn.get("runtime_info") or {}).get("harness") == "pch-lab-sim"
+        assert (conn.get("runtime_info") or {}).get("harness") == "personal-context-lab-sim"
     finally:
         hub.close()

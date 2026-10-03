@@ -16,4 +16,4 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://nicolasmota.github.io/personal-context-hub/sitemap.xml
+Sitemap: https://nicolasmota.github.io/personal-context/sitemap.xml

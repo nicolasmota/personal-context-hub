@@ -15,22 +15,22 @@ Policy is evaluated in `trust-kernel`, outside any model’s reasoning.
 
 ## Loopback only
 
-`pch-server` refuses a non-loopback `--host` (exit code 2). The message is: *The Hub is not a public server; it binds loopback only.*
+`personal-context-server` refuses a non-loopback `--host` (exit code 2). The message is: *The Hub is not a public server; it binds loopback only.*
 
 Do not put a reverse proxy in front of `:8765` that listens on a LAN or public interface. That would make the Hub a public server.
 
 ## Encryption at rest
 
-- Default vault: SQLCipher at `~/.pch/vault.db`
-- Key: OS keyring (`personal-context-hub` / `vault-key`), or `vault.key`, or `PCH_VAULT_KEY` (hex), or Argon2id from a passphrase + `vault.salt`
-- Blobs under `~/.pch/blobs/` use the same key
-`pch-server` may open a plain database when the driver is missing and `plain=True` is used in tests. Do not treat that as the product default. Set `PCH_PLAIN_SQLITE=1` only when you accept an unencrypted vault.
+- Default vault: SQLCipher at `~/.personal-context/vault.db`
+- Key: OS keyring (`personal-context` / `vault-key`), or `vault.key`, or `PERSONAL_CONTEXT_VAULT_KEY` (hex), or Argon2id from a passphrase + `vault.salt`
+- Blobs under `~/.personal-context/blobs/` use the same key
+`personal-context-server` may open a plain database when the driver is missing and `plain=True` is used in tests. Do not treat that as the product default. Set `PERSONAL_CONTEXT_PLAIN_SQLITE=1` only when you accept an unencrypted vault.
 
 ## Tokens and pairing
 
 | Token | Who has it | How you revoke it |
 |---|---|---|
-| Owner token | `owner.token` in the data directory (mode `0600`), or `pch token` | Re-setup is not a daily operation; treat the machine as trusted |
+| Owner token | `owner.token` in the data directory (mode `0600`), or `personal-context token` | Re-setup is not a daily operation; treat the machine as trusted |
 | Connection token | One paired assistant | **Agents → revoke**, or revoke the grant |
 
 Send `Authorization: Bearer <token>` or `X-PCH-Token`. Missing or revoked tokens fail closed.
@@ -69,6 +69,6 @@ In scope: defects that leak context, weaken vault encryption, bind beyond loopba
 
 ## Related
 
-- [Configuration](reference/configuration.md) — env vars and `~/.pch` layout
+- [Configuration](reference/configuration.md) — env vars and `~/.personal-context` layout
 - [SECURITY.md](../SECURITY.md) — supported versions and reporting
 - [AGENTS.md](../AGENTS.md) — loopback, grants, imported content is data

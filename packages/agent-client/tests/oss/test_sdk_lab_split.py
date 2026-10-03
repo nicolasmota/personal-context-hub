@@ -47,7 +47,7 @@ def test_lab_package_and_script() -> None:
     path = ROOT / "packages" / "eval-harness" / "pyproject.toml"
     data = tomllib.loads(path.read_text(encoding="utf-8"))
     assert data["project"]["name"] == "eval-harness"
-    assert data["project"]["scripts"]["pch-lab"]
+    assert data["project"]["scripts"]["personal-context-lab"]
     import eval_harness.devloop.cli as lab_cli
 
     assert callable(lab_cli.dispatch_loop)
@@ -73,13 +73,13 @@ def test_docs_and_constitution_name_lab() -> None:
         assert sdk_bullet
         assert "evaluation harness" not in " ".join(sdk_bullet).lower()
     agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
-    assert "pch-lab loop" in agents
-    assert "uv run pch-sdk loop" not in agents
+    assert "personal-context-lab loop" in agents
+    assert "uv run personal-context loop" not in agents
     develop = (ROOT / "docs" / "develop.md").read_text(encoding="utf-8")
-    assert "pch-lab loop" in develop
+    assert "personal-context-lab loop" in develop
     cli = (ROOT / "docs" / "reference" / "cli.md").read_text(encoding="utf-8")
-    assert "pch-lab loop" in cli
-    assert "uv run pch-sdk eval" not in cli
+    assert "personal-context-lab loop" in cli
+    assert "uv run personal-context eval" not in cli
     assert "does not run loop" in cli
 
 
@@ -116,7 +116,7 @@ def test_sdk_lab_verbs_do_not_load_lab() -> None:
         check=False,
     )
     assert help_run.returncode == 2
-    assert "pch-lab" in help_run.stderr
+    assert "personal-context-lab" in help_run.stderr
     code = """
 import sys
 from agent_client.__main__ import main

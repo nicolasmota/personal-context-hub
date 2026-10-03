@@ -18,7 +18,7 @@ async def current_actor(
     if authorization and authorization.lower().startswith("bearer "):
         token = authorization.split(" ", 1)[1]
     if not token:
-        token = request.headers.get("x-pch-token")
+        token = request.headers.get("x-personal-context-token")
     if not token:
         raise Revoked("missing token")
     return hub.actor_from_token(token)

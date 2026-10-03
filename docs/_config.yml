@@ -1,9 +1,9 @@
-title: Personal Context Hub
+title: Personal Context
 description: >-
   Local-first personal context for any agent. Encrypted vault on-device,
   MCP pairing, loopback only.
 url: https://nicolasmota.github.io
-baseurl: /personal-context-hub
+baseurl: /personal-context
 theme: jekyll-theme-cayman
 plugins:
   - jekyll-sitemap

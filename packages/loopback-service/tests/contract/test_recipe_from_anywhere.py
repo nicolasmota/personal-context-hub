@@ -82,11 +82,11 @@ def test_all_supported_assistants_connect_from_tmp(tmp_path: Path):
             assert recipe.status_code == 200, recipe.text
             snippet = recipe.json()["snippet"]
             if aid == "hermes":
-                bridge = snippet["mcp_servers"]["personal-context-hub"]
+                bridge = snippet["mcp_servers"]["personal-context"]
             elif aid == "openclaw":
-                bridge = snippet["mcp"]["servers"]["personal-context-hub"]
+                bridge = snippet["mcp"]["servers"]["personal-context"]
             else:
-                bridge = snippet["mcpServers"]["personal-context-hub"]
+                bridge = snippet["mcpServers"]["personal-context"]
             env = {**os.environ, **bridge["env"]}
             proc = subprocess.Popen(
                 [bridge["command"], *bridge["args"]],

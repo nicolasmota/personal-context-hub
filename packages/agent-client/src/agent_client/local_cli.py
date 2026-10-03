@@ -18,7 +18,7 @@ def _print(payload: dict) -> None:
 def _hub(data_dir: str) -> Hub:
     path = Path(data_dir)
     path.mkdir(parents=True, exist_ok=True)
-    return Hub(path, plain=os.environ.get("PCH_PLAIN_SQLITE") == "1")
+    return Hub(path, plain=os.environ.get("PERSONAL_CONTEXT_PLAIN_SQLITE") == "1")
 
 
 def vault_init(data_dir: str, name: str) -> None:

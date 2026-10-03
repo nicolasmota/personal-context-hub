@@ -23,7 +23,7 @@ def verify_roundtrip(src: Path, dst: Path) -> int:
 
 
 def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser(prog="pch-archive")
+    parser = argparse.ArgumentParser(prog="personal-context-archive")
     sub = parser.add_subparsers(dest="cmd")
     rt = sub.add_parser("verify-roundtrip")
     rt.add_argument("src")

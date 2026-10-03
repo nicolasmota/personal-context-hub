@@ -184,7 +184,7 @@ def map_tool_result(status: int, body: Any, *, base: str | None = None) -> dict[
             payload = {
                 "code": "hub_unreachable",
                 "base": (base or "http://127.0.0.1:8765").rstrip("/"),
-                "message": "Hub unreachable at configured PCH_BASE.",
+                "message": "Hub unreachable at configured PERSONAL_CONTEXT_BASE.",
             }
             return {
                 "isError": True,
@@ -234,27 +234,27 @@ def _mcp_tools() -> list[dict[str, Any]]:
 def _mcp_resources() -> list[dict[str, Any]]:
     return [
         {
-            "uri": "pch://situation",
+            "uri": "personal-context://situation",
             "name": "situation",
             "description": (
-                "The context contract for a purpose. Read pch://situation?purpose=<task>."
+                "The context contract for a purpose. Read personal-context://situation?purpose=<task>."
             ),
             "mimeType": "application/json",
         },
         {
-            "uri": "pch://explain",
+            "uri": "personal-context://explain",
             "name": "explain",
-            "description": "Why a fact is believed. pch://explain?subject=<key-or-id>",
+            "description": "Why a fact is believed. personal-context://explain?subject=<key-or-id>",
             "mimeType": "application/json",
         },
         {
-            "uri": "pch://impact",
+            "uri": "personal-context://impact",
             "name": "impact",
-            "description": "What a source affects. pch://impact?evidence=<id>",
+            "description": "What a source affects. personal-context://impact?evidence=<id>",
             "mimeType": "application/json",
         },
         {
-            "uri": "pch://proposal-status",
+            "uri": "personal-context://proposal-status",
             "name": "proposal-status",
             "description": "Status of the caller's proposals.",
             "mimeType": "application/json",
@@ -273,7 +273,7 @@ def _mcp_prompts() -> list[dict[str, Any]]:
 
 def _situation_purpose(uri: str) -> str | None:
     parsed = urlparse(uri)
-    if parsed.scheme != "pch" or parsed.netloc != "situation":
+    if parsed.scheme != "personal-context" or parsed.netloc != "situation":
         return None
     values = parse_qs(parsed.query).get("purpose") or []
     purpose = values[0].strip() if values else ""
@@ -282,7 +282,7 @@ def _situation_purpose(uri: str) -> str | None:
 
 def _read_resource(uri: str, base: str, token: str) -> dict[str, Any]:
     parsed = urlparse(uri)
-    if parsed.scheme == "pch" and parsed.netloc == "vault":
+    if parsed.scheme == "personal-context" and parsed.netloc == "vault":
         return {
             "contents": [
                 {
@@ -294,13 +294,13 @@ def _read_resource(uri: str, base: str, token: str) -> dict[str, Any]:
         }
     tool: str | None = None
     arguments: dict[str, Any] = {}
-    if parsed.scheme == "pch" and parsed.netloc == "explain":
+    if parsed.scheme == "personal-context" and parsed.netloc == "explain":
         subject = (parse_qs(parsed.query).get("subject") or [""])[0]
         tool, arguments = "explain_subject", {"subject": subject}
-    elif parsed.scheme == "pch" and parsed.netloc == "impact":
+    elif parsed.scheme == "personal-context" and parsed.netloc == "impact":
         evidence_id = (parse_qs(parsed.query).get("evidence") or [""])[0]
         tool, arguments = "source_impact", {"evidence_id": evidence_id}
-    elif parsed.scheme == "pch" and parsed.netloc == "proposal-status":
+    elif parsed.scheme == "personal-context" and parsed.netloc == "proposal-status":
         tool, arguments = "proposal_status", {}
     else:
         purpose = _situation_purpose(uri)
@@ -312,7 +312,7 @@ def _read_resource(uri: str, base: str, token: str) -> dict[str, Any]:
                 {
                     "uri": uri,
                     "mimeType": "text/plain",
-                    "text": "Pass purpose: pch://situation?purpose=<what you are doing>",
+                    "text": "Pass purpose: personal-context://situation?purpose=<what you are doing>",
                 }
             ]
         }
@@ -346,7 +346,7 @@ def handle_message(msg: dict[str, Any], base: str, token: str) -> dict[str, Any]
             {
                 "protocolVersion": params.get("protocolVersion") or "2024-11-05",
                 "capabilities": {"tools": {}, "resources": {}, "prompts": {}},
-                "serverInfo": {"name": "personal-context-hub", "version": "0.2.0"},
+                "serverInfo": {"name": "personal-context", "version": "0.2.0"},
             },
         )
     if method in ("notifications/initialized", "notifications/cancelled"):
@@ -404,7 +404,7 @@ def handle_message(msg: dict[str, Any], base: str, token: str) -> dict[str, Any]
 
 def run_stdio(token: str, base: str) -> None:
     if not token:
-        sys.stderr.write("PCH_TOKEN is required\n")
+        sys.stderr.write("PERSONAL_CONTEXT_TOKEN is required\n")
         raise SystemExit(1)
     try:
         healthcheck(base)
@@ -423,6 +423,6 @@ def run_stdio(token: str, base: str) -> None:
 
 
 def main(token: str | None = None, base: str | None = None) -> None:
-    token = token or os.environ.get("PCH_TOKEN") or ""
-    base = (base or os.environ.get("PCH_BASE") or "http://127.0.0.1:8765").rstrip("/")
+    token = token or os.environ.get("PERSONAL_CONTEXT_TOKEN") or ""
+    base = (base or os.environ.get("PERSONAL_CONTEXT_BASE") or "http://127.0.0.1:8765").rstrip("/")
     run_stdio(token, base)

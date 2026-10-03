@@ -12,7 +12,7 @@ members = [
     "agent-client",
     "eval-harness",
     "loopback-service",
-    "pch-workspace",
+    "personal-context",
     "portable-state",
     "trust-kernel",
 ]
@@ -1256,7 +1256,7 @@ wheels = [
 ]
 
 [[package]]
-name = "pch-workspace"
+name = "personal-context"
 version = "0.2.0"
 source = { virtual = "." }
 dependencies = [

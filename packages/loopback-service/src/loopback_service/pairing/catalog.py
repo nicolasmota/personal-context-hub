@@ -65,7 +65,7 @@ def _bridge(token: str, base_url: str) -> dict:
     return {
         "command": sys.executable,
         "args": ["-m", "agent_client", "mcp-bridge"],
-        "env": {"PCH_TOKEN": token, "PCH_BASE": base_url},
+        "env": {"PERSONAL_CONTEXT_TOKEN": token, "PERSONAL_CONTEXT_BASE": base_url},
     }
 
 
@@ -77,7 +77,7 @@ def render_recipe(assistant_id: str, token: str, base_url: str) -> dict:
         return {}
     bridge = _bridge(token, base_url)
     if assistant_id == "hermes":
-        snippet: dict = {"mcp_servers": {"personal-context-hub": bridge}}
+        snippet: dict = {"mcp_servers": {"personal-context": bridge}}
         fmt = "hermes-yaml"
         instructions = (
             "Add this under mcp_servers in ~/.hermes/config.yaml, then reload MCP "
@@ -85,7 +85,7 @@ def render_recipe(assistant_id: str, token: str, base_url: str) -> dict:
             "personal guidance."
         )
     elif assistant_id == "openclaw":
-        snippet = {"mcp": {"servers": {"personal-context-hub": bridge}}}
+        snippet = {"mcp": {"servers": {"personal-context": bridge}}}
         fmt = "openclaw-json"
         instructions = (
             "Add this under mcp.servers in ~/.openclaw/openclaw.json "
@@ -93,7 +93,7 @@ def render_recipe(assistant_id: str, token: str, base_url: str) -> dict:
             "assistant's personal guidance."
         )
     else:
-        snippet = {"mcpServers": {"personal-context-hub": bridge}}
+        snippet = {"mcpServers": {"personal-context": bridge}}
         fmt = "cursor-mcp-json"
         instructions = {
             "cursor": (

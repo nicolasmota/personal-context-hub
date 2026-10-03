@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping with Personal Context Hub. This guide is for **from-source** work on the repository. End-user install and product docs live in the [README](README.md) and [docs/](docs/README.md).
+Thanks for helping with Personal Context. This guide is for **from-source** work on the repository. End-user install and product docs live in the [README](README.md) and [docs/](docs/README.md).
 
 ## Prerequisites
 
@@ -27,7 +27,7 @@ make help             # all targets
 
 ## Must not commit
 
-- Vault databases (`*.db`, `*.db-wal`, `*.db-shm`), `.pch/`, `.pch-sim/`, `.vault/`, `*.key`, `*.pca`
+- Vault databases (`*.db`, `*.db-wal`, `*.db-shm`), `.personal-context/`, `.personal-context-sim/`, `.vault/`, `*.key`, `*.pca`
 - `.env` / `.env.*`
 - `google_oauth.json`
 - Pairing token files

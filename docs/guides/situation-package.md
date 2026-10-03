@@ -42,7 +42,7 @@ curl:
 
 ```bash
 curl -s http://127.0.0.1:8765/v1/mcp/tools/get_context_contract \
-  -H "Authorization: Bearer $PCH_TOKEN" \
+  -H "Authorization: Bearer $PERSONAL_CONTEXT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"purpose":"continue planning the ten-day trip"}'
 ```
@@ -85,7 +85,7 @@ That portability is the point. Search hits alone are not enough.
 
 After the contract:
 
-- Durable facts the person just stated → `propose_memory` (not live until they accept, via `pch proposals`)
+- Durable facts the person just stated → `propose_memory` (not live until they accept, via `personal-context proposals`)
 - Typed links → `propose_relation`
 
 ## Temporal reads

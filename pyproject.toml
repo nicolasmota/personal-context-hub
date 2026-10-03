@@ -1,7 +1,7 @@
 [project]
-name = "pch-workspace"
+name = "personal-context"
 version = "0.2.0"
-description = "Personal Context Hub — local-first personal context for any agent"
+description = "Personal Context — local-first personal context for any agent"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

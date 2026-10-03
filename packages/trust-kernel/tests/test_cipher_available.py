@@ -19,6 +19,6 @@ def test_engine_refuses_plaintext_when_cipher_missing(tmp_path: Path, monkeypatc
     import trust_kernel.vault.engine as engine
 
     monkeypatch.setattr(engine, "sqlcipher", None)
-    monkeypatch.delenv("PCH_PLAIN_SQLITE", raising=False)
+    monkeypatch.delenv("PERSONAL_CONTEXT_PLAIN_SQLITE", raising=False)
     with pytest.raises(RuntimeError, match="sqlcipher3"):
         Engine(tmp_path / "vault.db", b"0" * 32, plain=False)

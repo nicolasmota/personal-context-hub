@@ -48,7 +48,7 @@ Headers: `Authorization: Bearer {token}`.
 ## Demo agent
 
 ```bash
-uv run pch-sdk demo-agent --pair <code> --base http://127.0.0.1:8765
+uv run personal-context demo-agent --pair <code> --base http://127.0.0.1:8765
 ```
 
 Pairs, then calls `search_personal_context` with query `Atlas` and purpose `demo`. It is a smoke client, not a product assistant.
@@ -56,7 +56,7 @@ Pairs, then calls `search_personal_context` with query `Atlas` and purpose `demo
 ## MCP bridge
 
 ```bash
-PCH_TOKEN=… PCH_BASE=http://127.0.0.1:8765 uv run pch-sdk mcp-bridge
+PERSONAL_CONTEXT_TOKEN=… PERSONAL_CONTEXT_BASE=http://127.0.0.1:8765 uv run personal-context mcp-bridge
 ```
 
 Implementation: `agent_client.mcp_bridge`. Tool names and JSON Schema: [MCP tools](mcp.md).

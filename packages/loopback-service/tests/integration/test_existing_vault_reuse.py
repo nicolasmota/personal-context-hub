@@ -6,7 +6,7 @@ from trust_kernel.service import Hub
 
 
 def test_existing_vault_reused_by_packaged_path(tmp_path: Path, monkeypatch):
-    monkeypatch.setenv("PCH_PLAIN_SQLITE", "1")
+    monkeypatch.setenv("PERSONAL_CONTEXT_PLAIN_SQLITE", "1")
     source = tmp_path / "vault"
     hub = Hub(source, plain=True)
     hub.setup("Owner")

@@ -25,8 +25,8 @@ packages/loopback-service/src/loopback_service/static/
 *.db-shm
 *.pca
 .vault/
-.pch/
-.pch-sim/
+.personal-context/
+.personal-context-sim/
 *.key
 .env
 .env.*

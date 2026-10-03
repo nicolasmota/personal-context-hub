@@ -42,17 +42,17 @@ def main(argv: list[str] | None = None) -> None:
     seq = list(argv) if argv is not None else sys.argv[1:]
     if seq[:1] in (["loop"], ["sim"], ["eval"]):
         verb = seq[0]
-        sys.stderr.write(f"pch-sdk does not run {verb}. Use: uv run pch-lab {verb}\n")
+        sys.stderr.write(f"personal-context does not run {verb}. Use: uv run personal-context-lab {verb}\n")
         raise SystemExit(2)
-    parser = argparse.ArgumentParser(prog="pch-sdk")
+    parser = argparse.ArgumentParser(prog="personal-context")
     sub = parser.add_subparsers(dest="cmd")
     demo_p = sub.add_parser("demo-agent")
     demo_p.add_argument("--pair", dest="code")
     demo_p.add_argument("--base", default="http://127.0.0.1:8765")
     demo_p.add_argument("--token", default="")
     bridge_p = sub.add_parser("mcp-bridge")
-    bridge_p.add_argument("--token", default=os.environ.get("PCH_TOKEN", ""))
-    bridge_p.add_argument("--base", default=os.environ.get("PCH_BASE", "http://127.0.0.1:8765"))
+    bridge_p.add_argument("--token", default=os.environ.get("PERSONAL_CONTEXT_TOKEN", ""))
+    bridge_p.add_argument("--base", default=os.environ.get("PERSONAL_CONTEXT_BASE", "http://127.0.0.1:8765"))
     for name in (
         "vault-init",
         "experience-add",

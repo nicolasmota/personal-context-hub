@@ -15,20 +15,20 @@ def test_same_explanation_on_hub_http_and_resource(client):
     http = client.post("/v1/mcp/tools/explain_subject", json={"subject": "city"})
     assert http.status_code == 200
     via_tool = client.app.state.mcp.call("explain_subject", "owner", subject="city")
-    resource = client.app.state.mcp.resource("pch://explain?subject=city", "owner")
+    resource = client.app.state.mcp.resource("personal-context://explain?subject=city", "owner")
     assert direct["value"] == http.json()["value"] == via_tool["value"] == resource["value"] == "Lisbon"
     before = [row["id"] for row in hub.store.list()]
     refused = client.post("/v1/mcp/tools/read_everything", json={})
     assert refused.status_code == 403
-    vault = client.get("/v1/mcp/resources", params={"uri": "pch://vault"})
+    vault = client.get("/v1/mcp/resources", params={"uri": "personal-context://vault"})
     assert vault.status_code == 403
     assert [row["id"] for row in hub.store.list()] == before
     try:
-        client.app.state.mcp.resource("pch://vault", "owner")
+        client.app.state.mcp.resource("personal-context://vault", "owner")
     except PolicyDenied:
         pass
     else:
-        raise AssertionError("pch://vault was served")
+        raise AssertionError("personal-context://vault was served")
 
 
 def test_five_tools_match_on_http(client):
@@ -57,7 +57,7 @@ def test_five_tools_match_on_http(client):
     )
     impact = hub.source_impact(evidence["id"])
     http_impact = client.post("/v1/mcp/tools/source_impact", json={"evidence_id": evidence["id"]})
-    resource = client.app.state.mcp.resource(f"pch://impact?evidence={evidence['id']}", "owner")
+    resource = client.app.state.mcp.resource(f"personal-context://impact?evidence={evidence['id']}", "owner")
     assert http_impact.status_code == 200
     http_ids = {item["id"] for item in http_impact.json()["live_facts"]}
     assert http_ids == {item["id"] for item in impact["live_facts"]}

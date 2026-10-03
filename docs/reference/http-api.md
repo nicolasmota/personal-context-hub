@@ -23,7 +23,7 @@ X-PCH-Token: <token>
 
 | Actor | Token source | Can |
 |---|---|---|
-| Owner | `owner.token` in the data directory, or `pch token` | Full vault, pairing, and export |
+| Owner | `owner.token` in the data directory, or `personal-context token` | Full vault, pairing, and export |
 | Connection | `POST /v1/connections/pair` | MCP tools and connection-scoped routes under its grants |
 
 Missing or revoked → error (`Revoked`). Owner-only routes use `require_owner`.
@@ -176,7 +176,7 @@ Tool names and bodies: [MCP tools](mcp.md).
 
 ## Simulator (dev)
 
-When `PCH_SIM_ENABLED=1` or `pch serve --sim` (not on by default for `make serve`):
+When `PERSONAL_CONTEXT_SIM_ENABLED=1` or `personal-context serve --sim` (not on by default for `make serve`):
 
 `/v1/sim/runs`, pause/resume/stop, ticks, `GET /v1/sim/objects/{id}`.
 

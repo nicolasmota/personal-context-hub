@@ -26,7 +26,7 @@ Memory, context, and situation stay distinct. Memory is persisted information. T
 | `packages/portable-state` | Portable personal state, format `0.2.0` |
 | `packages/eval-harness` | Synthetic scenarios and the four-approach benchmark. Not a product agent |
 
-The same contract is returned by `Hub.get_context_contract`, `POST /v1/mcp/tools/get_context_contract`, the MCP tool `get_context_contract`, and the resource `pch://situation`.
+The same contract is returned by `Hub.get_context_contract`, `POST /v1/mcp/tools/get_context_contract`, the MCP tool `get_context_contract`, and the resource `personal-context://situation`.
 
 Relevance ranking is a `PurposeRetriever` on the hub. The default counts overlapping tokens. An embedding index or an external memory library can replace that object. Grants, omissions, authority, and the envelope stay in `trust-kernel`.
 

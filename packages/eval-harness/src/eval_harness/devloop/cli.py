@@ -17,7 +17,7 @@ from eval_harness.devloop.stages import (
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="pch-lab")
+    parser = argparse.ArgumentParser(prog="personal-context-lab")
     sub = parser.add_subparsers(dest="cmd")
     loop = sub.add_parser("loop", help="Speckit + Gauntlet development loop")
     loop_sub = loop.add_subparsers(dest="loop_cmd", required=True)

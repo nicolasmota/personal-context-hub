@@ -68,7 +68,7 @@ def test_run_stdio_empty_token_exits(monkeypatch):
     with pytest.raises(SystemExit) as ei:
         run_stdio("", "http://127.0.0.1:8765")
     assert ei.value.code == 1
-    assert "PCH_TOKEN" in err.getvalue()
+    assert "PERSONAL_CONTEXT_TOKEN" in err.getvalue()
 
 
 def test_run_stdio_hub_down_lists_tools(monkeypatch):
@@ -128,7 +128,7 @@ def test_explain_resource_uses_the_explain_door(monkeypatch):
             "jsonrpc": "2.0",
             "id": 4,
             "method": "resources/read",
-            "params": {"uri": "pch://explain?subject=city"},
+            "params": {"uri": "personal-context://explain?subject=city"},
         },
         "http://x",
         "tok",
@@ -147,7 +147,7 @@ def test_vault_resource_is_refused(monkeypatch):
             "jsonrpc": "2.0",
             "id": 5,
             "method": "resources/read",
-            "params": {"uri": "pch://vault"},
+            "params": {"uri": "personal-context://vault"},
         },
         "http://x",
         "tok",

@@ -11,7 +11,7 @@ def test_bench_writes_twenty_eight_rows(tmp_path: Path):
     rows = json.loads(dest.read_text(encoding="utf-8"))
     assert len(rows) == 28
     privacy = next(
-        row for row in rows if row["scenario_id"] == "privacy" and row["approach"] == "pch"
+        row for row in rows if row["scenario_id"] == "privacy" and row["approach"] == "personal-context"
     )
     raw_privacy = next(
         row
@@ -35,7 +35,7 @@ def test_bench_writes_twenty_eight_rows(tmp_path: Path):
     assert raw_horizon["task_success"] is True
     assert privacy["token_use"] > 0
     assert {"task_success", "token_use", "latency_ms", "cost"} <= set(privacy)
-    hub_rows = [row for row in rows if row["approach"] == "pch"]
+    hub_rows = [row for row in rows if row["approach"] == "personal-context"]
     assert hub_rows
     assert all("retrieval_judgment" in row and "compilation_judgment" in row for row in hub_rows)
     stale = next(row for row in hub_rows if row["scenario_id"] == "stale_context")
@@ -53,4 +53,4 @@ def test_retrieval_coverage_does_not_pass_a_leaking_contract():
 
 def test_missing_approach_is_a_failure(tmp_path: Path):
     dest = tmp_path / "partial.json"
-    assert run_bench(dest, approaches=["pch"]) == 1
+    assert run_bench(dest, approaches=["personal-context"]) == 1

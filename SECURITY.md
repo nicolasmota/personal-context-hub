@@ -34,7 +34,7 @@ If you accidentally paste secrets into a public thread, rotate them and ask main
 
 Never commit:
 
-- Vault databases (`*.db` and sidecars), `.pch/` / `.pch-sim/` data dirs, `.vault/`
+- Vault databases (`*.db` and sidecars), `.personal-context/` / `.personal-context-sim/` data dirs, `.vault/`
 - `.env` / `.env.*`
 - `google_oauth.json`
 - Pairing tokens

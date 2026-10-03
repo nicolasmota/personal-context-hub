@@ -183,7 +183,7 @@ class Engine:
         self.path = path
         path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.RLock()
-        use_plain = plain if plain is not None else os.environ.get("PCH_PLAIN_SQLITE") == "1"
+        use_plain = plain if plain is not None else os.environ.get("PERSONAL_CONTEXT_PLAIN_SQLITE") == "1"
         if use_plain:
             raw = _connect_sqlite(path)
             self.encrypted = False

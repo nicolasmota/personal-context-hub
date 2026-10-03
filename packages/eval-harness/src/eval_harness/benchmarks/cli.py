@@ -26,7 +26,7 @@ def run_bench(out: Path, approaches: list[str] | None = None) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="pch-lab bench")
+    parser = argparse.ArgumentParser(prog="personal-context-lab bench")
     parser.add_argument("--out", default="bench-results.json")
     args = parser.parse_args(argv)
     return run_bench(Path(args.out))

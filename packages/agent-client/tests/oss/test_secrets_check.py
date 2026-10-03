@@ -39,7 +39,7 @@ def test_tracked_env_fails(tmp_path: Path) -> None:
     subprocess.run(["git", "add", "-f", ".env"], cwd=repo, check=True, capture_output=True)
     # Run checker against this temp repo by copying script logic via env
     env = os.environ.copy()
-    env["PCH_SECRETS_REPO"] = str(repo)
+    env["PERSONAL_CONTEXT_SECRETS_REPO"] = str(repo)
     result = subprocess.run(
         [sys.executable, str(SCRIPT)],
         cwd=repo,
@@ -56,12 +56,12 @@ def test_tracked_pch_dir_fails(tmp_path: Path) -> None:
     repo = tmp_path / "r"
     repo.mkdir()
     subprocess.run(["git", "init"], cwd=repo, check=True, capture_output=True)
-    pch = repo / ".pch"
-    pch.mkdir()
-    (pch / "vault.db").write_bytes(b"x")
-    subprocess.run(["git", "add", "-f", ".pch/vault.db"], cwd=repo, check=True, capture_output=True)
+    data = repo / ".personal-context"
+    data.mkdir()
+    (data / "vault.db").write_bytes(b"x")
+    subprocess.run(["git", "add", "-f", ".personal-context/vault.db"], cwd=repo, check=True, capture_output=True)
     env = os.environ.copy()
-    env["PCH_SECRETS_REPO"] = str(repo)
+    env["PERSONAL_CONTEXT_SECRETS_REPO"] = str(repo)
     result = subprocess.run(
         [sys.executable, str(SCRIPT)],
         cwd=repo,
@@ -71,10 +71,10 @@ def test_tracked_pch_dir_fails(tmp_path: Path) -> None:
         env=env,
     )
     assert result.returncode == 1
-    assert ".pch" in (result.stdout + result.stderr)
+    assert ".personal-context" in (result.stdout + result.stderr)
 
 
 def test_deny_patterns_documented_in_script() -> None:
     text = SCRIPT.read_text(encoding="utf-8")
-    for token in (".env", "google_oauth.json", ".cursor/mcp.json", ".pch", ".pch-sim", ".vault"):
+    for token in (".env", "google_oauth.json", ".cursor/mcp.json", ".personal-context", ".personal-context-sim", ".vault"):
         assert token in text

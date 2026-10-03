@@ -1,7 +1,7 @@
 [project]
 name = "eval-harness"
 version = "0.2.0"
-description = "Development loop, simulation, and eval harnesses for Personal Context Hub"
+description = "Development loop, simulation, and eval harnesses for Personal Context"
 requires-python = ">=3.12"
 license = "MIT"
 dependencies = [
@@ -9,7 +9,7 @@ dependencies = [
 ]
 
 [project.scripts]
-pch-lab = "eval_harness.__main__:main"
+personal-context-lab = "eval_harness.__main__:main"
 
 [build-system]
 requires = ["hatchling"]

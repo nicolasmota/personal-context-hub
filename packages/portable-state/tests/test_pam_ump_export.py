@@ -18,7 +18,7 @@ def test_empty_export_writes_pam_and_ump(hub, tmp_path: Path):
     ump = json.loads(zf.read("interoperability/ump/memories.ump.json"))
     validate_pam_store(pam)
     validate_ump_records(ump)
-    assert pam["exported_by"].startswith("personal-context-hub/")
+    assert pam["exported_by"].startswith("personal-context/")
     assert isinstance(ump, list)
 
 

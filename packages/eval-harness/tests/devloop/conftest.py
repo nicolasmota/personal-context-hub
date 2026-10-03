@@ -22,7 +22,7 @@ def make_repo(root: Path) -> Path:
     (root / "docs" / "ROADMAP.md").write_text(ROADMAP, encoding="utf-8")
     (root / ".specify").mkdir()
     for name in (
-        "001-personal-context-hub",
+        "001-personal-context",
         "004-context-engine",
         "005-temporal-validity",
         "009-fixture",

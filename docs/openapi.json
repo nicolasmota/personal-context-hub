@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Personal Context Hub",
+    "title": "Personal Context",
     "version": "0.2.0"
   },
   "paths": {

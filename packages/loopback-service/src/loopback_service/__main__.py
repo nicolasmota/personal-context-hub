@@ -54,12 +54,12 @@ def run_server(host: str, port: int, *, reload: bool) -> None:
 
 
 def main(argv: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser(prog="pch-server")
+    parser = argparse.ArgumentParser(prog="personal-context-server")
     parser.add_argument("--host", default="127.0.0.1")
-    parser.add_argument("--port", type=int, default=int(os.environ.get("PCH_PORT", "8765")))
+    parser.add_argument("--port", type=int, default=int(os.environ.get("PERSONAL_CONTEXT_PORT", "8765")))
     parser.add_argument(
         "--data-dir",
-        default=os.environ.get("PCH_DATA_DIR", str(Path.home() / ".pch")),
+        default=os.environ.get("PERSONAL_CONTEXT_DATA_DIR", str(Path.home() / ".personal-context")),
     )
     parser.add_argument("--reload", action=argparse.BooleanOptionalAction, default=True)
     args = parser.parse_args(argv)
@@ -67,7 +67,7 @@ def main(argv: list[str] | None = None) -> None:
         print(LOOPBACK_MSG)
         raise SystemExit(2)
     bind_host = "127.0.0.1" if args.host in {"::1", "[::1]"} else args.host
-    os.environ["PCH_DATA_DIR"] = args.data_dir
+    os.environ["PERSONAL_CONTEXT_DATA_DIR"] = args.data_dir
     run_server(bind_host, args.port, reload=args.reload)
 
 

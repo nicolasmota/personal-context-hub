@@ -10,7 +10,7 @@ def test_create_app_without_hub_does_not_force_plaintext(tmp_path, monkeypatch):
     from fastapi.testclient import TestClient
     from loopback_service.rest.app import create_app
 
-    monkeypatch.delenv("PCH_PLAIN_SQLITE", raising=False)
+    monkeypatch.delenv("PERSONAL_CONTEXT_PLAIN_SQLITE", raising=False)
     app = create_app(data_dir=tmp_path / "vault")
     try:
         assert app.state.hub.engine.encrypted is True
@@ -23,10 +23,10 @@ def test_create_app_without_hub_does_not_force_plaintext(tmp_path, monkeypatch):
 def test_dev_app_sim_disabled_by_default(tmp_path, monkeypatch):
     from loopback_service.rest.app import dev_app
 
-    monkeypatch.setenv("PCH_DATA_DIR", str(tmp_path / "data"))
-    monkeypatch.setenv("PCH_SIM_DIR", str(tmp_path / "sim"))
-    monkeypatch.setenv("PCH_PLAIN_SQLITE", "1")
-    monkeypatch.delenv("PCH_SIM_ENABLED", raising=False)
+    monkeypatch.setenv("PERSONAL_CONTEXT_DATA_DIR", str(tmp_path / "data"))
+    monkeypatch.setenv("PERSONAL_CONTEXT_SIM_DIR", str(tmp_path / "sim"))
+    monkeypatch.setenv("PERSONAL_CONTEXT_PLAIN_SQLITE", "1")
+    monkeypatch.delenv("PERSONAL_CONTEXT_SIM_ENABLED", raising=False)
     app = dev_app()
     try:
         assert app.state.sim_enabled is False

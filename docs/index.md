@@ -1,10 +1,10 @@
-# Personal Context Hub
+# Personal Context
 
 Local-first **personal context** for any agent. Assistants connect over **MCP**. Your encrypted vault stays on this device, bound to loopback (`127.0.0.1`). The Hub is not a public server.
 
 [Getting started](getting-started.md) · [Pair an agent](guides/pair-an-agent.md) · [MCP tools](reference/mcp.md) · [Security](security.md) · [llms.txt](llms.txt)
 
-This site is the product documentation. Source: [github.com/nicolasmota/personal-context-hub](https://github.com/nicolasmota/personal-context-hub). Local planning files (`VISION.md`, `ROADMAP.md`) stay on the maintainer’s machine and are not published.
+This site is the product documentation. Source: [github.com/nicolasmota/personal-context](https://github.com/nicolasmota/personal-context). Local planning files (`VISION.md`, `ROADMAP.md`) stay on the maintainer’s machine and are not published.
 
 ## Start here
 
@@ -43,7 +43,7 @@ This site is the product documentation. Source: [github.com/nicolasmota/personal
 - [Architecture](architecture.md) — packages, data flow, trust kernel
 - [Developing](develop.md) — from-source loop, tests, Speckit
 - [Security](security.md) — encryption, grants, ingested material, reporting
-- [Contributing](https://github.com/nicolasmota/personal-context-hub/blob/main/CONTRIBUTING.md) — setup, PR expectations, secrets
+- [Contributing](https://github.com/nicolasmota/personal-context/blob/main/CONTRIBUTING.md) — setup, PR expectations, secrets
 
 ## What this is not
 

@@ -12,7 +12,7 @@ from eval_harness.sim.runner import default_sim_dir, run_sim
 
 
 def dispatch_sim(argv: list[str]) -> int:
-    parser = argparse.ArgumentParser(prog="pch-lab sim")
+    parser = argparse.ArgumentParser(prog="personal-context-lab sim")
     sub = parser.add_subparsers(dest="sim_cmd", required=True)
     dump_p = sub.add_parser("dump")
     dump_p.add_argument("--persona", default="lived-stretch")
@@ -50,10 +50,10 @@ def dispatch_sim(argv: list[str]) -> int:
             if args.print_mcp_recipe and args.paired_assistant:
                 recipe = {
                     "command": "uv",
-                    "args": ["run", "pch-sdk", "mcp-bridge"],
+                    "args": ["run", "personal-context", "mcp-bridge"],
                     "env": {
-                        "PCH_BASE": "http://127.0.0.1:8765",
-                        "PCH_TOKEN": "<pair token from Hub connections — not written to disk>",
+                        "PERSONAL_CONTEXT_BASE": "http://127.0.0.1:8765",
+                        "PERSONAL_CONTEXT_TOKEN": "<pair token from Hub connections — not written to disk>",
                     },
                 }
                 sys.stdout.write(json.dumps({"run": run, "mcp_recipe": recipe}, indent=2) + "\n")

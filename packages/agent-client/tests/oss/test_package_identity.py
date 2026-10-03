@@ -84,10 +84,10 @@ def test_console_scripts() -> None:
     lab = _scripts(ROOT / "packages" / "eval-harness" / "pyproject.toml")
     server = _scripts(ROOT / "packages" / "loopback-service" / "pyproject.toml")
     archive = _scripts(ROOT / "packages" / "portable-state" / "pyproject.toml")
-    assert "pch-sdk" in sdk
-    assert "pch-lab" in lab
-    assert "pch-server" in server
-    assert "pch-archive" in archive
+    assert "personal-context" in sdk
+    assert "personal-context-lab" in lab
+    assert "personal-context-server" in server
+    assert "personal-context-archive" in archive
     assert "pcl-sdk" not in sdk
     assert "pcl-server" not in server
     assert "pca" not in archive

@@ -1,6 +1,6 @@
 # Non-goals
 
-Personal Context Hub is not:
+Personal Context is not:
 
 - an agent framework
 - an orchestration framework
