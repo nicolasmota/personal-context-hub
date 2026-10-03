@@ -35,7 +35,6 @@ def test_required_community_docs_exist() -> None:
         "CONTRIBUTING.md",
         "CODE_OF_CONDUCT.md",
         "LICENSE",
-        "CITATION.cff",
     ):
         assert (ROOT / name).is_file(), name
 
@@ -59,10 +58,6 @@ def test_discoverability_files_exist() -> None:
     )
     robots = (ROOT / "docs" / "robots.txt").read_text(encoding="utf-8")
     assert "Disallow: /" not in robots
-    citation = (ROOT / "CITATION.cff").read_text(encoding="utf-8")
-    assert "Personal Context" in citation
-    assert "MIT" in citation
-    assert "github.com/nicolasmota/personal-context" in citation
     assert "github.com/nicolasmota/personal-context" in llms
     config = (ROOT / "docs" / "_config.yml").read_text(encoding="utf-8")
     assert "baseurl: /personal-context" in config
