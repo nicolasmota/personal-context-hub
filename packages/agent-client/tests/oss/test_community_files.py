@@ -9,11 +9,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[4]
 
 PYPROJECTS = [
-    ROOT / "packages" / "pch-core" / "pyproject.toml",
-    ROOT / "packages" / "pch-server" / "pyproject.toml",
-    ROOT / "packages" / "pch-sdk" / "pyproject.toml",
-    ROOT / "packages" / "pch-lab" / "pyproject.toml",
-    ROOT / "packages" / "pch-archive" / "pyproject.toml",
+    ROOT / "packages" / "trust-kernel" / "pyproject.toml",
+    ROOT / "packages" / "loopback-service" / "pyproject.toml",
+    ROOT / "packages" / "agent-client" / "pyproject.toml",
+    ROOT / "packages" / "eval-harness" / "pyproject.toml",
+    ROOT / "packages" / "portable-state" / "pyproject.toml",
 ]
 
 
@@ -130,13 +130,13 @@ def test_gitignore_covers_hub_data_dirs() -> None:
     assert "docs/VISION-BAR.md" in text
     assert "specs/" in text
     assert ".specify/" in text
-    assert "packages/pch-server/src/pch_server/static/" in text
+    assert "packages/loopback-service/src/loopback_service/static/" in text
     assert "packages/pcl-server/src/pcl_server/static/" not in text
 
 
 def test_server_static_build_is_not_tracked() -> None:
     listed = subprocess.run(
-        ["git", "-C", str(ROOT), "ls-files", "packages/pch-server/src/pch_server/static"],
+        ["git", "-C", str(ROOT), "ls-files", "packages/loopback-service/src/loopback_service/static"],
         capture_output=True,
         text=True,
         check=False,

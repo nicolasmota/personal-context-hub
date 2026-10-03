@@ -1,5 +1,5 @@
-from pch_sdk.capture_guidance import follow_capture_guidance
-from pch_sdk.mcp_bridge import handle_message
+from agent_client.capture_guidance import follow_capture_guidance
+from agent_client.mcp_bridge import handle_message
 
 
 def _tools():

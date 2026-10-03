@@ -1,6 +1,6 @@
 import pytest
-from pch_core.errors import ValidationFailed
-from pch_core.service import OWNER
+from trust_kernel.errors import ValidationFailed
+from trust_kernel.service import OWNER
 
 
 def _cause(hub):

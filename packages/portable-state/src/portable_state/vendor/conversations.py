@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from pch_archive.vendor.detect import _conversations_blob, _find, load_tree
+from portable_state.vendor.detect import _conversations_blob, _find, load_tree
 
 
 def _chatgpt_text(conv: dict[str, Any]) -> str:

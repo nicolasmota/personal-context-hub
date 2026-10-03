@@ -6,13 +6,13 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from pch_core.ids import new_id
-from pch_core.service import OWNER, Hub
-from pch_core.timeutil import now_iso
+from trust_kernel.ids import new_id
+from trust_kernel.service import OWNER, Hub
+from trust_kernel.timeutil import now_iso
 
-from pch_lab.sim.persona import QUERY_ACTIONS, compile_persona
-from pch_lab.sim.records import load_run, save_run, save_ticks
-from pch_lab.sim.refuse import EVERYDAY_CONFIRM, SimRefused
+from eval_harness.sim.persona import QUERY_ACTIONS, compile_persona
+from eval_harness.sim.records import load_run, save_run, save_ticks
+from eval_harness.sim.refuse import EVERYDAY_CONFIRM, SimRefused
 
 ASSISTANT_CAPS = [
     "project.read",

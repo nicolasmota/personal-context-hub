@@ -1,9 +1,9 @@
 import json
 from pathlib import Path
 
-from pch_archive.export import export_archive
-from pch_archive.import_ import open_archive
-from pch_archive.vendor.enqueue import enqueue_vendor_import
+from portable_state.export import export_archive
+from portable_state.import_ import open_archive
+from portable_state.vendor.enqueue import enqueue_vendor_import
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "vendor"
 

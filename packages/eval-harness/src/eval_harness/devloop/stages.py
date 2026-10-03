@@ -6,8 +6,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from pch_lab.devloop.refuse import LoopRefused, refuse_start
-from pch_lab.devloop.runfile import (
+from eval_harness.devloop.refuse import LoopRefused, refuse_start
+from eval_harness.devloop.runfile import (
     active_feature_dir,
     find_bar_file,
     load_run,

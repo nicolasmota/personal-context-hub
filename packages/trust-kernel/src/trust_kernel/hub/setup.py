@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from pch_core.errors import NotFound, ValidationFailed
-from pch_core.hub.const import OWNER
-from pch_core.ids import new_id
-from pch_core.schema.audit import EventKind
-from pch_core.timeutil import now_iso
-from pch_core.vault.keys import key_storage
+from trust_kernel.errors import NotFound, ValidationFailed
+from trust_kernel.hub.const import OWNER
+from trust_kernel.ids import new_id
+from trust_kernel.schema.audit import EventKind
+from trust_kernel.timeutil import now_iso
+from trust_kernel.vault.keys import key_storage
 
 
 class SetupMixin:

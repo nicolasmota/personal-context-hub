@@ -1,10 +1,10 @@
 import json
 
 import pytest
-from pch_core.retrieval.candidate import candidate_from_row
-from pch_core.retrieval.retriever import TokenOverlapRetriever
-from pch_core.schema.contract import envelope_json_schema
-from pch_core.service import OWNER
+from trust_kernel.retrieval.candidate import candidate_from_row
+from trust_kernel.retrieval.retriever import TokenOverlapRetriever
+from trust_kernel.schema.contract import envelope_json_schema
+from trust_kernel.service import OWNER
 
 
 def _slim(contract: dict) -> dict:

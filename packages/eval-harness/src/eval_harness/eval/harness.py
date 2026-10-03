@@ -5,9 +5,9 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any
 
-from pch_core.service import OWNER, Hub
-from pch_core.testing.spicy_seed import seed_spicy
-from pch_core.testing.trip_seed import drop_london, seed_trip
+from trust_kernel.service import OWNER, Hub
+from trust_kernel.testing.spicy_seed import seed_spicy
+from trust_kernel.testing.trip_seed import drop_london, seed_trip
 
 EVAL_LABELS = ["eval", "test-tooling"]
 EVAL_RUNTIME = {"harness": "pch-lab-eval"}

@@ -8,7 +8,7 @@ def test_setup_status_includes_encrypted_and_key_storage(client):
 
 def test_create_app_without_hub_does_not_force_plaintext(tmp_path, monkeypatch):
     from fastapi.testclient import TestClient
-    from pch_server.rest.app import create_app
+    from loopback_service.rest.app import create_app
 
     monkeypatch.delenv("PCH_PLAIN_SQLITE", raising=False)
     app = create_app(data_dir=tmp_path / "vault")
@@ -21,7 +21,7 @@ def test_create_app_without_hub_does_not_force_plaintext(tmp_path, monkeypatch):
 
 
 def test_dev_app_sim_disabled_by_default(tmp_path, monkeypatch):
-    from pch_server.rest.app import dev_app
+    from loopback_service.rest.app import dev_app
 
     monkeypatch.setenv("PCH_DATA_DIR", str(tmp_path / "data"))
     monkeypatch.setenv("PCH_SIM_DIR", str(tmp_path / "sim"))

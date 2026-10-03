@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from pch_core.retrieval.search import citations_for
+from trust_kernel.retrieval.search import citations_for
 
 
 def project_brief(project: dict[str, Any], related: list[dict[str, Any]]) -> dict[str, Any]:

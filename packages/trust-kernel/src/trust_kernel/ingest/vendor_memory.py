@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from pch_core.timeutil import now_iso
+from trust_kernel.timeutil import now_iso
 
 _MEMORY_NAMES = ("memories.json", "memory.json")
 _TEXT_SUFFIXES = {".txt", ".md"}

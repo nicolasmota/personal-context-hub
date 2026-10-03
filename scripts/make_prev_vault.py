@@ -8,7 +8,7 @@ import sqlite3
 import sys
 from pathlib import Path
 
-from pch_core.service import Hub
+from trust_kernel.service import Hub
 
 
 def _rewrite_prev(src: Path, dest: Path) -> None:
@@ -74,6 +74,6 @@ if __name__ == "__main__":
         sys.argv[1]
         if len(sys.argv) > 1
         else Path(__file__).resolve().parents[1]
-        / "packages/pch-core/tests/fixtures/vault_prev.sqlite"
+        / "packages/trust-kernel/tests/fixtures/vault_prev.sqlite"
     )
     build(out)

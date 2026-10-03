@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pch_core.testing.trip_seed import seed_trip
+from trust_kernel.testing.trip_seed import seed_trip
 
 HOME_PURPOSE = "what matters now"
 

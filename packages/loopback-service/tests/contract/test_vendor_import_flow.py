@@ -1,6 +1,6 @@
 from pathlib import Path
 
-FIXTURES = Path(__file__).resolve().parents[3] / "pch-archive" / "tests" / "fixtures" / "vendor"
+FIXTURES = Path(__file__).resolve().parents[3] / "portable-state" / "tests" / "fixtures" / "vendor"
 
 
 def test_vendor_import_enqueues_then_accept_searchable(client):

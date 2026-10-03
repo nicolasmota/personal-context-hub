@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pch_core.service import Hub
-from pch_lab.sim import load_ticks, run_sim
+from eval_harness.sim import load_ticks, run_sim
+from trust_kernel.service import Hub
 
 
 def test_every_create_has_tick(tmp_path: Path) -> None:

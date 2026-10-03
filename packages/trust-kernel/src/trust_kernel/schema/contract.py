@@ -6,7 +6,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator
 
-from pch_core.timeutil import parse_instant
+from trust_kernel.timeutil import parse_instant
 
 
 class OmissionCategory(StrEnum):

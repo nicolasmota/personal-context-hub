@@ -5,9 +5,9 @@ import json
 import time
 from pathlib import Path
 
-from pch_core.testing.scenarios import load_scenarios
+from trust_kernel.testing.scenarios import load_scenarios
 
-from pch_lab.baselines.runners import APPROACHES, score
+from eval_harness.baselines.runners import APPROACHES, score
 
 
 def run_bench(out: Path, approaches: list[str] | None = None) -> int:

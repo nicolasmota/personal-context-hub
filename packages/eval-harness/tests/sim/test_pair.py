@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pch_core.service import Hub
-from pch_lab.sim import load_ticks, run_sim
-from pch_lab.sim.runner import mint_assistant, situation_project_id
+from eval_harness.sim import load_ticks, run_sim
+from eval_harness.sim.runner import mint_assistant, situation_project_id
+from trust_kernel.service import Hub
 
 
 def test_via_label_optional_path(tmp_path: Path) -> None:

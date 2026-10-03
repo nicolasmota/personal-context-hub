@@ -3,8 +3,8 @@ from __future__ import annotations
 import time
 from pathlib import Path
 
-from pch_core.service import Hub
-from pch_lab.sim import run_sim
+from eval_harness.sim import run_sim
+from trust_kernel.service import Hub
 
 
 def test_first_tick_under_two_minutes(tmp_path: Path) -> None:

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
-from pch_core.errors import PclError, Revoked
+from trust_kernel.errors import PclError, Revoked
 
 
 def problem(code: str, detail: str, status: int) -> JSONResponse:

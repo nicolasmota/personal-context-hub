@@ -3,14 +3,14 @@ from __future__ import annotations
 from pathlib import Path
 
 from fastapi import APIRouter, Depends
-from pch_core.errors import PclError
-from pch_core.ids import new_id
-from pch_core.schema.audit import EventKind
-from pch_core.service import Hub
-from pch_core.timeutil import now_iso
 from pydantic import BaseModel
+from trust_kernel.errors import PclError
+from trust_kernel.ids import new_id
+from trust_kernel.schema.audit import EventKind
+from trust_kernel.service import Hub
+from trust_kernel.timeutil import now_iso
 
-from pch_server.rest.auth import get_hub, require_owner
+from loopback_service.rest.auth import get_hub, require_owner
 
 router = APIRouter(tags=["portability"])
 
@@ -39,7 +39,7 @@ class ArchiveBody(BaseModel):
 
 @router.post("/export")
 def export(body: ExportBody, hub: Hub = Depends(get_hub), _o: str = Depends(require_owner)) -> dict:
-    from pch_archive.export import export_archive
+    from portable_state.export import export_archive
 
     dest = hub.data_dir / "exports" / f"space-{now_iso().replace(':', '')}.pca"
     result = export_archive(hub, dest, body.passphrase, body.filters)
@@ -50,9 +50,9 @@ def export(body: ExportBody, hub: Hub = Depends(get_hub), _o: str = Depends(requ
 
 @router.post("/import/stage")
 def stage(body: StageBody, hub: Hub = Depends(get_hub), _o: str = Depends(require_owner)) -> dict:
-    from pch_archive.import_ import open_archive
-    from pch_archive.resolve import plan_resolutions
-    from pch_archive.untrusted import mark_untrusted
+    from portable_state.import_ import open_archive
+    from portable_state.resolve import plan_resolutions
+    from portable_state.untrusted import mark_untrusted
 
     try:
         opened = open_archive(Path(body.path), body.passphrase)
@@ -101,7 +101,7 @@ def get_staging(staging_id: str, hub: Hub = Depends(get_hub), _o: str = Depends(
 def apply(
     staging_id: str, body: ApplyBody, hub: Hub = Depends(get_hub), _o: str = Depends(require_owner)
 ) -> dict:
-    from pch_archive.resolve import apply_resolution
+    from portable_state.resolve import apply_resolution
 
     staging = hub.get(staging_id)
     choices = {r.get("id"): r.get("action", "merge") for r in body.resolutions}
@@ -127,7 +127,7 @@ def apply(
 def vendor_import(
     body: VendorImportBody, hub: Hub = Depends(get_hub), _o: str = Depends(require_owner)
 ) -> dict:
-    from pch_archive.vendor.enqueue import enqueue_vendor_import
+    from portable_state.vendor.enqueue import enqueue_vendor_import
 
     return enqueue_vendor_import(hub, Path(body.path))
 
@@ -146,6 +146,6 @@ def get_vendor_batch(
 def vendor_archive(
     batch_id: str, body: ArchiveBody, hub: Hub = Depends(get_hub), _o: str = Depends(require_owner)
 ) -> dict:
-    from pch_archive.vendor.enqueue import decide_archive
+    from portable_state.vendor.enqueue import decide_archive
 
     return decide_archive(hub, batch_id, body.admit)

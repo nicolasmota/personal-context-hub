@@ -2,9 +2,9 @@ import json
 from pathlib import Path
 
 import pytest
-from pch_archive.export import export_archive
-from pch_archive.import_ import open_archive
-from pch_archive.vendor.validate import validate_pam_store, validate_ump_records
+from portable_state.export import export_archive
+from portable_state.import_ import open_archive
+from portable_state.vendor.validate import validate_pam_store, validate_ump_records
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "vendor"
 

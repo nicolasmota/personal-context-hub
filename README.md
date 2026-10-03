@@ -34,11 +34,11 @@ uv run pch compile --data-dir /tmp/pch-demo --purpose "what is in play" --budget
 
 | Path | Role |
 |---|---|
-| `packages/pch-core` | Personal state, experience, evidence, evolution, context compilation. No network I/O |
-| `packages/pch-server` | Loopback HTTP and pairing |
-| `packages/pch-sdk` | Command line and MCP stdio bridge |
-| `packages/pch-lab` | Evaluation harness and Speckit loop (contributor tooling) |
-| `packages/pch-archive` | Portable personal state export/import |
+| `packages/trust-kernel` | Personal state, experience, evidence, evolution, context compilation. No network I/O |
+| `packages/loopback-service` | Loopback HTTP and pairing |
+| `packages/agent-client` | Command line and MCP stdio bridge |
+| `packages/eval-harness` | Evaluation harness and Speckit loop (contributor tooling) |
+| `packages/portable-state` | Portable personal state export/import |
 
 ## From source
 

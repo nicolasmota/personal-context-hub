@@ -4,9 +4,9 @@ import zipfile
 from pathlib import Path
 
 import pytest
-from pch_archive.export import _decrypt, _encrypt, export_archive
-from pch_archive.import_ import UnsupportedArchive, import_archive
-from pch_core.service import Hub
+from portable_state.export import _decrypt, _encrypt, export_archive
+from portable_state.import_ import UnsupportedArchive, import_archive
+from trust_kernel.service import Hub
 
 
 def _rewrite(path: Path, passphrase: str, version: str) -> None:

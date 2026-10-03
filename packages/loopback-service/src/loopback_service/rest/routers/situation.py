@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends
-from pch_core.service import Hub
+from trust_kernel.service import Hub
 
-from pch_server.rest.auth import get_hub, require_owner
+from loopback_service.rest.auth import get_hub, require_owner
 
 router = APIRouter(tags=["situation"])
 

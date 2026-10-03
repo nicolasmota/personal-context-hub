@@ -1,4 +1,4 @@
-from pch_core.errors import ValidationFailed
+from trust_kernel.errors import ValidationFailed
 
 
 def test_unscoped_manifest_fails(hub):

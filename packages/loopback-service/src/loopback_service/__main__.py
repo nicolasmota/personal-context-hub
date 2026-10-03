@@ -7,7 +7,7 @@ from pathlib import Path
 
 import uvicorn
 
-from pch_server.rest.app import dev_app
+from loopback_service.rest.app import dev_app
 
 LOOPBACK_MSG = "The Hub is not a public server; it binds loopback only."
 
@@ -25,12 +25,12 @@ def is_loopback_host(host: str) -> bool:
 def _reload_dirs() -> list[str]:
     here = Path(__file__).resolve()
     for parent in here.parents:
-        if (parent / "packages" / "pch-server").is_dir():
+        if (parent / "packages" / "loopback-service").is_dir():
             dirs = [
-                parent / "packages" / "pch-core" / "src",
-                parent / "packages" / "pch-server" / "src",
-                parent / "packages" / "pch-sdk" / "src",
-                parent / "packages" / "pch-archive" / "src",
+                parent / "packages" / "trust-kernel" / "src",
+                parent / "packages" / "loopback-service" / "src",
+                parent / "packages" / "agent-client" / "src",
+                parent / "packages" / "portable-state" / "src",
             ]
             return [str(path) for path in dirs if path.is_dir()]
     return []
@@ -39,7 +39,7 @@ def _reload_dirs() -> list[str]:
 def run_server(host: str, port: int, *, reload: bool) -> None:
     if reload:
         uvicorn.run(
-            "pch_server.rest.app:dev_app",
+            "loopback_service.rest.app:dev_app",
             factory=True,
             host=host,
             port=port,

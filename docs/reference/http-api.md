@@ -30,7 +30,7 @@ Missing or revoked → error (`Revoked`). Owner-only routes use `require_owner`.
 
 Idempotency middleware is enabled on REST. Repeat a mutating request with the same idempotency header the client sent if you need safe retries.
 
-`Hub.ask()` exists in `pch-core` but is **not** exposed as `/v1/ask`.
+`Hub.ask()` exists in `trust-kernel` but is **not** exposed as `/v1/ask`.
 
 ---
 
@@ -180,6 +180,6 @@ When `PCH_SIM_ENABLED=1` or `pch serve --sim` (not on by default for `make serve
 
 `/v1/sim/runs`, pause/resume/stop, ticks, `GET /v1/sim/objects/{id}`.
 
-These routes load `pch-lab` only if that package is already installed (workspace). The published server does not depend on lab. Without it, sim routes stay 404.
+These routes load `eval-harness` only if that package is already installed (workspace). The published server does not depend on lab. Without it, sim routes stay 404.
 
 The simulator is **test tooling**, not a product agent. Data it writes must be labeled as such. It must not act outward.

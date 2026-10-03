@@ -3,16 +3,16 @@ from __future__ import annotations
 import hashlib
 from pathlib import Path
 
-from pch_core.errors import PclError, ValidationFailed, VersionConflict
-from pch_core.ids import new_id
-from pch_core.schema.audit import EventKind
-from pch_core.schema.proposal import ProposalStatus
-from pch_core.service import Hub
-from pch_core.timeutil import now_iso
+from trust_kernel.errors import PclError, ValidationFailed, VersionConflict
+from trust_kernel.ids import new_id
+from trust_kernel.schema.audit import EventKind
+from trust_kernel.schema.proposal import ProposalStatus
+from trust_kernel.service import Hub
+from trust_kernel.timeutil import now_iso
 
-from pch_archive.vendor.conversations import list_conversations
-from pch_archive.vendor.detect import detect_source
-from pch_archive.vendor.map_structured import map_structured
+from portable_state.vendor.conversations import list_conversations
+from portable_state.vendor.detect import detect_source
+from portable_state.vendor.map_structured import map_structured
 
 ACTORS = {
     "chatgpt": "importer.chatgpt",

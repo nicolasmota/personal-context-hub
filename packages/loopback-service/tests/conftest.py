@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-from pch_core.service import Hub
-from pch_server.rest.app import create_app
+from loopback_service.rest.app import create_app
+from trust_kernel.service import Hub
 
 
 @pytest.fixture

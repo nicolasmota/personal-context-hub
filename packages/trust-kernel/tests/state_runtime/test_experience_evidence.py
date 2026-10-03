@@ -1,5 +1,5 @@
-from pch_core.errors import ValidationFailed
-from pch_core.service import OWNER, Hub
+from trust_kernel.errors import ValidationFailed
+from trust_kernel.service import OWNER, Hub
 
 
 def _experience(hub: Hub, **overrides):

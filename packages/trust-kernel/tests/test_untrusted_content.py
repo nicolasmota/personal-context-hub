@@ -1,4 +1,4 @@
-from pch_archive.untrusted import mark_untrusted
+from portable_state.untrusted import mark_untrusted
 
 
 def test_untrusted_content_cannot_be_authority():

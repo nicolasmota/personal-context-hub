@@ -3,8 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-from pch_lab.devloop import next_step, record, record_verdict, start
-from pch_lab.devloop.runfile import load_run
+from eval_harness.devloop import next_step, record, record_verdict, start
+from eval_harness.devloop.runfile import load_run
 
 
 def _pack(feat: Path) -> None:

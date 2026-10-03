@@ -2,17 +2,17 @@ from __future__ import annotations
 
 from pydantic import ValidationError
 
-from pch_core.errors import NotFound, PolicyDenied, Revoked, ValidationFailed
-from pch_core.hub.const import OWNER
-from pch_core.policy.evaluator import PolicyInput, evaluate
-from pch_core.retrieval.ask import compose as compose_ask
-from pch_core.retrieval.ask import retrieve as retrieve_ask
-from pch_core.retrieval.briefs import project_brief
-from pch_core.retrieval.contract import assemble_traced
-from pch_core.retrieval.home import HOME_PURPOSE, pick_home_project
-from pch_core.schema.audit import EventKind
-from pch_core.schema.contract import ContextQuery
-from pch_core.schema.grant import GrantStatus
+from trust_kernel.errors import NotFound, PolicyDenied, Revoked, ValidationFailed
+from trust_kernel.hub.const import OWNER
+from trust_kernel.policy.evaluator import PolicyInput, evaluate
+from trust_kernel.retrieval.ask import compose as compose_ask
+from trust_kernel.retrieval.ask import retrieve as retrieve_ask
+from trust_kernel.retrieval.briefs import project_brief
+from trust_kernel.retrieval.contract import assemble_traced
+from trust_kernel.retrieval.home import HOME_PURPOSE, pick_home_project
+from trust_kernel.schema.audit import EventKind
+from trust_kernel.schema.contract import ContextQuery
+from trust_kernel.schema.grant import GrantStatus
 
 
 class ContextMixin:

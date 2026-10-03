@@ -41,7 +41,7 @@ Do not commit `.cursor/mcp.json` — it contains a live token.
 
 ## MCP tools (eleven)
 
-Auth: connection token (`PCH_TOKEN`) or owner Bearer token. Stdio bridge: `python -m pch_sdk mcp-bridge`. HTTP: `POST /v1/mcp/tools/{name}`.
+Auth: connection token (`PCH_TOKEN`) or owner Bearer token. Stdio bridge: `python -m agent_client mcp-bridge`. HTTP: `POST /v1/mcp/tools/{name}`.
 
 - get_context_contract (purpose) — situation package; start here
 - search_personal_context (query, purpose) — ranked hits inside the grant
@@ -59,11 +59,11 @@ Details: reference/mcp.html.
 
 ## Packages
 
-- pch-core — personal state, experience, evidence, evolution, context compilation (no network)
-- pch-server — loopback HTTP and pairing
-- pch-sdk — command line and MCP stdio bridge
-- pch-lab — evaluation harness and Speckit loop (contributor tooling)
-- pch-archive — portable personal state export/import
+- trust-kernel — personal state, experience, evidence, evolution, context compilation (no network)
+- loopback-service — loopback HTTP and pairing
+- agent-client — command line and MCP stdio bridge
+- eval-harness — evaluation harness and Speckit loop (contributor tooling)
+- portable-state — portable personal state export/import
 
 ## Classification
 

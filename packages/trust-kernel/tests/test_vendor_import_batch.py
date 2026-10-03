@@ -1,6 +1,6 @@
-from pch_core.ids import new_id
-from pch_core.schema.portability import VendorImportBatch
-from pch_core.timeutil import now_iso
+from trust_kernel.ids import new_id
+from trust_kernel.schema.portability import VendorImportBatch
+from trust_kernel.timeutil import now_iso
 
 
 def test_vendor_import_batch_round_trip():

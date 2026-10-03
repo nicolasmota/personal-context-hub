@@ -1,4 +1,4 @@
-from pch_core.errors import VersionConflict
+from trust_kernel.errors import VersionConflict
 
 
 def test_if_match(hub):

@@ -7,11 +7,11 @@ import zipfile
 from pathlib import Path
 from typing import Any
 
-from pch_core.service import Hub
-from pch_core.timeutil import now_iso
+from trust_kernel.service import Hub
+from trust_kernel.timeutil import now_iso
 
-from pch_archive.vendor.pam_project import pam_memory_store
-from pch_archive.vendor.ump_project import ump_records
+from portable_state.vendor.pam_project import pam_memory_store
+from portable_state.vendor.ump_project import ump_records
 
 PCA_VERSION = "0.2.0"
 

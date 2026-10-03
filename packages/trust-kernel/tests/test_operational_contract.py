@@ -1,5 +1,5 @@
-from pch_core.service import OWNER
-from pch_core.testing.trip_seed import seed_trip
+from trust_kernel.service import OWNER
+from trust_kernel.testing.trip_seed import seed_trip
 
 
 def test_phase_in_situation_not_shared_state(hub):

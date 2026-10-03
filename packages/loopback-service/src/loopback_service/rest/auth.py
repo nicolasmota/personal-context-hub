@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from fastapi import Depends, Header, Request
-from pch_core.errors import Revoked
-from pch_core.service import Hub
+from trust_kernel.errors import Revoked
+from trust_kernel.service import Hub
 
 
 def get_hub(request: Request) -> Hub:

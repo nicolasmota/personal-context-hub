@@ -4,7 +4,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from pch_core.retrieval.ask import significant_tokens
+from trust_kernel.retrieval.ask import significant_tokens
 
 _SCORE_FIELDS = (
     "title",

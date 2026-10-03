@@ -3,8 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-from pch_lab.devloop import next_step, start
-from pch_lab.devloop.runfile import load_run
+from eval_harness.devloop import next_step, start
+from eval_harness.devloop.runfile import load_run
 
 
 def test_roadmap_skips_checked_tasks_to_next_era(

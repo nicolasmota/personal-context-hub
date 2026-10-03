@@ -4,13 +4,13 @@ import importlib
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from pch_core.errors import NotFound, ValidationFailed
-from pch_core.service import Hub
+from trust_kernel.errors import NotFound, ValidationFailed
+from trust_kernel.service import Hub
 
-from pch_server.rest.auth import require_owner
+from loopback_service.rest.auth import require_owner
 
 SIM_DISABLED = "simulation disabled; set PCH_SIM_ENABLED=1 or pass --sim to pch serve"
-SIM_LAB_MISSING = "simulation requires the pch-lab package (contributor tooling); use uv run pch-lab sim"
+SIM_LAB_MISSING = "simulation requires the eval-harness package (contributor tooling); use uv run pch-lab sim"
 
 
 def require_sim(request: Request) -> None:
@@ -22,9 +22,9 @@ router = APIRouter(tags=["sim"], dependencies=[Depends(require_sim)])
 
 
 def _lab_sim(mod: str):
-    """Load pch-lab sim modules only when a sim route runs. Not a package dependency."""
+    """Load eval-harness sim modules only when a sim route runs. Not a package dependency."""
     try:
-        return importlib.import_module(f"pch_lab.sim.{mod}")
+        return importlib.import_module(f"eval_harness.sim.{mod}")
     except ModuleNotFoundError as exc:
         raise HTTPException(status_code=404, detail=SIM_LAB_MISSING) from exc
 

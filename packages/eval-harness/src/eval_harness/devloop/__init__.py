@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from pch_lab.devloop.refuse import LoopRefused
-from pch_lab.devloop.runfile import load_run, save_run
-from pch_lab.devloop.stages import (
+from eval_harness.devloop.refuse import LoopRefused
+from eval_harness.devloop.runfile import load_run, save_run
+from eval_harness.devloop.stages import (
     complete_allowed,
     next_step,
     record,

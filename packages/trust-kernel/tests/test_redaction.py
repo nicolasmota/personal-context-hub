@@ -1,5 +1,5 @@
-from pch_core.policy.evaluator import PolicyInput, evaluate
-from pch_core.schema.grant import Capability, Grant, GrantStatus
+from trust_kernel.policy.evaluator import PolicyInput, evaluate
+from trust_kernel.schema.grant import Capability, Grant, GrantStatus
 
 
 def test_redaction_above_ceiling():

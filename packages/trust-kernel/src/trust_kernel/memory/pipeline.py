@@ -3,12 +3,12 @@ from __future__ import annotations
 import hashlib
 from typing import Any
 
-from pch_core.ids import new_id
-from pch_core.memory.sensitivity import blocks_auto_accept
-from pch_core.schema.conflict import Conflict, ConflictKind
-from pch_core.schema.memory import Memory
-from pch_core.schema.proposal import MemoryProposal, ProposalStatus
-from pch_core.timeutil import now_iso
+from trust_kernel.ids import new_id
+from trust_kernel.memory.sensitivity import blocks_auto_accept
+from trust_kernel.schema.conflict import Conflict, ConflictKind
+from trust_kernel.schema.memory import Memory
+from trust_kernel.schema.proposal import MemoryProposal, ProposalStatus
+from trust_kernel.timeutil import now_iso
 
 
 def statement_hash(statement: str) -> str:

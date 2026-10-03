@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
 
-from pch_lab.baselines.judgments import compilation_passed, judge_override
-from pch_lab.benchmarks.cli import run_bench
+from eval_harness.baselines.judgments import compilation_passed, judge_override
+from eval_harness.benchmarks.cli import run_bench
 
 
 def test_bench_writes_twenty_eight_rows(tmp_path: Path):

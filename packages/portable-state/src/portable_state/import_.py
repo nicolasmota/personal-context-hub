@@ -7,7 +7,7 @@ import zipfile
 from pathlib import Path
 from typing import Any
 
-from pch_archive.export import _decrypt
+from portable_state.export import _decrypt
 
 
 class IntegrityError(ValueError):

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from pch_core.ids import new_id
-from pch_core.service import Hub
+from trust_kernel.ids import new_id
+from trust_kernel.service import Hub
 
 
 def seed_trip(hub: Hub) -> dict[str, Any]:

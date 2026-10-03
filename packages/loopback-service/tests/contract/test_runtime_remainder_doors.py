@@ -1,4 +1,4 @@
-from pch_core.errors import PolicyDenied
+from trust_kernel.errors import PolicyDenied
 
 
 def test_same_explanation_on_hub_http_and_resource(client):

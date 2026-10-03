@@ -1,6 +1,6 @@
 # Architecture
 
-The hub keeps user-owned personal state and compiles the minimum sufficient context for one situation. Domain rules live in `packages/pch-core`. Storage is the encrypted vault. Policy runs in the core before a contract is issued. Transport is the loopback service, the agent connection, and the command line. Those doors call the core. They do not reimplement selection.
+The hub keeps user-owned personal state and compiles the minimum sufficient context for one situation. Domain rules live in `packages/trust-kernel`. Storage is the encrypted vault. Policy runs in the core before a contract is issued. Transport is the loopback service, the agent connection, and the command line. Those doors call the core. They do not reimplement selection.
 
 Plugins, provider connectors, the desktop shell, and the web interface have been removed. They are not optional doors and they are not parked under an experimental tree.
 
@@ -20,14 +20,14 @@ Memory, context, and situation stay distinct. Memory is persisted information. T
 
 | Package | Boundary |
 |---|---|
-| `packages/pch-core` | Vault, schema, policy, and compilation. No network I/O |
-| `packages/pch-server` | Loopback HTTP and pairing. No plugin host and no provider connectors |
-| `packages/pch-sdk` | Command line and MCP stdio bridge. No plugin toolkit |
-| `packages/pch-archive` | Portable personal state, format `0.2.0` |
-| `packages/pch-lab` | Synthetic scenarios and the four-approach benchmark. Not a product agent |
+| `packages/trust-kernel` | Vault, schema, policy, and compilation. No network I/O |
+| `packages/loopback-service` | Loopback HTTP and pairing. No plugin host and no provider connectors |
+| `packages/agent-client` | Command line and MCP stdio bridge. No plugin toolkit |
+| `packages/portable-state` | Portable personal state, format `0.2.0` |
+| `packages/eval-harness` | Synthetic scenarios and the four-approach benchmark. Not a product agent |
 
 The same contract is returned by `Hub.get_context_contract`, `POST /v1/mcp/tools/get_context_contract`, the MCP tool `get_context_contract`, and the resource `pch://situation`.
 
-Relevance ranking is a `PurposeRetriever` on the hub. The default counts overlapping tokens. An embedding index or an external memory library can replace that object. Grants, omissions, authority, and the envelope stay in `pch-core`.
+Relevance ranking is a `PurposeRetriever` on the hub. The default counts overlapping tokens. An embedding index or an external memory library can replace that object. Grants, omissions, authority, and the envelope stay in `trust-kernel`.
 
 The normative envelope is [the context contract spec](spec/context-contract.md).

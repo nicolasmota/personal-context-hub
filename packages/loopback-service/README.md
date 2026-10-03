@@ -1,4 +1,4 @@
-# pch-server
+# loopback-service
 
 Loopback HTTP control plane for Personal Context Hub: FastAPI, pairing, and the MCP tool dispatcher.
 

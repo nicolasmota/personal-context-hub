@@ -1,6 +1,6 @@
 # Data model
 
-All durable vault objects share **universal metadata**. Types are Pydantic models in `pch_core.schema`. There is no separate `Provenance` table — provenance is metadata + citations + audit.
+All durable vault objects share **universal metadata**. Types are Pydantic models in `trust_kernel.schema`. There is no separate `Provenance` table — provenance is metadata + citations + audit.
 
 ## Universal metadata
 

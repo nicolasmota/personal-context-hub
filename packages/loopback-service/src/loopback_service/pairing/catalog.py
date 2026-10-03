@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 
-from pch_sdk.capture_guidance import RUNTIME_RULE
+from agent_client.capture_guidance import RUNTIME_RULE
 
 ASSISTANTS: list[dict] = [
     {
@@ -64,7 +64,7 @@ def get_assistant(assistant_id: str) -> dict | None:
 def _bridge(token: str, base_url: str) -> dict:
     return {
         "command": sys.executable,
-        "args": ["-m", "pch_sdk", "mcp-bridge"],
+        "args": ["-m", "agent_client", "mcp-bridge"],
         "env": {"PCH_TOKEN": token, "PCH_BASE": base_url},
     }
 

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from pch_core.ids import new_id
-from pch_core.schema.grant import PRESETS, Capability, Grant, GrantStatus
-from pch_core.timeutil import parse_instant
+from trust_kernel.ids import new_id
+from trust_kernel.schema.grant import PRESETS, Capability, Grant, GrantStatus
+from trust_kernel.timeutil import parse_instant
 
 
 def grant_is_current(grant: Grant, at: datetime | None = None) -> bool:

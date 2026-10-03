@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from pch_archive.export import export_archive
-from pch_archive.import_ import import_archive, open_archive
-from pch_core.service import Hub
+from portable_state.export import export_archive
+from portable_state.import_ import import_archive, open_archive
+from trust_kernel.service import Hub
 
 
 def test_governed_round_trip_keeps_authority_and_drops_secrets(hub, tmp_path: Path):

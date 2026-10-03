@@ -4,8 +4,8 @@ import shutil
 import sqlite3
 from pathlib import Path
 
-from pch_core.audit.ledger import Ledger
-from pch_core.vault.engine import MIGRATIONS, Engine
+from trust_kernel.audit.ledger import Ledger
+from trust_kernel.vault.engine import MIGRATIONS, Engine
 
 FIXTURE = Path(__file__).parent / "fixtures" / "vault_prev.sqlite"
 

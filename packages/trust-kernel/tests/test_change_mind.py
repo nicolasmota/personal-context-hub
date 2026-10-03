@@ -1,8 +1,8 @@
 import pytest
-from pch_core.errors import NotFound, ValidationFailed
-from pch_core.service import OWNER
-from pch_core.testing.spicy_seed import seed_spicy
-from pch_core.testing.trip_seed import seed_trip
+from trust_kernel.errors import NotFound, ValidationFailed
+from trust_kernel.service import OWNER
+from trust_kernel.testing.spicy_seed import seed_spicy
+from trust_kernel.testing.trip_seed import seed_trip
 
 
 def test_supersede_keeps_predecessor_historical(hub):

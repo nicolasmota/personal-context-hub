@@ -1,5 +1,5 @@
-from pch_core.schema.metadata import Authority, Classification, UniversalMetadata
-from pch_core.timeutil import now_iso
+from trust_kernel.schema.metadata import Authority, Classification, UniversalMetadata
+from trust_kernel.timeutil import now_iso
 
 
 def test_metadata_enums():

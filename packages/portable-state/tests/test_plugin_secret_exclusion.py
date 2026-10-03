@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from pch_archive.export import export_archive
-from pch_archive.import_ import open_archive
+from portable_state.export import export_archive
+from portable_state.import_ import open_archive
 
 
 def test_plugin_secret_excluded_from_export(hub, tmp_path: Path):

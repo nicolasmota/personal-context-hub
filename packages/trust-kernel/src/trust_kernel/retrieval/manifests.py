@@ -3,9 +3,9 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from pch_core.errors import ValidationFailed
-from pch_core.ids import new_id
-from pch_core.schema.manifest import ContextManifest, DisclosedRef, ManifestStatus
+from trust_kernel.errors import ValidationFailed
+from trust_kernel.ids import new_id
+from trust_kernel.schema.manifest import ContextManifest, DisclosedRef, ManifestStatus
 
 
 def build_manifest(

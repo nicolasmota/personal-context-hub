@@ -4,9 +4,9 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import StrEnum
 
-from pch_core.policy.grants import grant_is_current
-from pch_core.schema.grant import Capability, Grant
-from pch_core.schema.metadata import Classification
+from trust_kernel.policy.grants import grant_is_current
+from trust_kernel.schema.grant import Capability, Grant
+from trust_kernel.schema.metadata import Classification
 
 CLASS_RANK = {
     Classification.PUBLIC: 0,

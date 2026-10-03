@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 
-from pch_core.hub.const import OWNER
+from trust_kernel.hub.const import OWNER
 
 
 def _pair(hub, name: str):

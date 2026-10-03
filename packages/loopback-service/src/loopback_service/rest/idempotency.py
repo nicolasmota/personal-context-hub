@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from fastapi import Request
 from fastapi.responses import Response
-from pch_core.service import Hub
 from starlette.middleware.base import BaseHTTPMiddleware
+from trust_kernel.service import Hub
 
 
 class IdempotencyMiddleware(BaseHTTPMiddleware):

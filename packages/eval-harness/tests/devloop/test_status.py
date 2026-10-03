@@ -3,8 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-from pch_lab.__main__ import main
-from pch_lab.devloop import record, start, status_text, stop
+from eval_harness.__main__ import main
+from eval_harness.devloop import record, start, status_text, stop
 
 
 def test_status_lists_stages_and_verdicts(

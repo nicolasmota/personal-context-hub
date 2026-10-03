@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-from pch_server.pairing.catalog import render_recipe
+from loopback_service.pairing.catalog import render_recipe
 
 
 def test_catalog_and_recipe(client):
@@ -16,7 +16,7 @@ def test_catalog_and_recipe(client):
     )
     assert recipe.status_code == 200
     body = recipe.json()
-    assert "pch_sdk" in str(body["snippet"])
+    assert "agent_client" in str(body["snippet"])
     assert body["snippet"]["mcpServers"]["personal-context-hub"]["env"]["PCH_TOKEN"]
     events = client.get("/v1/events").json()
     assert any(e.get("kind") == "connection.recipe_issued" for e in events)
@@ -58,7 +58,7 @@ def test_hermes_and_openclaw_recipes(client):
     env = h["snippet"]["mcp_servers"]["personal-context-hub"]["env"]
     assert env["PCH_TOKEN"]
     assert env["PCH_BASE"] == "http://127.0.0.1:8765"
-    assert "pch_sdk" in str(h["snippet"])
+    assert "agent_client" in str(h["snippet"])
     assert "mcp_servers" in h["instructions"] or "hermes" in h["instructions"].lower()
     claw = client.post(f"/v1/connections/{conn}/recipe", json={"assistant": "openclaw"})
     assert claw.status_code == 200
@@ -117,7 +117,7 @@ def test_bridge_uses_installed_interpreter():
     assert command.is_absolute()
     assert command.exists()
     assert "uv run" not in " ".join([bridge["command"], *bridge["args"]])
-    assert bridge["args"] == ["-m", "pch_sdk", "mcp-bridge"]
+    assert bridge["args"] == ["-m", "agent_client", "mcp-bridge"]
     assert bridge["env"]["PCH_BASE"] == "http://127.0.0.1:18765"
     assert bridge["command"] == sys.executable
 

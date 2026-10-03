@@ -2,7 +2,7 @@ import json
 import zipfile
 from pathlib import Path
 
-from pch_core.ingest.vendor_memory import import_vendor_file
+from trust_kernel.ingest.vendor_memory import import_vendor_file
 
 
 def test_chatgpt_import_is_untrusted_and_does_not_grant(hub, tmp_path: Path):

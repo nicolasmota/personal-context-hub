@@ -3,8 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-from pch_lab.devloop import start
-from pch_lab.devloop.refuse import LoopRefused
+from eval_harness.devloop import start
+from eval_harness.devloop.refuse import LoopRefused
 
 
 def test_vision_and_roadmap_refused(loop_repo: Path, monkeypatch: pytest.MonkeyPatch) -> None:

@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from pch_lab.sim.refuse import FORBIDDEN_ACTIONS, SimRefused
+from eval_harness.sim.refuse import FORBIDDEN_ACTIONS, SimRefused
 
 PERSONA_DIR = Path(__file__).parent / "personas"
 ALLOWED_ACTIONS = frozenset(

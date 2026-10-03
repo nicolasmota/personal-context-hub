@@ -51,7 +51,7 @@ serve: ## Loopback API with auto-reload
 	$(UV) run pch-server --reload --host $(HOST) --port $(PORT) --data-dir $(DATA_DIR)
 
 openapi: ## Dump OpenAPI 3.1 JSON to docs/openapi.json
-	$(UV) run python -c "from pathlib import Path; from pch_core.service import Hub; from pch_server.rest.app import create_app; import json, tempfile; \
+	$(UV) run python -c "from pathlib import Path; from trust_kernel.service import Hub; from loopback_service.rest.app import create_app; import json, tempfile; \
 hub = Hub(Path(tempfile.mkdtemp()), plain=True); \
 Path('docs').mkdir(exist_ok=True); \
 Path('docs/openapi.json').write_text(json.dumps(create_app(hub).openapi(), indent=2))"

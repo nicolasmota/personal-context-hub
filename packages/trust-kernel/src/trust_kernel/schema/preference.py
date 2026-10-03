@@ -4,8 +4,8 @@ from typing import Any
 
 from pydantic import model_validator
 
-from pch_core.schema.metadata import UniversalMetadata
-from pch_core.timeutil import validate_interval
+from trust_kernel.schema.metadata import UniversalMetadata
+from trust_kernel.timeutil import validate_interval
 
 
 class Preference(UniversalMetadata):

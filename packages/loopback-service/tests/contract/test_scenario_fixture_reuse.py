@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pch_core.testing.scenarios import load_scenarios
+from trust_kernel.testing.scenarios import load_scenarios
 
 
 def test_server_loads_scenarios_from_core():
@@ -8,5 +8,5 @@ def test_server_loads_scenarios_from_core():
     assert "privacy" in ids
     assert "changing_preferences" in ids
     root = Path(__file__).resolve().parents[4]
-    text = (root / "packages/pch-server/pyproject.toml").read_text(encoding="utf-8")
-    assert "pch-lab" not in text
+    text = (root / "packages/loopback-service/pyproject.toml").read_text(encoding="utf-8")
+    assert "eval-harness" not in text

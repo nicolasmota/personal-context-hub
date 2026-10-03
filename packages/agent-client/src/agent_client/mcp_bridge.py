@@ -8,7 +8,7 @@ from urllib.parse import parse_qs, urlparse
 
 import httpx
 
-from pch_sdk.capture_guidance import (
+from agent_client.capture_guidance import (
     MANIFEST_DESCRIPTION,
     MEMORY_PROPOSE_DESCRIPTION,
     RELATION_DESCRIPTION,

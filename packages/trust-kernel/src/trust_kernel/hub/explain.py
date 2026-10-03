@@ -3,8 +3,8 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Any
 
-from pch_core.errors import NotFound, ValidationFailed
-from pch_core.timeutil import now_iso, row_is_current
+from trust_kernel.errors import NotFound, ValidationFailed
+from trust_kernel.timeutil import now_iso, row_is_current
 
 _KINDS = {"preference", "memory", "goal", "project", "experience"}
 _IMPACT_TYPES = ("preference", "memory", "goal", "project", "experience")

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pch_archive.vendor.detect import detect_source
+from portable_state.vendor.detect import detect_source
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "vendor"
 

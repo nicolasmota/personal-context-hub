@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from pch_core.schema.contract import (
+from trust_kernel.schema.contract import (
     Citation,
     ContextContract,
     ContextQuery,
     ContractItem,
     StateConflictNote,
 )
-from pch_core.vault.objects import ObjectStore
+from trust_kernel.vault.objects import ObjectStore
 
 
 def _enrich(item: ContractItem, store: ObjectStore) -> ContractItem:

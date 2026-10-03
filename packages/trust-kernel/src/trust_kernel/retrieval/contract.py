@@ -7,24 +7,24 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
 
-from pch_core.context.budget import apply_budget
-from pch_core.context.compiler import finalize_contract
-from pch_core.context.selection import rank_established_first, select_for_purpose
-from pch_core.errors import NotFound
-from pch_core.ids import new_id
-from pch_core.policy.evaluator import Decision, PolicyInput, PolicyResult, evaluate
-from pch_core.policy.grants import grant_is_current
-from pch_core.retrieval.ask import significant_tokens
-from pch_core.retrieval.candidate import (
+from trust_kernel.context.budget import apply_budget
+from trust_kernel.context.compiler import finalize_contract
+from trust_kernel.context.selection import rank_established_first, select_for_purpose
+from trust_kernel.errors import NotFound
+from trust_kernel.ids import new_id
+from trust_kernel.policy.evaluator import Decision, PolicyInput, PolicyResult, evaluate
+from trust_kernel.policy.grants import grant_is_current
+from trust_kernel.retrieval.ask import significant_tokens
+from trust_kernel.retrieval.candidate import (
     RetrievalCandidate,
     candidate_from_row,
     dedupe_candidates,
     score_text,
 )
-from pch_core.retrieval.home import pick_home_project
-from pch_core.retrieval.retriever import PurposeRetriever, TokenOverlapRetriever
-from pch_core.retrieval.search import DefaultRanker, citations_for
-from pch_core.schema.contract import (
+from trust_kernel.retrieval.home import pick_home_project
+from trust_kernel.retrieval.retriever import PurposeRetriever, TokenOverlapRetriever
+from trust_kernel.retrieval.search import DefaultRanker, citations_for
+from trust_kernel.schema.contract import (
     Citation,
     ConflictPair,
     ContextContract,
@@ -37,9 +37,9 @@ from pch_core.schema.contract import (
     ScopeSummary,
     SituationRef,
 )
-from pch_core.schema.grant import Grant
-from pch_core.timeutil import now_iso, parse_instant, row_is_current
-from pch_core.vault.objects import ObjectStore
+from trust_kernel.schema.grant import Grant
+from trust_kernel.timeutil import now_iso, parse_instant, row_is_current
+from trust_kernel.vault.objects import ObjectStore
 
 MEMORY_INLINE_CAP = 10
 CATEGORY_INLINE_CAP = 20

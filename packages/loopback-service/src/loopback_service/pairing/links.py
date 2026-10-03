@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import secrets
 
-from pch_core.service import Hub
+from trust_kernel.service import Hub
 
 
 def mint(hub: Hub, name: str = "agent") -> dict:

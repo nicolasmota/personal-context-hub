@@ -1,4 +1,4 @@
-from pch_core.service import OWNER
+from trust_kernel.service import OWNER
 
 
 def _anchor(hub):

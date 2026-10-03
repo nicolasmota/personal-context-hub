@@ -4,11 +4,11 @@ import json
 import os
 from pathlib import Path
 
-from pch_archive.export import export_archive
-from pch_archive.import_ import IntegrityError, UnsupportedArchive, import_archive
-from pch_core.errors import ValidationFailed
-from pch_core.ingest.vendor_memory import import_vendor_file
-from pch_core.service import OWNER, Hub
+from portable_state.export import export_archive
+from portable_state.import_ import IntegrityError, UnsupportedArchive, import_archive
+from trust_kernel.errors import ValidationFailed
+from trust_kernel.ingest.vendor_memory import import_vendor_file
+from trust_kernel.service import OWNER, Hub
 
 
 def _print(payload: dict) -> None:

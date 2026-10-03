@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pch_lab.sim import load_ticks, run_sim
+from eval_harness.sim import load_ticks, run_sim
 
 
 def test_situation_asks_hit_trip(tmp_path: Path) -> None:

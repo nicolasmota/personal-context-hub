@@ -14,11 +14,11 @@ The empty `.hermes/skills/` directory in this repo is only a Speckit marker. Rea
 
 ## Repo map
 
-- `packages/pch-core` — vault, schema, policy (no network I/O)
-- `packages/pch-server` — loopback HTTP and pairing
-- `packages/pch-sdk` — CLI and MCP stdio bridge
-- `packages/pch-lab` — Speckit loop, simulation, evaluation harnesses
-- `packages/pch-archive` — portable personal state export/import
+- `packages/trust-kernel` — vault, schema, policy (no network I/O)
+- `packages/loopback-service` — loopback HTTP and pairing
+- `packages/agent-client` — CLI and MCP stdio bridge
+- `packages/eval-harness` — Speckit loop, simulation, evaluation harnesses
+- `packages/portable-state` — portable personal state export/import
 - `docs/` — product documentation (start at `docs/README.md`)
 - `docs/VISION.md`, `docs/ROADMAP.md`, `docs/VISION-BAR.md` — local planning (gitignored, not published)
 - `specs/` — Speckit feature packs (local only; gitignored, not published)

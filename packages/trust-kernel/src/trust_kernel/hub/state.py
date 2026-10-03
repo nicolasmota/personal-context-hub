@@ -3,12 +3,12 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-from pch_core.errors import NotFound, PolicyDenied
-from pch_core.hub.const import OWNER
-from pch_core.policy.evaluator import PolicyInput, evaluate
-from pch_core.schema.audit import EventKind
-from pch_core.schema.state import SharedState, StateVisibility
-from pch_core.timeutil import now_iso
+from trust_kernel.errors import NotFound, PolicyDenied
+from trust_kernel.hub.const import OWNER
+from trust_kernel.policy.evaluator import PolicyInput, evaluate
+from trust_kernel.schema.audit import EventKind
+from trust_kernel.schema.state import SharedState, StateVisibility
+from trust_kernel.timeutil import now_iso
 
 
 class StateMixin:

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the publishable wheels (not pch-lab)."""
+"""Build the publishable wheels (not eval-harness)."""
 
 from __future__ import annotations
 
@@ -8,10 +8,10 @@ import sys
 from pathlib import Path
 
 PUBLISH_PACKAGES = (
-    "pch-core",
-    "pch-archive",
-    "pch-sdk",
-    "pch-server",
+    "trust-kernel",
+    "portable-state",
+    "agent-client",
+    "loopback-service",
 )
 
 

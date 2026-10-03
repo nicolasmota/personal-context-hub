@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from pch_core.service import Hub
+from trust_kernel.service import Hub
 
 SHARED = "Monday deadline for the token and deploy."
 

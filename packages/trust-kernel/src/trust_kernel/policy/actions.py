@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pch_core.errors import PolicyDenied
-from pch_core.schema.action import ActionIntent, IntentStatus
+from trust_kernel.errors import PolicyDenied
+from trust_kernel.schema.action import ActionIntent, IntentStatus
 
 
 def assert_executable(intent: ActionIntent | dict) -> None:

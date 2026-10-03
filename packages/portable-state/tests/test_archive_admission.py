@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pch_archive.vendor.enqueue import decide_archive, enqueue_vendor_import
+from portable_state.vendor.enqueue import decide_archive, enqueue_vendor_import
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "vendor"
 

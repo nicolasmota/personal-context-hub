@@ -3,9 +3,9 @@ import zipfile
 from pathlib import Path
 
 import pytest
-from pch_archive.export import _decrypt, _encrypt, export_archive
-from pch_archive.import_ import IntegrityError, import_archive
-from pch_core.service import Hub
+from portable_state.export import _decrypt, _encrypt, export_archive
+from portable_state.import_ import IntegrityError, import_archive
+from trust_kernel.service import Hub
 
 
 def test_round_trip_keeps_receipts_rules_and_blocks(hub, tmp_path: Path):

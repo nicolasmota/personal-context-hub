@@ -26,7 +26,7 @@ If the package is empty, off-grant, or lists omissions, **say so**. Do not inven
 ## Example
 
 ```python
-from pch_sdk import Client
+from agent_client import Client
 
 c = Client("http://127.0.0.1:8765", token="<connection-token>")
 package = c.call(

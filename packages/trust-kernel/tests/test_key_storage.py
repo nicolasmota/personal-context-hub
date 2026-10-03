@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pch_core.vault.keys import key_storage
+from trust_kernel.vault.keys import key_storage
 
 
 def test_key_storage_file_when_vault_key_exists(tmp_path: Path):

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pch_core.service import Hub
+from trust_kernel.service import Hub
 
 
 def profile_resource(hub: Hub, actor: str) -> dict:

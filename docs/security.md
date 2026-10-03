@@ -11,7 +11,7 @@ The Hub is designed so a reachable non-loopback surface would already be a produ
 | Ingested material is hostile input | Curation or “looks safe” is enforcement |
 | Vault files on disk may be copied | Plaintext SQLite is acceptable by default |
 
-Policy is evaluated in `pch-core`, outside any model’s reasoning.
+Policy is evaluated in `trust-kernel`, outside any model’s reasoning.
 
 ## Loopback only
 

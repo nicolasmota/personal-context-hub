@@ -5,10 +5,10 @@ description = "Personal Context Hub — local-first personal context for any age
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "pch-core",
-    "pch-server",
-    "pch-archive",
-    "pch-sdk",
+    "trust-kernel",
+    "loopback-service",
+    "portable-state",
+    "agent-client",
 ]
 
 [project.optional-dependencies]
@@ -27,28 +27,28 @@ package = false
 
 [tool.uv.workspace]
 members = [
-    "packages/pch-core",
-    "packages/pch-server",
-    "packages/pch-archive",
-    "packages/pch-sdk",
-    "packages/pch-lab",
+    "packages/trust-kernel",
+    "packages/loopback-service",
+    "packages/portable-state",
+    "packages/agent-client",
+    "packages/eval-harness",
 ]
 
 [tool.uv.sources]
-pch-core = { workspace = true }
-pch-server = { workspace = true }
-pch-archive = { workspace = true }
-pch-sdk = { workspace = true }
-pch-lab = { workspace = true }
+trust-kernel = { workspace = true }
+loopback-service = { workspace = true }
+portable-state = { workspace = true }
+agent-client = { workspace = true }
+eval-harness = { workspace = true }
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 pythonpath = [
-    "packages/pch-core/src",
-    "packages/pch-server/src",
-    "packages/pch-archive/src",
-    "packages/pch-sdk/src",
-    "packages/pch-lab/src",
+    "packages/trust-kernel/src",
+    "packages/loopback-service/src",
+    "packages/portable-state/src",
+    "packages/agent-client/src",
+    "packages/eval-harness/src",
 ]
 markers = [
     "forbidden_context: seeded policy isolation tests (SC-003)",
@@ -56,17 +56,17 @@ markers = [
     "release: packaged wheel install (slow; needs network)",
 ]
 testpaths = [
-    "packages/pch-core/tests",
-    "packages/pch-server/tests",
-    "packages/pch-archive/tests",
-    "packages/pch-sdk/tests",
-    "packages/pch-lab/tests",
+    "packages/trust-kernel/tests",
+    "packages/loopback-service/tests",
+    "packages/portable-state/tests",
+    "packages/agent-client/tests",
+    "packages/eval-harness/tests",
 ]
 
 [tool.mypy]
 python_version = "3.12"
 strict = true
-packages = ["pch_core", "pch_server", "pch_archive", "pch_sdk", "pch_lab"]
+packages = ["trust_kernel", "loopback_service", "portable_state", "agent_client", "eval_harness"]
 
 [dependency-groups]
 dev = [

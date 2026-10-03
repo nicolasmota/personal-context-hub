@@ -14,13 +14,13 @@ from pathlib import Path
 import httpx
 import pytest
 import uvicorn
-from pch_core.service import Hub
-from pch_server.pairing.catalog import list_assistants
-from pch_server.rest.app import create_app
+from loopback_service.pairing.catalog import list_assistants
+from loopback_service.rest.app import create_app
+from trust_kernel.service import Hub
 
 ROOT = Path(__file__).resolve().parents[3]
 PAIR_DOC = ROOT / "docs" / "guides" / "pair-an-agent.md"
-EVAL_HARNESS = ROOT / "packages" / "pch-lab" / "src" / "pch_lab" / "eval" / "harness.py"
+EVAL_HARNESS = ROOT / "packages" / "eval-harness" / "src" / "eval_harness" / "eval" / "harness.py"
 
 
 def _free_port() -> int:

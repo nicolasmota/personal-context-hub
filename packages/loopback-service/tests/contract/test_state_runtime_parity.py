@@ -1,8 +1,8 @@
 from pathlib import Path
 
 from fastapi.testclient import TestClient
-from pch_core.service import OWNER, Hub
-from pch_server.rest.app import create_app
+from loopback_service.rest.app import create_app
+from trust_kernel.service import OWNER, Hub
 
 
 def _signature(contract: dict) -> dict:

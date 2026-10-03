@@ -17,7 +17,7 @@ htmlcov/
 node_modules/
 frontend/dist/
 *.tsbuildinfo
-packages/pch-server/src/pch_server/static/
+packages/loopback-service/src/loopback_service/static/
 
 # Vault / secrets
 *.db

@@ -4,15 +4,15 @@ import hashlib
 import secrets
 from datetime import UTC, datetime
 
-from pch_core.errors import PolicyDenied, Revoked, ValidationFailed
-from pch_core.hub.const import OWNER
-from pch_core.ids import new_id
-from pch_core.policy.grants import grant_from_caps, grant_from_preset
-from pch_core.retrieval.manifests import build_manifest
-from pch_core.schema.audit import EventKind
-from pch_core.schema.connection import AgentConnection, ConnectionStatus
-from pch_core.schema.grant import Grant, GrantStatus
-from pch_core.timeutil import now_iso, parse_instant
+from trust_kernel.errors import PolicyDenied, Revoked, ValidationFailed
+from trust_kernel.hub.const import OWNER
+from trust_kernel.ids import new_id
+from trust_kernel.policy.grants import grant_from_caps, grant_from_preset
+from trust_kernel.retrieval.manifests import build_manifest
+from trust_kernel.schema.audit import EventKind
+from trust_kernel.schema.connection import AgentConnection, ConnectionStatus
+from trust_kernel.schema.grant import Grant, GrantStatus
+from trust_kernel.timeutil import now_iso, parse_instant
 
 
 class PairingMixin:

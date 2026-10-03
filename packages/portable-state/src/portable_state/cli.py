@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 def verify_roundtrip(src: Path, dst: Path) -> int:
-    from pch_core.service import Hub
+    from trust_kernel.service import Hub
 
     a = Hub(src, plain=True)
     b = Hub(dst, plain=True)

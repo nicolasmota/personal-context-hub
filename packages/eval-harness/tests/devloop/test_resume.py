@@ -3,9 +3,9 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-from pch_lab.devloop import next_step, start
-from pch_lab.devloop.refuse import LoopRefused
-from pch_lab.devloop.runfile import load_run
+from eval_harness.devloop import next_step, start
+from eval_harness.devloop.refuse import LoopRefused
+from eval_harness.devloop.runfile import load_run
 
 
 def test_resume_after_specify_skips_specify(

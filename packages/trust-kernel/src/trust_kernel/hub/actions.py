@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from pch_core.errors import PolicyDenied, ValidationFailed
-from pch_core.hub.const import OWNER
-from pch_core.ids import new_id
-from pch_core.schema.action import ActionIntent, IntentStatus
-from pch_core.schema.approval import Approval, DecisionKind
-from pch_core.schema.audit import EventKind
-from pch_core.timeutil import now_iso, parse_instant
+from trust_kernel.errors import PolicyDenied, ValidationFailed
+from trust_kernel.hub.const import OWNER
+from trust_kernel.ids import new_id
+from trust_kernel.schema.action import ActionIntent, IntentStatus
+from trust_kernel.schema.approval import Approval, DecisionKind
+from trust_kernel.schema.audit import EventKind
+from trust_kernel.timeutil import now_iso, parse_instant
 
 
 class ActionsMixin:

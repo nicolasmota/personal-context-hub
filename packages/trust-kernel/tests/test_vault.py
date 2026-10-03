@@ -1,7 +1,7 @@
 import threading
 from pathlib import Path
 
-from pch_core.service import Hub
+from trust_kernel.service import Hub
 
 
 def test_vault_persists(tmp_path: Path):

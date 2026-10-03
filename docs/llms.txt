@@ -36,7 +36,7 @@ Docs: https://nicolasmota.github.io/personal-context-hub/
 
 ## How it is built
 
-- [Architecture](https://nicolasmota.github.io/personal-context-hub/architecture.html): pch-core (no network), pch-server, pch-sdk, pch-lab, pch-archive
+- [Architecture](https://nicolasmota.github.io/personal-context-hub/architecture.html): trust-kernel (no network), loopback-service, agent-client, eval-harness, portable-state
 - [Security](https://nicolasmota.github.io/personal-context-hub/security.html): encryption, grants, ingested material, reporting
 - [Developing](https://nicolasmota.github.io/personal-context-hub/develop.html)
 

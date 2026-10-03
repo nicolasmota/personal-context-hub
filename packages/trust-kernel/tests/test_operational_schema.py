@@ -1,8 +1,8 @@
 import pytest
-from pch_core.schema.contract import SituationRef
-from pch_core.schema.metadata import Authority, Classification, EntityType
-from pch_core.schema.project import Goal, OperationalPhase, Project, ProjectStatus
 from pydantic import ValidationError
+from trust_kernel.schema.contract import SituationRef
+from trust_kernel.schema.metadata import Authority, Classification, EntityType
+from trust_kernel.schema.project import Goal, OperationalPhase, Project, ProjectStatus
 
 
 def _project(**extra):

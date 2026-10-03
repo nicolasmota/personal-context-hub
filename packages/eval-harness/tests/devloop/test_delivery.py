@@ -3,8 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-from pch_lab.devloop import complete_allowed, record, record_evidence, record_verdict, start
-from pch_lab.devloop.runfile import load_run, save_run
+from eval_harness.devloop import complete_allowed, record, record_evidence, record_verdict, start
+from eval_harness.devloop.runfile import load_run, save_run
 
 
 def _advance_to_implement(repo: Path) -> None:

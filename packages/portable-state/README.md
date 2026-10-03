@@ -1,6 +1,6 @@
-# pch-archive
+# portable-state
 
-Portable Context Archive (PCA) export/import for Personal Context Hub. Depends on `pch-core` only.
+Portable Context Archive (PCA) export/import for Personal Context Hub. Depends on `trust-kernel` only.
 
 Export and import are owner HTTP/UI operations. This package also ships:
 

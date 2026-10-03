@@ -3,10 +3,10 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from pch_core.errors import NotFound
-from pch_core.timeutil import now_iso
-from pch_core.vault.engine import Engine
-from pch_core.vault.versions import VersionStore
+from trust_kernel.errors import NotFound
+from trust_kernel.timeutil import now_iso
+from trust_kernel.vault.engine import Engine
+from trust_kernel.vault.versions import VersionStore
 
 
 def _project_id(payload: dict) -> str | None:

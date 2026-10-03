@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from pch_core.schema.connection import ConnectionStatus
-from pch_core.schema.grant import GrantStatus
-from pch_core.schema.manifest import ManifestStatus
-from pch_core.timeutil import now_iso
-from pch_core.vault.objects import ObjectStore
+from trust_kernel.schema.connection import ConnectionStatus
+from trust_kernel.schema.grant import GrantStatus
+from trust_kernel.schema.manifest import ManifestStatus
+from trust_kernel.timeutil import now_iso
+from trust_kernel.vault.objects import ObjectStore
 
 
 def revoke_cascade(store: ObjectStore, connection_id: str) -> None:

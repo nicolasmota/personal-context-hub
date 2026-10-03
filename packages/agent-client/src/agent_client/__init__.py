@@ -1,3 +1,3 @@
-from pch_sdk.client import Client
+from agent_client.client import Client
 
 __all__ = ["Client"]

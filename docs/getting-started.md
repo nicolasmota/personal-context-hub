@@ -1,6 +1,6 @@
 # Getting started
 
-Install the core, create a vault, and compile a context contract. The checkout does not include a web interface or a desktop shell. `packages/pch-core` holds personal state.
+Install the core, create a vault, and compile a context contract. The checkout does not include a web interface or a desktop shell. `packages/trust-kernel` holds personal state.
 
 ## What you need
 
@@ -48,7 +48,7 @@ The recipe endpoint returns this shape. Do not commit `.cursor/mcp.json` — it 
   "mcpServers": {
     "personal-context-hub": {
       "command": "<python>",
-      "args": ["-m", "pch_sdk", "mcp-bridge"],
+      "args": ["-m", "agent_client", "mcp-bridge"],
       "env": {
         "PCH_TOKEN": "<connection-token>",
         "PCH_BASE": "http://127.0.0.1:8765"
@@ -71,7 +71,7 @@ make install
 make serve
 ```
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md) and [Architecture](architecture.md). The kernel, loopback service, SDK, and archive library are `pch-core`, `pch-server`, `pch-sdk`, and `pch-archive`.
+See [CONTRIBUTING.md](../CONTRIBUTING.md) and [Architecture](architecture.md). The kernel, loopback service, SDK, and archive library are `trust-kernel`, `loopback-service`, `agent-client`, and `portable-state`.
 
 ## Check that it works
 

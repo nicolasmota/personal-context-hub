@@ -1,5 +1,5 @@
-from pch_core.service import OWNER
-from pch_core.testing.trip_seed import seed_trip
+from trust_kernel.service import OWNER
+from trust_kernel.testing.trip_seed import seed_trip
 
 
 def _visa_and_links(hub, trip_id: str) -> dict:

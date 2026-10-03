@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Any, Protocol
 
-from pch_core.retrieval.ask import significant_tokens
-from pch_core.retrieval.candidate import (
+from trust_kernel.retrieval.ask import significant_tokens
+from trust_kernel.retrieval.candidate import (
     RetrievalCandidate,
     candidate_from_row,
     dedupe_candidates,

@@ -1,8 +1,8 @@
 import pytest
-from pch_core.errors import ValidationFailed, VersionConflict
-from pch_core.schema.metadata import Authority, Classification, EntityType
-from pch_core.schema.relation import Relation, RelationType
 from pydantic import ValidationError
+from trust_kernel.errors import ValidationFailed, VersionConflict
+from trust_kernel.schema.metadata import Authority, Classification, EntityType
+from trust_kernel.schema.relation import Relation, RelationType
 
 
 def _relation(**extra):

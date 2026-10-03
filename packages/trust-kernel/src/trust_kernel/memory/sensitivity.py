@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pch_core.schema.memory import Memory, SensitivityFlag
-from pch_core.schema.proposal import ProposalStatus
+from trust_kernel.schema.memory import Memory, SensitivityFlag
+from trust_kernel.schema.proposal import ProposalStatus
 
 
 def blocks_auto_accept(memory: Memory) -> bool:

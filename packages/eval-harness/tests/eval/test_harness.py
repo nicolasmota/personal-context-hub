@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from pch_core.service import Hub
-from pch_lab.eval.harness import run_eval
+from eval_harness.eval.harness import run_eval
+from trust_kernel.service import Hub
 
 
 def test_killer_demo_accuracy():

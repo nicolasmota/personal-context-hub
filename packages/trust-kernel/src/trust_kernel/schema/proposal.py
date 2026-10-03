@@ -2,7 +2,7 @@ from enum import StrEnum
 
 from pydantic import BaseModel, Field
 
-from pch_core.schema.memory import Memory
+from trust_kernel.schema.memory import Memory
 
 
 class ProposalStatus(StrEnum):

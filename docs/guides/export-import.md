@@ -62,7 +62,7 @@ The `pch-archive` tool compares two Hub data directories:
 uv run pch-archive verify-roundtrip /path/to/src-hub /path/to/dst-hub
 ```
 
-It lists `project`, `goal`, `commitment`, `decision`, `memory`, `preference`, `artifact`, and `profile` and compares `(id, authority, classification)`. Automated coverage: `packages/pch-archive/tests/test_roundtrip.py`.
+It lists `project`, `goal`, `commitment`, `decision`, `memory`, `preference`, `artifact`, and `profile` and compares `(id, authority, classification)`. Automated coverage: `packages/portable-state/tests/test_roundtrip.py`.
 
 ## What not to do
 

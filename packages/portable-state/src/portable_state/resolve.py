@@ -29,7 +29,7 @@ def apply_resolution(choice: str, rec: dict[str, Any]) -> dict[str, Any]:
     if rec.get("type") == "artifact":
         rec["untrusted"] = True
     if choice == "keep_separate":
-        from pch_core.ids import new_id
+        from trust_kernel.ids import new_id
 
         rec["imported_from"] = rec.get("id")
         rec["id"] = new_id(rec.get("type", "memory"))

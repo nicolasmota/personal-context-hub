@@ -4,7 +4,7 @@ from enum import StrEnum
 
 from pydantic import Field
 
-from pch_core.schema.metadata import UniversalMetadata
+from trust_kernel.schema.metadata import UniversalMetadata
 
 
 class EvidenceKind(StrEnum):

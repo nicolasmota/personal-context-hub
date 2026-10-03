@@ -1,4 +1,4 @@
-from pch_core.timeutil import now_iso
+from trust_kernel.timeutil import now_iso
 
 
 def test_concurrent_proposals_stay_non_canonical(hub):

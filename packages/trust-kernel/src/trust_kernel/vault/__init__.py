@@ -1,1 +1,1 @@
-# pch-core package
+# trust-kernel package

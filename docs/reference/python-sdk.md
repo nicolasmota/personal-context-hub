@@ -1,6 +1,6 @@
 # Python SDK
 
-Package `pch-sdk`. Public import: `from pch_sdk import Client`.
+Package `agent-client`. Public import: `from agent_client import Client`.
 
 The client is a thin HTTP wrapper around pairing, MCP tools, and MCP resources. It is not an agent runtime.
 
@@ -10,12 +10,12 @@ The client is a thin HTTP wrapper around pairing, MCP tools, and MCP resources. 
 uv sync
 ```
 
-From a published wheel, depend on `pch-sdk` (same version as the Hub, currently **0.2.0**).
+From a published wheel, depend on `agent-client` (same version as the Hub, currently **0.2.0**).
 
 ## Client
 
 ```python
-from pch_sdk import Client
+from agent_client import Client
 
 c = Client("http://127.0.0.1:8765", token="")
 result = c.pair("<pairing-code>")   # stores result["token"]
@@ -38,7 +38,7 @@ Headers: `Authorization: Bearer {token}`.
 
 ## Capture guidance (for adapters)
 
-`pch_sdk.capture_guidance` exports the strings baked into recipes:
+`agent_client.capture_guidance` exports the strings baked into recipes:
 
 - `SITUATION_READ_DESCRIPTION` — when to call `get_context_contract`
 - `MEMORY_PROPOSE_DESCRIPTION` — when to call `propose_memory`
@@ -59,4 +59,4 @@ Pairs, then calls `search_personal_context` with query `Atlas` and purpose `demo
 PCH_TOKEN=… PCH_BASE=http://127.0.0.1:8765 uv run pch-sdk mcp-bridge
 ```
 
-Implementation: `pch_sdk.mcp_bridge`. Tool names and JSON Schema: [MCP tools](mcp.md).
+Implementation: `agent_client.mcp_bridge`. Tool names and JSON Schema: [MCP tools](mcp.md).

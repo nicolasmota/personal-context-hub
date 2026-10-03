@@ -5,10 +5,10 @@ import json
 import sys
 from pathlib import Path
 
-from pch_lab.sim.persona import dump_ticks
-from pch_lab.sim.records import load_run
-from pch_lab.sim.refuse import SimRefused
-from pch_lab.sim.runner import default_sim_dir, run_sim
+from eval_harness.sim.persona import dump_ticks
+from eval_harness.sim.records import load_run
+from eval_harness.sim.refuse import SimRefused
+from eval_harness.sim.runner import default_sim_dir, run_sim
 
 
 def dispatch_sim(argv: list[str]) -> int:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pch_lab.sim import compile_persona, dump_ticks
+from eval_harness.sim import compile_persona, dump_ticks
 
 FORBIDDEN = frozenset({"propose_action"})
 

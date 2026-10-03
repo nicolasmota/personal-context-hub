@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from pch_core.errors import NotFound, ValidationFailed, VersionConflict
-from pch_core.hub.const import OWNER
-from pch_core.ids import new_id
-from pch_core.schema.audit import EventKind
-from pch_core.schema.proposal import ProposalStatus
-from pch_core.schema.relation import RelationLinkStatus, RelationProposal, RelationType
-from pch_core.timeutil import now_iso
+from trust_kernel.errors import NotFound, ValidationFailed, VersionConflict
+from trust_kernel.hub.const import OWNER
+from trust_kernel.ids import new_id
+from trust_kernel.schema.audit import EventKind
+from trust_kernel.schema.proposal import ProposalStatus
+from trust_kernel.schema.relation import RelationLinkStatus, RelationProposal, RelationType
+from trust_kernel.timeutil import now_iso
 
 
 class RelationsMixin:

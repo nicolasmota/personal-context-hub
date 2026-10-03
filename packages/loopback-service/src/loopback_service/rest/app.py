@@ -5,15 +5,15 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException
-from pch_core.errors import PclError
-from pch_core.service import Hub
+from trust_kernel.errors import PclError
+from trust_kernel.service import Hub
 
-from pch_server.mcp.server import ToolHub
-from pch_server.rest.auth import current_actor, get_hub
-from pch_server.rest.errors import pcl_error_handler
-from pch_server.rest.hostguard import reject_non_loopback_host
-from pch_server.rest.idempotency import IdempotencyMiddleware
-from pch_server.rest.routers import (
+from loopback_service.mcp.server import ToolHub
+from loopback_service.rest.auth import current_actor, get_hub
+from loopback_service.rest.errors import pcl_error_handler
+from loopback_service.rest.hostguard import reject_non_loopback_host
+from loopback_service.rest.idempotency import IdempotencyMiddleware
+from loopback_service.rest.routers import (
     briefs,
     connections,
     events,

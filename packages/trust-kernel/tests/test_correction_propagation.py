@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from pch_core.retrieval.search import fts5_match_expr
-from pch_core.service import Hub
+from trust_kernel.retrieval.search import fts5_match_expr
+from trust_kernel.service import Hub
 
 
 def test_fts5_match_expr_quotes_tokens():

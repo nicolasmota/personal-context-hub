@@ -3,16 +3,16 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Any
 
-from pch_core.errors import ValidationFailed
-from pch_core.hub.const import OWNER
-from pch_core.ids import new_id
-from pch_core.memory.orphans import orphan_derived
-from pch_core.policy.evaluator import PolicyInput, evaluate
-from pch_core.retrieval.search import citations_for
-from pch_core.retrieval.search import search as fts_search
-from pch_core.schema.audit import EventKind
-from pch_core.schema.project import OperationalPhase
-from pch_core.timeutil import now_iso, row_is_current, validate_interval
+from trust_kernel.errors import ValidationFailed
+from trust_kernel.hub.const import OWNER
+from trust_kernel.ids import new_id
+from trust_kernel.memory.orphans import orphan_derived
+from trust_kernel.policy.evaluator import PolicyInput, evaluate
+from trust_kernel.retrieval.search import citations_for
+from trust_kernel.retrieval.search import search as fts_search
+from trust_kernel.schema.audit import EventKind
+from trust_kernel.schema.project import OperationalPhase
+from trust_kernel.timeutil import now_iso, row_is_current, validate_interval
 
 
 class ObjectsMixin:

@@ -3,8 +3,8 @@ import json
 
 import httpx
 import pytest
-from pch_sdk.capture_guidance import DURABLE_TRIGGERS, TASK_START_TRIGGERS
-from pch_sdk.mcp_bridge import TOOL_NAMES, handle_message, map_tool_result, run_stdio
+from agent_client.capture_guidance import DURABLE_TRIGGERS, TASK_START_TRIGGERS
+from agent_client.mcp_bridge import TOOL_NAMES, handle_message, map_tool_result, run_stdio
 
 
 def test_tools_list_parity():
@@ -31,7 +31,7 @@ def test_search_round_trip(monkeypatch):
         assert name == "search_personal_context"
         return 200, {"results": [{"id": "mem_1", "statement": "Atlas prefers cited briefs"}]}
 
-    monkeypatch.setattr("pch_sdk.mcp_bridge.call_hub", fake_call)
+    monkeypatch.setattr("agent_client.mcp_bridge.call_hub", fake_call)
     reply = handle_message(
         {
             "jsonrpc": "2.0",
@@ -64,7 +64,7 @@ def test_situation_and_propose_descriptions_include_when_to_use():
 
 def test_run_stdio_empty_token_exits(monkeypatch):
     err = io.StringIO()
-    monkeypatch.setattr("pch_sdk.mcp_bridge.sys.stderr", err)
+    monkeypatch.setattr("agent_client.mcp_bridge.sys.stderr", err)
     with pytest.raises(SystemExit) as ei:
         run_stdio("", "http://127.0.0.1:8765")
     assert ei.value.code == 1
@@ -75,15 +75,15 @@ def test_run_stdio_hub_down_lists_tools(monkeypatch):
     def fail_health(_base: str) -> None:
         raise httpx.ConnectError("down")
 
-    monkeypatch.setattr("pch_sdk.mcp_bridge.healthcheck", fail_health)
+    monkeypatch.setattr("agent_client.mcp_bridge.healthcheck", fail_health)
     monkeypatch.setattr(
-        "pch_sdk.mcp_bridge.sys.stdin",
+        "agent_client.mcp_bridge.sys.stdin",
         io.StringIO('{"jsonrpc":"2.0","id":1,"method":"tools/list"}\n'),
     )
     out = io.StringIO()
-    monkeypatch.setattr("pch_sdk.mcp_bridge.sys.stdout", out)
+    monkeypatch.setattr("agent_client.mcp_bridge.sys.stdout", out)
     err = io.StringIO()
-    monkeypatch.setattr("pch_sdk.mcp_bridge.sys.stderr", err)
+    monkeypatch.setattr("agent_client.mcp_bridge.sys.stderr", err)
     run_stdio("tok", "http://127.0.0.1:8765")
     reply = json.loads(out.getvalue().splitlines()[0])
     names = [t["name"] for t in reply["result"]["tools"]]
@@ -94,7 +94,7 @@ def test_tool_call_hub_down_is_unreachable_json(monkeypatch):
     def boom(_base: str, _token: str, _name: str, _arguments: dict) -> tuple[int, dict]:
         raise httpx.ConnectError("down")
 
-    monkeypatch.setattr("pch_sdk.mcp_bridge.call_hub", boom)
+    monkeypatch.setattr("agent_client.mcp_bridge.call_hub", boom)
     reply = handle_message(
         {
             "jsonrpc": "2.0",
@@ -122,7 +122,7 @@ def test_explain_resource_uses_the_explain_door(monkeypatch):
         assert arguments == {"subject": "city"}
         return 200, {"status": "live", "value": "Lisbon"}
 
-    monkeypatch.setattr("pch_sdk.mcp_bridge.call_hub", fake_call)
+    monkeypatch.setattr("agent_client.mcp_bridge.call_hub", fake_call)
     reply = handle_message(
         {
             "jsonrpc": "2.0",
@@ -141,7 +141,7 @@ def test_vault_resource_is_refused(monkeypatch):
     def fail_call(*_args, **_kwargs):
         raise AssertionError("vault read called the hub")
 
-    monkeypatch.setattr("pch_sdk.mcp_bridge.call_hub", fail_call)
+    monkeypatch.setattr("agent_client.mcp_bridge.call_hub", fail_call)
     reply = handle_message(
         {
             "jsonrpc": "2.0",

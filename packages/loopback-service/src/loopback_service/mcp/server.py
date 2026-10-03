@@ -3,11 +3,16 @@ from __future__ import annotations
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
-from pch_core.errors import PolicyDenied
-from pch_core.service import Hub
+from trust_kernel.errors import PolicyDenied
+from trust_kernel.service import Hub
 
-from pch_server.mcp.resources import audit_resource, brief_resource, profile_resource, self_resource
-from pch_server.mcp.tools_context import attach_tools
+from loopback_service.mcp.resources import (
+    audit_resource,
+    brief_resource,
+    profile_resource,
+    self_resource,
+)
+from loopback_service.mcp.tools_context import attach_tools
 
 
 class ToolHub:

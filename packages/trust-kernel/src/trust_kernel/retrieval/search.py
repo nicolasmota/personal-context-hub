@@ -4,7 +4,7 @@ import json
 import re
 from typing import Any, Protocol
 
-from pch_core.vault.engine import Engine
+from trust_kernel.vault.engine import Engine
 
 _TOKEN = re.compile(r"[A-Za-z0-9_]+")
 

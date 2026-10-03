@@ -4,7 +4,7 @@ from collections import defaultdict
 from datetime import UTC, datetime
 from typing import Any
 
-from pch_core.timeutil import row_is_current
+from trust_kernel.timeutil import row_is_current
 
 
 def _condition(row: dict[str, Any]) -> str | None:

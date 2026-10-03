@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pch_core.service import Hub
+from trust_kernel.service import Hub
 
 ROOT = Path(__file__).resolve().parents[3]
-SERVICE = ROOT / "packages" / "pch-core" / "src" / "pch_core" / "service.py"
-HUB = ROOT / "packages" / "pch-core" / "src" / "pch_core" / "hub"
+SERVICE = ROOT / "packages" / "trust-kernel" / "src" / "trust_kernel" / "service.py"
+HUB = ROOT / "packages" / "trust-kernel" / "src" / "trust_kernel" / "hub"
 
 
 def test_service_facade_has_no_plugin_pairing_or_capture_bodies() -> None:

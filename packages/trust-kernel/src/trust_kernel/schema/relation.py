@@ -4,8 +4,8 @@ from enum import StrEnum
 
 from pydantic import BaseModel, model_validator
 
-from pch_core.schema.metadata import UniversalMetadata
-from pch_core.schema.proposal import ProposalStatus
+from trust_kernel.schema.metadata import UniversalMetadata
+from trust_kernel.schema.proposal import ProposalStatus
 
 
 class RelationType(StrEnum):

@@ -6,10 +6,10 @@ from pathlib import Path
 import pytest
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import ValidationError
-from pch_core.schema.contract import OmissionNote, envelope_json_schema
-from pch_core.service import OWNER
-from pch_core.testing.incident_offer_seed import seed_incident_offer
 from pydantic import ValidationError as PydanticValidationError
+from trust_kernel.schema.contract import OmissionNote, envelope_json_schema
+from trust_kernel.service import OWNER
+from trust_kernel.testing.incident_offer_seed import seed_incident_offer
 
 REPO = Path(__file__).resolve().parents[3]
 SCHEMA_PATH = REPO / "docs" / "reference" / "context-contract.schema.json"

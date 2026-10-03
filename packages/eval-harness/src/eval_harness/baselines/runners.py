@@ -5,9 +5,13 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from pch_core.service import OWNER, Hub
+from trust_kernel.service import OWNER, Hub
 
-from pch_lab.baselines.judgments import compilation_judgment, retrieval_judgment, superseded_values
+from eval_harness.baselines.judgments import (
+    compilation_judgment,
+    retrieval_judgment,
+    superseded_values,
+)
 
 APPROACHES = ("no_stored_context", "raw_retrieval", "agent_owned_memory", "pch")
 

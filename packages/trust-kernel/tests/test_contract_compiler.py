@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import pytest
-from pch_core.errors import PolicyDenied, Revoked
-from pch_core.schema.grant import GrantStatus
-from pch_core.service import OWNER
-from pch_core.testing.incident_offer_seed import seed_incident_offer
+from trust_kernel.errors import PolicyDenied, Revoked
+from trust_kernel.schema.grant import GrantStatus
+from trust_kernel.service import OWNER
+from trust_kernel.testing.incident_offer_seed import seed_incident_offer
 
 
 def _memory_statements(contract: dict) -> list[str]:

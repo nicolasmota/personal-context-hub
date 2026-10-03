@@ -3,25 +3,25 @@ from __future__ import annotations
 import secrets
 from pathlib import Path
 
-from pch_core.audit.ledger import Ledger
-from pch_core.hub.actions import ActionsMixin
-from pch_core.hub.capture import CaptureMixin
-from pch_core.hub.const import OWNER
-from pch_core.hub.context import ContextMixin
-from pch_core.hub.evolution import EvolutionMixin
-from pch_core.hub.explain import ExplainMixin
-from pch_core.hub.objects import ObjectsMixin
-from pch_core.hub.pairing import PairingMixin
-from pch_core.hub.proposals import ProposalsMixin
-from pch_core.hub.relations import RelationsMixin
-from pch_core.hub.setup import SetupMixin
-from pch_core.hub.state import StateMixin
-from pch_core.retrieval.retriever import TokenOverlapRetriever
-from pch_core.vault.blobs import BlobStore
-from pch_core.vault.engine import Engine
-from pch_core.vault.keys import load_or_create_key
-from pch_core.vault.objects import ObjectStore
-from pch_core.vault.owner_file import write_owner_token
+from trust_kernel.audit.ledger import Ledger
+from trust_kernel.hub.actions import ActionsMixin
+from trust_kernel.hub.capture import CaptureMixin
+from trust_kernel.hub.const import OWNER
+from trust_kernel.hub.context import ContextMixin
+from trust_kernel.hub.evolution import EvolutionMixin
+from trust_kernel.hub.explain import ExplainMixin
+from trust_kernel.hub.objects import ObjectsMixin
+from trust_kernel.hub.pairing import PairingMixin
+from trust_kernel.hub.proposals import ProposalsMixin
+from trust_kernel.hub.relations import RelationsMixin
+from trust_kernel.hub.setup import SetupMixin
+from trust_kernel.hub.state import StateMixin
+from trust_kernel.retrieval.retriever import TokenOverlapRetriever
+from trust_kernel.vault.blobs import BlobStore
+from trust_kernel.vault.engine import Engine
+from trust_kernel.vault.keys import load_or_create_key
+from trust_kernel.vault.objects import ObjectStore
+from trust_kernel.vault.owner_file import write_owner_token
 
 __all__ = ["OWNER", "Hub"]
 

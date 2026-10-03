@@ -3,12 +3,12 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Any
 
-from pch_core.context.conflicts import detect_state_conflicts
-from pch_core.errors import ValidationFailed
-from pch_core.hub.const import OWNER
-from pch_core.ids import new_id
-from pch_core.schema.audit import EventKind
-from pch_core.timeutil import now_iso, row_is_current
+from trust_kernel.context.conflicts import detect_state_conflicts
+from trust_kernel.errors import ValidationFailed
+from trust_kernel.hub.const import OWNER
+from trust_kernel.ids import new_id
+from trust_kernel.schema.audit import EventKind
+from trust_kernel.timeutil import now_iso, row_is_current
 
 
 class EvolutionMixin:

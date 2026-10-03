@@ -1,10 +1,10 @@
-from pch_core.schema.action import ActionIntent, IntentStatus
-from pch_core.schema.approval import Approval, DecisionKind
-from pch_core.schema.artifact import Artifact, ArtifactKind
-from pch_core.schema.audit import AuditEvent, EventKind
-from pch_core.schema.conflict import Conflict, ConflictKind, ConflictStatus
-from pch_core.schema.connection import AgentConnection, ConnectionStatus
-from pch_core.schema.contract import (
+from trust_kernel.schema.action import ActionIntent, IntentStatus
+from trust_kernel.schema.approval import Approval, DecisionKind
+from trust_kernel.schema.artifact import Artifact, ArtifactKind
+from trust_kernel.schema.audit import AuditEvent, EventKind
+from trust_kernel.schema.conflict import Conflict, ConflictKind, ConflictStatus
+from trust_kernel.schema.connection import AgentConnection, ConnectionStatus
+from trust_kernel.schema.contract import (
     ENVELOPE_SCHEMA_ID,
     Citation,
     ConflictPair,
@@ -19,13 +19,13 @@ from pch_core.schema.contract import (
     SituationRef,
     envelope_json_schema,
 )
-from pch_core.schema.event import CalendarEvent, CalendarEventStatus
-from pch_core.schema.evidence import Evidence, EvidenceKind, VerificationStatus
-from pch_core.schema.experience import Experience
-from pch_core.schema.grant import PRESETS, Capability, Grant, GrantStatus
-from pch_core.schema.manifest import ContextManifest, DisclosedRef, ManifestStatus
-from pch_core.schema.memory import Memory, MemoryKind, SensitivityFlag
-from pch_core.schema.metadata import (
+from trust_kernel.schema.event import CalendarEvent, CalendarEventStatus
+from trust_kernel.schema.evidence import Evidence, EvidenceKind, VerificationStatus
+from trust_kernel.schema.experience import Experience
+from trust_kernel.schema.grant import PRESETS, Capability, Grant, GrantStatus
+from trust_kernel.schema.manifest import ContextManifest, DisclosedRef, ManifestStatus
+from trust_kernel.schema.memory import Memory, MemoryKind, SensitivityFlag
+from trust_kernel.schema.metadata import (
     Authority,
     Classification,
     EntityType,
@@ -33,8 +33,8 @@ from pch_core.schema.metadata import (
     RetentionMode,
     UniversalMetadata,
 )
-from pch_core.schema.person import Person
-from pch_core.schema.portability import (
+from trust_kernel.schema.person import Person
+from trust_kernel.schema.portability import (
     ExportRecord,
     ImportStaging,
     ResolutionChoice,
@@ -42,9 +42,9 @@ from pch_core.schema.portability import (
     VendorImportBatch,
     VendorOriginItem,
 )
-from pch_core.schema.preference import Preference
-from pch_core.schema.profile import Profile
-from pch_core.schema.project import (
+from trust_kernel.schema.preference import Preference
+from trust_kernel.schema.profile import Profile
+from trust_kernel.schema.project import (
     Commitment,
     Decision,
     Goal,
@@ -52,12 +52,16 @@ from pch_core.schema.project import (
     Project,
     ProjectStatus,
 )
-from pch_core.schema.proposal import MemoryProposal, OperationalProposal, ProposalStatus
-from pch_core.schema.relation import Relation, RelationProposal, RelationType
-from pch_core.schema.space import ContextSpace
-from pch_core.schema.state import SharedState, StateVisibility
-from pch_core.schema.state_conflict import ConflictResolution, StateConflict, StateConflictStatus
-from pch_core.schema.transition import StateTransition, TransitionKind
+from trust_kernel.schema.proposal import MemoryProposal, OperationalProposal, ProposalStatus
+from trust_kernel.schema.relation import Relation, RelationProposal, RelationType
+from trust_kernel.schema.space import ContextSpace
+from trust_kernel.schema.state import SharedState, StateVisibility
+from trust_kernel.schema.state_conflict import (
+    ConflictResolution,
+    StateConflict,
+    StateConflictStatus,
+)
+from trust_kernel.schema.transition import StateTransition, TransitionKind
 
 TYPE_MODELS = {
     EntityType.PERSON: Person,

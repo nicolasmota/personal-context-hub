@@ -5,8 +5,8 @@ import json
 import os
 import sys
 
-from pch_sdk.client import Client
-from pch_sdk.local_cli import (
+from agent_client.client import Client
+from agent_client.local_cli import (
     archive_export,
     archive_import,
     compile_contract,
@@ -23,7 +23,7 @@ from pch_sdk.local_cli import (
     show_token,
     vault_init,
 )
-from pch_sdk.mcp_bridge import main as bridge_main
+from agent_client.mcp_bridge import main as bridge_main
 
 
 def demo(base: str, code: str | None, token: str | None) -> None:

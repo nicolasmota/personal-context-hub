@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 import pytest
-from pch_sdk.__main__ import main
+from agent_client.__main__ import main
 
 
 def _run(argv: list[str], capsys) -> dict:

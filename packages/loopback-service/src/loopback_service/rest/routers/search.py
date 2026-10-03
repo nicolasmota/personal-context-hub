@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, Query
-from pch_core.service import Hub
+from trust_kernel.service import Hub
 
-from pch_server.rest.auth import current_actor, get_hub
+from loopback_service.rest.auth import current_actor, get_hub
 
 router = APIRouter(tags=["search"])
 

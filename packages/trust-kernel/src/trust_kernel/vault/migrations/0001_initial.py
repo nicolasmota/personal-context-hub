@@ -5,7 +5,7 @@ down_revision = None
 
 
 def upgrade(conn) -> None:
-    from pch_core.vault.engine import SCHEMA
+    from trust_kernel.vault.engine import SCHEMA
 
     conn.executescript(SCHEMA)
 

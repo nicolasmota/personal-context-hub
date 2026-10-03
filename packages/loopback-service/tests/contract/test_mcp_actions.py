@@ -1,4 +1,4 @@
-from pch_sdk.mcp_bridge import REMOVED_TOOLS
+from agent_client.mcp_bridge import REMOVED_TOOLS
 
 
 def test_removed_agent_tools_are_not_callable(client):

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from pch_core.errors import ValidationFailed
-from pch_core.hub.const import OWNER
-from pch_core.schema.evidence import EvidenceKind, VerificationStatus
+from trust_kernel.errors import ValidationFailed
+from trust_kernel.hub.const import OWNER
+from trust_kernel.schema.evidence import EvidenceKind, VerificationStatus
 
 
 def _required(value: str | None, label: str) -> str:

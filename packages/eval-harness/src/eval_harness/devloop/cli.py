@@ -4,8 +4,8 @@ import argparse
 import json
 import sys
 
-from pch_lab.devloop.refuse import LoopRefused
-from pch_lab.devloop.stages import (
+from eval_harness.devloop.refuse import LoopRefused
+from eval_harness.devloop.stages import (
     next_step,
     record,
     record_evidence,

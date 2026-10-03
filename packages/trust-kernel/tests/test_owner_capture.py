@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import pytest
-from pch_core.errors import ValidationFailed
+from trust_kernel.errors import ValidationFailed
 
 
 def _statements(situation: dict) -> list[str]:

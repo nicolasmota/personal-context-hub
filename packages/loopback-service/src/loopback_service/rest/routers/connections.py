@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, Request
-from pch_core.errors import Revoked, ValidationFailed
-from pch_core.service import Hub
 from pydantic import BaseModel
+from trust_kernel.errors import Revoked, ValidationFailed
+from trust_kernel.service import Hub
 
-from pch_server.pairing.catalog import get_assistant, list_assistants, render_recipe
-from pch_server.rest.auth import current_actor, get_hub, require_owner
+from loopback_service.pairing.catalog import get_assistant, list_assistants, render_recipe
+from loopback_service.rest.auth import current_actor, get_hub, require_owner
 
 router = APIRouter(tags=["connections"])
 
@@ -130,7 +130,7 @@ def create_manifest(
 ) -> dict:
     name, is_owner = actor
     if is_owner:
-        from pch_core.errors import ValidationFailed
+        from trust_kernel.errors import ValidationFailed
 
         raise ValidationFailed("use CRUD as owner")
     return hub.create_manifest(

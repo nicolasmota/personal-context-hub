@@ -11,11 +11,11 @@ CONSTITUTION = ROOT / ".specify" / "memory" / "constitution.md"
 
 PYPROJECTS = [
     ROOT / "pyproject.toml",
-    ROOT / "packages" / "pch-core" / "pyproject.toml",
-    ROOT / "packages" / "pch-server" / "pyproject.toml",
-    ROOT / "packages" / "pch-sdk" / "pyproject.toml",
-    ROOT / "packages" / "pch-archive" / "pyproject.toml",
-    ROOT / "packages" / "pch-lab" / "pyproject.toml",
+    ROOT / "packages" / "trust-kernel" / "pyproject.toml",
+    ROOT / "packages" / "loopback-service" / "pyproject.toml",
+    ROOT / "packages" / "agent-client" / "pyproject.toml",
+    ROOT / "packages" / "portable-state" / "pyproject.toml",
+    ROOT / "packages" / "eval-harness" / "pyproject.toml",
 ]
 
 DOCS = [

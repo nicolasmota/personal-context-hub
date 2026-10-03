@@ -1,8 +1,8 @@
 from pathlib import Path
 
 from fastapi.testclient import TestClient
-from pch_core.service import Hub
-from pch_server.rest.app import create_app
+from loopback_service.rest.app import create_app
+from trust_kernel.service import Hub
 
 
 def test_existing_vault_reused_by_packaged_path(tmp_path: Path, monkeypatch):

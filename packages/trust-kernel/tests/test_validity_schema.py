@@ -1,9 +1,9 @@
 import pytest
-from pch_core.schema.contract import ContextQuery
-from pch_core.schema.memory import Memory
-from pch_core.schema.metadata import Authority, Classification, EntityType
-from pch_core.schema.preference import Preference
 from pydantic import ValidationError
+from trust_kernel.schema.contract import ContextQuery
+from trust_kernel.schema.memory import Memory
+from trust_kernel.schema.metadata import Authority, Classification, EntityType
+from trust_kernel.schema.preference import Preference
 
 
 def _pref(**extra):

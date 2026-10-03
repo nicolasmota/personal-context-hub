@@ -37,7 +37,7 @@ Grant text is the plain-language summary (`summary_human`). Read it before confi
 All recipes run the stdio bridge:
 
 ```text
-<python> -m pch_sdk mcp-bridge
+<python> -m agent_client mcp-bridge
 ```
 
 with environment:
@@ -94,7 +94,7 @@ Verify the tools appear: `search_personal_context`, `get_context_contract`, `pro
 From a checkout you can also:
 
 ```bash
-hermes mcp add personal-context-hub --command <python> --env PCH_TOKEN=… PCH_BASE=http://127.0.0.1:8765 --args -m pch_sdk mcp-bridge
+hermes mcp add personal-context-hub --command <python> --env PCH_TOKEN=… PCH_BASE=http://127.0.0.1:8765 --args -m agent_client mcp-bridge
 hermes mcp test personal-context-hub
 ```
 
@@ -111,7 +111,7 @@ make demo-agent CODE=<code>
 Python:
 
 ```python
-from pch_sdk import Client
+from agent_client import Client
 
 c = Client("http://127.0.0.1:8765", token="")
 print(c.pair("<code>"))

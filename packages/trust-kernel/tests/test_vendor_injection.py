@@ -1,9 +1,9 @@
 from pathlib import Path
 
 import pytest
-from pch_archive.vendor.enqueue import decide_archive, enqueue_vendor_import
+from portable_state.vendor.enqueue import decide_archive, enqueue_vendor_import
 
-FIXTURES = Path(__file__).resolve().parent.parent.parent / "pch-archive" / "tests" / "fixtures" / "vendor"
+FIXTURES = Path(__file__).resolve().parent.parent.parent / "portable-state" / "tests" / "fixtures" / "vendor"
 
 
 @pytest.mark.forbidden_context

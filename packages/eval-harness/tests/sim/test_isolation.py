@@ -3,8 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-from pch_core.service import Hub
-from pch_lab.sim import SimRefused, run_sim
+from eval_harness.sim import SimRefused, run_sim
+from trust_kernel.service import Hub
 
 
 def test_everyday_vault_unchanged(tmp_path: Path) -> None:

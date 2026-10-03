@@ -1,6 +1,6 @@
 from datetime import UTC, datetime
 
-from pch_core.timeutil import interval_contains, parse_instant
+from trust_kernel.timeutil import interval_contains, parse_instant
 
 
 def test_parse_instant_zulu():

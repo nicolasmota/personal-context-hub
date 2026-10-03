@@ -11,9 +11,9 @@ from pathlib import Path
 
 import httpx
 import uvicorn
-from pch_core.service import Hub
-from pch_server.pairing.catalog import ASSISTANTS
-from pch_server.rest.app import create_app
+from loopback_service.pairing.catalog import ASSISTANTS
+from loopback_service.rest.app import create_app
+from trust_kernel.service import Hub
 
 
 def _free_port() -> int:
@@ -132,8 +132,8 @@ def test_all_supported_assistants_connect_from_tmp(tmp_path: Path):
 
 
 def test_recipe_command_is_pinned_interpreter():
-    from pch_server.pairing.catalog import _bridge
+    from loopback_service.pairing.catalog import _bridge
 
     bridge = _bridge("tok", "http://127.0.0.1:8765")
     assert Path(bridge["command"]).resolve() == Path(sys.executable).resolve()
-    assert bridge["args"] == ["-m", "pch_sdk", "mcp-bridge"]
+    assert bridge["args"] == ["-m", "agent_client", "mcp-bridge"]

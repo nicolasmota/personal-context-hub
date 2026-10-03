@@ -2,7 +2,7 @@
 
 Experiments use synthetic data by default. The scorer reads the rendered text. It does not treat the name `pch` as a success.
 
-`uv run pch-lab bench --out bench.json` runs seven scenario families against four baselines and writes one result row per pair. `token_use` is `len(text) // 4`. `cost` stays 0 because this harness does not call a model. External memory libraries register a renderer on `pch_lab.baselines.runners.RENDERERS`; this repository does not ship their scores.
+`uv run pch-lab bench --out bench.json` runs seven scenario families against four baselines and writes one result row per pair. `token_use` is `len(text) // 4`. `cost` stays 0 because this harness does not call a model. External memory libraries register a renderer on `eval_harness.baselines.runners.RENDERERS`; this repository does not ship their scores.
 
 ## Baselines
 
@@ -27,4 +27,4 @@ Each row records task success, context relevance, sufficiency, minimization, tem
 | State derived from experience improves later tasks | `experience_reuse`, `changing_preferences` | `pch` against `no_stored_context` | task success, temporal accuracy |
 | Minimization can hold performance while reducing unnecessary exposure | `privacy` | `pch` against `raw_retrieval` | privacy leakage, minimization, sufficiency |
 
-Scenario files live in `packages/pch-core/src/pch_core/testing/scenarios/`. The loopback tests load them from `pch_core.testing.scenarios` and do not import `pch_lab`.
+Scenario files live in `packages/trust-kernel/src/trust_kernel/testing/scenarios/`. The loopback tests load them from `trust_kernel.testing.scenarios` and do not import `eval_harness`.

@@ -1,13 +1,13 @@
 import pytest
-from pch_core.schema.audit import EventKind
-from pch_core.schema.contract import (
+from pydantic import ValidationError
+from trust_kernel.schema.audit import EventKind
+from trust_kernel.schema.contract import (
     ContextContract,
     ContextQuery,
     ContractItem,
     ItemRef,
     OmissionNote,
 )
-from pydantic import ValidationError
 
 
 def test_empty_purpose_rejected():
@@ -57,8 +57,8 @@ def test_compiler_omission_categories_and_sufficient_default():
 
 
 def test_context_contract_not_in_type_models():
-    from pch_core.schema import TYPE_MODELS
-    from pch_core.schema.metadata import EntityType
+    from trust_kernel.schema import TYPE_MODELS
+    from trust_kernel.schema.metadata import EntityType
 
     assert ContextContract not in TYPE_MODELS.values()
     assert not hasattr(EntityType, "CONTEXT_CONTRACT")

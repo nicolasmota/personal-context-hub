@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from pch_core.errors import PolicyDenied
-from pch_core.hub.const import OWNER
-from pch_core.service import Hub
+from trust_kernel.errors import PolicyDenied
+from trust_kernel.hub.const import OWNER
+from trust_kernel.service import Hub
 
 
 def attach_tools(mcp, hub: Hub) -> None:

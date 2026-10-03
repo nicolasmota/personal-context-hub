@@ -8,10 +8,10 @@ import zipfile
 from pathlib import Path
 
 EXPECTED = [
-    "pch_core",
-    "pch_archive",
-    "pch_sdk",
-    "pch_server",
+    "trust_kernel",
+    "portable_state",
+    "agent_client",
+    "loopback_service",
 ]
 
 
@@ -49,9 +49,9 @@ def check(dist: Path) -> list[str]:
     by_name = {_dist_name(w): w for w in wheels}
 
     siblings = {
-        "pch_archive": ["pch-core"],
-        "pch_sdk": ["pch-core", "pch-archive"],
-        "pch_server": ["pch-core", "pch-archive", "pch-sdk"],
+        "portable_state": ["trust-kernel"],
+        "agent_client": ["trust-kernel", "portable-state"],
+        "loopback_service": ["trust-kernel", "portable-state", "agent-client"],
     }
     for dist_name, required in siblings.items():
         meta = _read(by_name[dist_name], "METADATA") or ""
